@@ -1,0 +1,1689 @@
+body {
+	color: rgb(107, 107, 107); line-height: 1.7; font-family: "Open Sans", sans-serif; font-size: 14px; -ms-word-wrap: break-word; background-color: rgb(242, 242, 242);
+}
+a {
+	transition:0.3s; color: rgb(218, 68, 83); text-decoration: none; -webkit-transition: all 0.3s; -o-transition: all 0.3s; -moz-transition: all 0.3s;
+}
+a:hover {
+	color: rgb(218, 218, 218); text-decoration: none;
+}
+a:focus {
+	color: rgb(218, 218, 218); text-decoration: none;
+}
+a:focus {
+	outline: dotted thin; outline-offset: -2px;
+}
+pre {
+	width: 100%; white-space: pre-wrap; -ms-word-wrap: break-word;
+}
+h1 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+h2 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+h3 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+h4 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+h5 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+h6 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+.h1 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+.h2 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+.h3 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+.h4 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+.h5 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+.h6 {
+	color: rgb(218, 68, 83); font-family: "Roboto Slab", serif; font-weight: 700;
+}
+h1 {
+	font-size: 28px;
+}
+.h1 {
+	font-size: 28px;
+}
+h2 {
+	font-size: 24px;
+}
+.h2 {
+	font-size: 24px;
+}
+h3 {
+	font-size: 20px;
+}
+.h3 {
+	font-size: 20px;
+}
+h4 {
+	font-size: 16px;
+}
+.h4 {
+	font-size: 16px;
+}
+h5 {
+	font-size: 14px;
+}
+.h5 {
+	font-size: 14px;
+}
+h6 {
+	font-size: 13px;
+}
+.h6 {
+	font-size: 13px;
+}
+img {
+	height: auto; max-width: 100%;
+}
+button {
+	margin: 0px; font-size: 100%; vertical-align: baseline;
+}
+input {
+	margin: 0px; font-size: 100%; vertical-align: baseline;
+}
+select {
+	margin: 0px; font-size: 100%; vertical-align: baseline;
+}
+textarea {
+	margin: 0px; font-size: 100%; vertical-align: baseline;
+}
+input[type='checkbox'] {
+	padding: 0px;
+}
+input[type='radio'] {
+	padding: 0px;
+}
+input[type='search'] {
+	box-sizing: content-box; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; -webkit-appearance: textfield;
+}
+input[type='text'] {
+	border-radius: 3px; border: 1px solid rgb(232, 232, 232); color: rgb(102, 102, 102);
+}
+input[type='email'] {
+	border-radius: 3px; border: 1px solid rgb(232, 232, 232); color: rgb(102, 102, 102);
+}
+input[type='tel'] {
+	border-radius: 3px; border: 1px solid rgb(232, 232, 232); color: rgb(102, 102, 102);
+}
+input[type='url'] {
+	border-radius: 3px; border: 1px solid rgb(232, 232, 232); color: rgb(102, 102, 102);
+}
+input[type='password'] {
+	border-radius: 3px; border: 1px solid rgb(232, 232, 232); color: rgb(102, 102, 102);
+}
+input[type='search'] {
+	border-radius: 3px; border: 1px solid rgb(232, 232, 232); color: rgb(102, 102, 102);
+}
+textarea {
+	border-radius: 3px; border: 1px solid rgb(232, 232, 232); color: rgb(102, 102, 102);
+}
+input[type='text']:focus {
+	color: rgb(17, 17, 17);
+}
+input[type='email']:focus {
+	color: rgb(17, 17, 17);
+}
+input[type='tel']:focus {
+	color: rgb(17, 17, 17);
+}
+input[type='url']:focus {
+	color: rgb(17, 17, 17);
+}
+input[type='password']:focus {
+	color: rgb(17, 17, 17);
+}
+input[type='search']:focus {
+	color: rgb(17, 17, 17);
+}
+textarea:focus {
+	color: rgb(17, 17, 17);
+}
+input[type='text'] {
+	padding: 3px;
+}
+input[type='email'] {
+	padding: 3px;
+}
+input[type='tel'] {
+	padding: 3px;
+}
+input[type='url'] {
+	padding: 3px;
+}
+input[type='password'] {
+	padding: 3px;
+}
+input[type='search'] {
+	padding: 3px;
+}
+textarea {
+	width: 100%; overflow: auto; padding-left: 3px; vertical-align: top;
+}
+.alignleft {
+	margin-right: 1.5em; float: left; display: inline;
+}
+.alignright {
+	margin-left: 1.5em; float: right; display: inline;
+}
+.aligncenter {
+	margin: 0px auto; clear: both; display: block;
+}
+.side-pull-left .main-content-inner {
+	float: left;
+}
+.side-pull-right .main-content-inner {
+	float: right;
+}
+.no-sidebar #secondary {
+	display: none;
+}
+.full-width #secondary {
+	display: none;
+}
+.no-sidebar .main-content-inner {
+	margin: 0px auto; float: none;
+}
+.full-width .main-content-inner {
+	width: 100%;
+}
+.screen-reader-text {
+	position: absolute !important; clip: rect(1px, 1px, 1px, 1px);
+}
+.screen-reader-text:hover {
+	padding: 15px 23px 14px; border-radius: 3px; left: 5px; top: 5px; width: auto; height: auto; color: rgb(33, 117, 155); line-height: normal; font-size: 14px; font-weight: bold; text-decoration: none; display: block; z-index: 100000; clip: auto !important; box-shadow: 0px 0px 2px 2px rgba(0,0,0,0.6); background-color: rgb(241, 241, 241);
+}
+.screen-reader-text:active {
+	padding: 15px 23px 14px; border-radius: 3px; left: 5px; top: 5px; width: auto; height: auto; color: rgb(33, 117, 155); line-height: normal; font-size: 14px; font-weight: bold; text-decoration: none; display: block; z-index: 100000; clip: auto !important; box-shadow: 0px 0px 2px 2px rgba(0,0,0,0.6); background-color: rgb(241, 241, 241);
+}
+.screen-reader-text:focus {
+	padding: 15px 23px 14px; border-radius: 3px; left: 5px; top: 5px; width: auto; height: auto; color: rgb(33, 117, 155); line-height: normal; font-size: 14px; font-weight: bold; text-decoration: none; display: block; z-index: 100000; clip: auto !important; box-shadow: 0px 0px 2px 2px rgba(0,0,0,0.6); background-color: rgb(241, 241, 241);
+}
+.clear::before {
+	display: table; content: "";
+}
+.clear::after {
+	display: table; content: "";
+}
+.gallery::before {
+	display: table; content: "";
+}
+.gallery::after {
+	display: table; content: "";
+}
+.entry-content::before {
+	display: table; content: "";
+}
+.entry-content::after {
+	display: table; content: "";
+}
+.comment-content::before {
+	display: table; content: "";
+}
+.comment-content::after {
+	display: table; content: "";
+}
+.site-header::before {
+	display: table; content: "";
+}
+.site-header::after {
+	display: table; content: "";
+}
+.site-content::before {
+	display: table; content: "";
+}
+.site-content::after {
+	display: table; content: "";
+}
+.site-footer::before {
+	display: table; content: "";
+}
+.site-footer::after {
+	display: table; content: "";
+}
+.home-widget-area::before {
+	display: table; content: "";
+}
+.clear::after {
+	clear: both;
+}
+.entry-content::after {
+	clear: both;
+}
+.gallery::after {
+	clear: both;
+}
+.comment-content::after {
+	clear: both;
+}
+.site-header::after {
+	clear: both;
+}
+.site-content::after {
+	clear: both;
+}
+.site-footer::after {
+	clear: both;
+}
+.home-widget-area::before {
+	clear: both;
+}
+.sticky {
+	
+}
+.hentry {
+	margin: 0px;
+}
+.byline {
+	display: none;
+}
+.updated {
+	display: none;
+}
+.single .byline {
+	margin-right: 0px; display: inline;
+}
+.group-blog .byline {
+	margin-right: 0px; display: inline;
+}
+.page-content {
+	margin: 1.5em 0px 0px;
+}
+.entry-content {
+	margin: 1.5em 0px 0px;
+}
+.entry-summary {
+	margin: 1.5em 0px 0px;
+}
+.page-links {
+	margin: 0px 0px 1.5em; clear: both;
+}
+.main-content-area {
+	margin-top: 40px; margin-bottom: 40px;
+}
+.entry-meta a {
+	color: rgb(107, 107, 107); font-size: 13px;
+}
+.entry-meta {
+	margin-bottom: 30px;
+}
+footer.entry-meta {
+	margin-bottom: 0px;
+}
+.page-header {
+	padding-bottom: 0px; margin-top: 0px; border-bottom-color: currentColor; border-bottom-width: 0px; border-bottom-style: none;
+}
+.entry-meta .fa {
+	font-size: 14px; margin-right: 3px;
+}
+.entry-meta span {
+	margin-right: 10px;
+}
+.entry-title {
+	color: rgb(68, 68, 68); font-size: 28px; margin-bottom: 30px;
+}
+.entry-title a {
+	color: rgb(68, 68, 68);
+}
+.entry-title a:hover {
+	color: rgb(218, 68, 83);
+}
+.read-more.btn-default.btn {
+	padding: 11px 13px; border-radius: 4px; font-size: 12px; margin-top: 10px; float: right;
+}
+a.more-link {
+	padding: 11px 13px; border-radius: 4px; font-size: 12px; margin-top: 10px; float: right;
+}
+.search .entry-summary > p:last-child::after {
+	clear: both; display: block; content: "";
+}
+hr.section-divider {
+	border-color: rgb(232, 232, 232); margin-top: 50px; margin-bottom: 50px;
+}
+.author-bio {
+	width: 100%; padding-top: 35px; padding-bottom: 35px; clear: both;
+}
+.author-bio .avatar {
+	float: left;
+}
+.author-bio-content h4 {
+	font-size: 14px; margin-top: 0px;
+}
+.author-bio .author-bio-content {
+	margin-left: 74px;
+}
+.secondary-content-box {
+	padding-top: 0px; padding-bottom: 0px;
+}
+.single-view {
+	margin-bottom: 50px;
+}
+.blog-item-wrap {
+	margin-bottom: 50px;
+}
+.post-inner-content {
+	border-width: medium 1px 1px; border-style: none solid solid; border-color: currentColor rgb(218, 218, 218) rgb(218, 218, 218); padding: 45px 50px; background-color: rgb(255, 255, 255);
+}
+body.archive .post-inner-content {
+	border-top-color: rgb(218, 218, 218); border-top-width: 1px; border-top-style: solid;
+}
+body.blog .post-inner-content {
+	border-top-color: rgb(218, 218, 218); border-top-width: 1px; border-top-style: solid;
+}
+:first-child.post-inner-content {
+	border-top-color: rgb(218, 218, 218); border-top-width: 1px; border-top-style: solid;
+}
+.entry-title {
+	margin-top: 0px;
+}
+.says {
+	display: none;
+}
+.comment-author .fn {
+	text-transform: uppercase; font-weight: 700;
+}
+.author-bio h4 {
+	text-transform: uppercase; font-weight: 700;
+}
+.comment-reply-title {
+	text-transform: uppercase; font-weight: 700;
+}
+#bbp-single-user-details #bbp-user-avatar img.avatar {
+	left: 0px; top: 0px; position: relative;
+}
+.page-links span {
+	padding: 2px 10px; border-radius: 4px; color: rgb(255, 255, 255); margin-left: 2px; display: inline-block; background-color: rgb(218, 68, 83);
+}
+.page-links a span {
+	border: 1px solid rgb(232, 232, 232); transition:0.5s; color: rgb(218, 68, 83); background-color: inherit; -webkit-transition: all 0.5s; -o-transition: all 0.5s; -moz-transition: all 0.5s;
+}
+.page-links a:hover span {
+	border: 1px solid rgb(218, 68, 83); color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+.pagination .fa-chevron-left {
+	font-size: 12px;
+}
+.pagination .fa-chevron-right {
+	font-size: 12px;
+}
+.pagination li a {
+	color: rgb(218, 68, 83);
+}
+.pagination li:hover a {
+	color: rgb(218, 68, 83);
+}
+.pagination > .active > a {
+	border-color: rgb(218, 68, 83); color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+.pagination > .active > span {
+	border-color: rgb(218, 68, 83); color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+.pagination > .active > a:hover {
+	border-color: rgb(218, 68, 83); color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+.pagination > .active > span:hover {
+	border-color: rgb(218, 68, 83); color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+.pagination > .active > a:focus {
+	border-color: rgb(218, 68, 83); color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+.pagination > .active > span:focus {
+	border-color: rgb(218, 68, 83); color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+.pagination > li > a {
+	border-color: rgb(218, 218, 218); padding: 9px 14px;
+}
+.pagination > li > span {
+	border-color: rgb(218, 218, 218); padding: 9px 14px;
+}
+.bottom-pagination {
+	text-align: center;
+}
+.blog .format-aside .entry-title {
+	display: none;
+}
+.archive .format-aside .entry-title {
+	display: none;
+}
+.page-content img.wp-smiley {
+	padding: 0px; border: currentColor; margin-top: 0px; margin-bottom: 0px;
+}
+.entry-content img.wp-smiley {
+	padding: 0px; border: currentColor; margin-top: 0px; margin-bottom: 0px;
+}
+.comment-content img.wp-smiley {
+	padding: 0px; border: currentColor; margin-top: 0px; margin-bottom: 0px;
+}
+.single-featured {
+	margin: auto; transition:opacity 0.3s linear; display: block; -webkit-transition: opacity 0.3s linear; -o-transition: opacity 0.3s linear; -moz-transition: opacity 0.3s linear;
+}
+.single-featured:hover {
+	opacity: 0.8;
+}
+.wp-caption {
+	border: 1px solid rgb(204, 204, 204); margin-bottom: 1.5em; max-width: 100%;
+}
+.wp-caption img[class*='wp-image-'] {
+	display: block;
+}
+.wp-caption-text {
+	text-align: center;
+}
+.wp-caption .wp-caption-text {
+	margin: 0.8em 0px;
+}
+embed {
+	max-width: 100%;
+}
+iframe {
+	max-width: 100%;
+}
+object {
+	max-width: 100%;
+}
+.widget select {
+	max-width: 100%;
+}
+.widget_search .search-submit {
+	display: none;
+}
+.widget ul li {
+	list-style: none; padding-bottom: 10px; margin-bottom: 10px; border-bottom-color: rgb(242, 242, 242); border-bottom-width: 1px; border-bottom-style: solid;
+}
+.widget_nav_menu ul li {
+	padding-bottom: 0px; margin-bottom: 0px; border-bottom-color: currentColor; border-bottom-width: 0px; border-bottom-style: none;
+}
+.widget_nav_menu ul li a {
+	padding-top: 10px; padding-bottom: 10px; border-bottom-color: rgb(242, 242, 242); border-bottom-width: 1px; border-bottom-style: solid; display: block;
+}
+.widget_nav_menu ul.sub-menu a {
+	padding-left: 10px; border-left-color: rgb(242, 242, 242); border-left-width: 1px; border-left-style: solid;
+}
+.widget ul {
+	padding: 0px; line-height: 18px; font-size: 14px;
+}
+.widget ul.nav-tabs.nav {
+	padding: 0px;
+}
+#secondary .widget {
+	color: rgb(193, 192, 192); overflow: hidden; margin-bottom: 50px;
+}
+#secondary :last-child.widget {
+	margin-bottom: 0px;
+}
+.tab-content ul li {
+	list-style: none;
+}
+#secondary .widget_archive ul li::before {
+	font-family: fontawesome; margin-right: 10px;
+}
+#secondary .widget_categories ul li::before {
+	font-family: fontawesome; margin-right: 10px;
+}
+#secondary .widget_recent_comments ul li::before {
+	font-family: fontawesome; margin-right: 10px;
+}
+#secondary .widget_archive ul li::before {
+	content: "\f073";
+}
+#secondary .widget_categories ul li::before {
+	content: "\f115";
+}
+#secondary .widget_recent_comments ul li::before {
+	content: "\f0e5";
+}
+.well {
+	padding: 30px; border: 1px solid rgb(218, 218, 218); overflow: hidden; clear: both; background-color: rgb(255, 255, 255);
+}
+#secondary .widget > h3 {
+	color: rgb(99, 100, 103); text-transform: uppercase; font-size: 14px; margin-top: 0px; margin-bottom: 25px;
+}
+#secondary .widget a {
+	color: rgb(193, 192, 192);
+}
+#secondary .widget a:hover {
+	color: rgb(218, 68, 83);
+}
+.widget ul ul {
+	padding: 20px 10px 0px;
+}
+.widget ul ul.sub-menu {
+	padding: 0px 0px 0px 10px;
+}
+.widget #social ul li {
+	border-bottom-color: currentColor; border-bottom-width: 0px; border-bottom-style: none;
+}
+.not-found-widget {
+	margin-top: 30px;
+}
+@media all and (max-width:767px)
+{
+#secondary {
+	clear: both;
+}
+}
+.cats-widget ul li span {
+	float: right;
+}
+.popular-posts-wrapper::after {
+	clear: both; display: block; content: "";
+}
+.popular-posts-wrapper .post {
+	clear: both; margin-bottom: 20px; float: left;
+}
+.popular-posts-wrapper .post .post-image {
+	background-position: center; border-radius: 4px; width: 60px; height: 60px; overflow: hidden; float: left; display: block; background-repeat: no-repeat; background-color: rgb(218, 218, 218); -webkit-border-radius: 4px;
+}
+.popular-posts-wrapper .post .post-image img {
+	border-radius: 4px; transition:opacity 0.5s; opacity: 1; -webkit-transition: opacity 0.5s; -o-transition: opacity 0.5s; -moz-transition: opacity 0.5s;
+}
+.popular-posts-wrapper .post .post-image img:hover {
+	opacity: 0.6 !important;
+}
+.popular-posts-wrapper .post .post-content {
+	margin-left: 80px;
+}
+.widget .post-content > span {
+	display: block;
+}
+#secondary .widget .post-content a {
+	color: rgb(218, 68, 83);
+}
+#secondary .widget .post-content a:hover {
+	color: rgb(218, 218, 218);
+}
+.widget .post-content span {
+	font-size: 12px;
+}
+.tagcloud {
+	margin-top: 25px;
+}
+.tagcloud a {
+	padding: 6px 7px; border-radius: 3px; color: rgb(255, 255, 255) !important; line-height: 100%; font-size: 12px !important; margin-right: 0px; margin-bottom: 4px; display: inline-block; background-color: rgb(218, 218, 218); -webkit-border-radius: 3px;
+}
+.tagcloud a:hover {
+	border-color: rgb(218, 68, 83); background-color: rgb(218, 68, 83);
+}
+.btn-default {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.label-default {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.woocommerce #respond input#submit {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.woocommerce a.button {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.woocommerce button.button {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.woocommerce input.button {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.woocommerce #respond input.alt#submit {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.woocommerce a.alt.button {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.woocommerce button.alt.button {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.woocommerce input.alt.button {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+a.more-link {
+	border-color: rgb(218, 68, 83); transition:background-color 0.3s linear; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.btn-default:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+[href].label-default:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+[href].label-default:focus {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.btn-default:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.btn-default:focus {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.btn-default:active {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.active.btn-default {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+#image-navigation .nav-previous a:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+#image-navigation .nav-next a:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.woocommerce #respond input#submit:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.woocommerce #respond input.alt#submit:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.woocommerce a.button:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.woocommerce button.button:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.woocommerce input.button:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.woocommerce a.alt.button:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.woocommerce button.alt.button:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.woocommerce input.alt.button:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+a.more-link:hover {
+	border-color: rgb(54, 54, 54); color: rgb(255, 255, 255); background-color: rgb(54, 54, 54);
+}
+.btn-default.btn {
+	color: rgb(255, 255, 255); text-transform: uppercase;
+}
+.woocommerce #respond input#submit {
+	color: rgb(255, 255, 255); text-transform: uppercase;
+}
+.woocommerce a.button {
+	color: rgb(255, 255, 255); text-transform: uppercase;
+}
+.woocommerce button.button {
+	color: rgb(255, 255, 255); text-transform: uppercase;
+}
+.woocommerce input.button {
+	color: rgb(255, 255, 255); text-transform: uppercase;
+}
+a.more-link {
+	color: rgb(255, 255, 255); text-transform: uppercase;
+}
+:last-child.input-group-btn > .btn {
+	margin-left: 0px;
+}
+button {
+	padding: 5px 12px; border-radius: 4px; border: currentColor; transition:background-color 0.3s linear; color: rgb(255, 255, 255); text-transform: uppercase; font-size: 12px; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear; -webkit-border-radius: 4px;
+}
+.button {
+	padding: 5px 12px; border-radius: 4px; border: currentColor; transition:background-color 0.3s linear; color: rgb(255, 255, 255); text-transform: uppercase; font-size: 12px; background-color: rgb(218, 68, 83); -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear; -webkit-border-radius: 4px;
+}
+button:hover {
+	background-color: rgb(54, 54, 54);
+}
+.button:hover {
+	background-color: rgb(54, 54, 54);
+}
+#subscription-toggle {
+	float: right;
+}
+.infinite-scroll .pagination {
+	display: none;
+}
+.neverending.infinite-scroll .site-footer {
+	display: none;
+}
+.neverending.infinity-end .site-footer {
+	display: block;
+}
+#infinite-handle span {
+	background: rgb(255, 255, 255); padding: 20px; border-radius: 4px; border: 1px solid rgb(218, 218, 218); transition:0.5s; text-align: center; color: rgb(218, 68, 83); text-transform: uppercase; margin-bottom: 10px; display: block; -webkit-transition: all 0.5s; -o-transition: all 0.5s; -moz-transition: all 0.5s;
+}
+#infinite-handle span:hover {
+	color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+#logo .site-name {
+	margin: 0px; font-weight: bold;
+}
+#logo .hide-site-name.site-name {
+	display: none;
+}
+.site-branding {
+	margin-top: 20px; margin-bottom: 20px;
+}
+.site-description {
+	color: rgb(119, 119, 119); font-size: 16px; font-weight: 200;
+}
+.page-template-page-homepage-php .carousel {
+	margin-top: -20px; margin-bottom: 20px;
+}
+@media all and (max-width:768px)
+{
+.pull-right {
+	float: none !important;
+}
+.pull-left {
+	float: none !important;
+}
+.flex-caption {
+	display: none;
+}
+}
+.post-navigation a {
+	margin: 0px 0px 1.5em; padding: 8px 14px; border-radius: 4px; border: 1px solid rgb(218, 218, 218); overflow: hidden; font-size: 12px; background-color: rgb(255, 255, 255);
+}
+.page-numbers {
+	margin: 0px 0px 1.5em; padding: 8px 14px; border-radius: 4px; border: 1px solid rgb(218, 218, 218); overflow: hidden; font-size: 12px; background-color: rgb(255, 255, 255);
+}
+.pagination .prev {
+	margin: 0px 0px 1.5em; padding: 8px 14px; border-radius: 4px; border: 1px solid rgb(218, 218, 218); overflow: hidden; font-size: 12px; background-color: rgb(255, 255, 255);
+}
+.pagination .next {
+	margin: 0px 0px 1.5em; padding: 8px 14px; border-radius: 4px; border: 1px solid rgb(218, 218, 218); overflow: hidden; font-size: 12px; background-color: rgb(255, 255, 255);
+}
+.post-navigation a {
+	display: block;
+}
+.post-navigation a:hover {
+	background: rgb(218, 68, 83); color: rgb(255, 255, 255); text-decoration: none;
+}
+.pagination .prev:hover .pagination .next:hover {
+	background: rgb(218, 68, 83); color: rgb(255, 255, 255); text-decoration: none;
+}
+.pagination {
+	text-transform: uppercase; display: block;
+}
+.post-navigation .nav-previous {
+	float: left;
+}
+.pagination .prev {
+	float: left;
+}
+.post-navigation .nav-next {
+	text-align: right; float: right;
+}
+.pagination .next {
+	text-align: right; float: right;
+}
+.more-link {
+	margin: 10px 0px; float: right;
+}
+.single .nav-links {
+	margin-top: 30px;
+}
+.nav > li > a {
+	text-transform: uppercase;
+}
+.navbar-default.navbar {
+	font-family: "Open Sans", serif; font-weight: 500; margin-bottom: 0px; background-color: rgb(54, 54, 54);
+}
+.navbar-default .navbar-nav > li > a {
+	color: rgb(245, 247, 250); text-transform: uppercase; line-height: 40px; font-size: 12px;
+}
+.navbar > .container .navbar-brand {
+	margin: 10px 0px; color: rgb(218, 218, 218); font-family: "Roboto Slab", serif; font-size: 20px;
+}
+.navbar-default .navbar-nav > .open > a {
+	border-right-color: currentColor; border-left-color: currentColor; border-right-width: medium; border-left-width: medium; border-right-style: none; border-left-style: none;
+}
+.navbar-default .navbar-nav > .open > a:hover {
+	border-right-color: currentColor; border-left-color: currentColor; border-right-width: medium; border-left-width: medium; border-right-style: none; border-left-style: none;
+}
+.navbar-default .navbar-nav > .open > a:focus {
+	border-right-color: currentColor; border-left-color: currentColor; border-right-width: medium; border-left-width: medium; border-right-style: none; border-left-style: none;
+}
+.navbar {
+	border-radius: 0px;
+}
+.navbar-default {
+	border: currentColor;
+}
+.navbar-default .navbar-nav > .active > a {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav > .active > .caret {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav > .active > a:hover {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav > .active > a:focus {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav > li > a:hover {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav > li:hover > a {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav > li > a:focus {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav > .open > a {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav > .open > a:hover {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav > .open > a:focus {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav .dropdown-menu > li:hover {
+	color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+.navbar-default .navbar-nav .dropdown-menu > li:focus {
+	color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+.dropdown-menu > li > a:focus {
+	color: rgb(255, 255, 255); background-color: transparent;
+}
+.dropdown-menu > li > a:hover {
+	color: rgb(255, 255, 255); background-color: transparent;
+}
+.dropdown-menu > li:hover > a {
+	color: rgb(255, 255, 255); background-color: transparent;
+}
+.dropdown-menu > li:hover > .caret {
+	color: rgb(255, 255, 255); background-color: transparent;
+}
+.dropdown-menu > li > .caret {
+	color: rgb(99, 100, 103);
+}
+.navbar-default .sparkling-mobile-menu.navbar-nav > li:hover > ul.dropdown-menu {
+	display: none;
+}
+.navbar-default .sparkling-mobile-menu.navbar-nav > li.open > ul.dropdown-menu {
+	display: block;
+}
+.navbar-default .sparkling-mobile-menu.navbar-nav > li:hover > a {
+	color: rgb(119, 119, 119);
+}
+.navbar-default .sparkling-mobile-menu.navbar-nav > li:hover > a {
+	color: rgb(255, 255, 255);
+}
+.navbar-default .sparkling-mobile-menu.navbar-nav > li:hover > .caret {
+	color: rgb(255, 255, 255);
+}
+.navbar-default .sparkling-mobile-menu.navbar-nav > li.open > a {
+	color: rgb(218, 68, 83);
+}
+.navbar-default .sparkling-mobile-menu.navbar-nav > li.open > .caret {
+	color: rgb(218, 68, 83);
+}
+.dropdown-menu {
+	font-size: 13px;
+}
+.navbar-default .navbar-nav .current-menu-ancestor a.dropdown-toggle {
+	color: rgb(218, 68, 83); background-color: transparent;
+}
+.navbar-default .navbar-nav .open .dropdown-menu > .active > a {
+	color: rgb(255, 255, 255);
+}
+@media all and (min-width:769px)
+{
+.dropdown-menu .caret {
+	top: 7px; border-top-color: transparent; border-bottom-color: transparent; border-left-color: currentColor; border-top-width: 4px; border-bottom-width: 4px; border-left-width: 4px; border-top-style: solid; border-bottom-style: solid; border-left-style: dashed; float: right; position: relative;
+}
+.dropdown-menu > li > a {
+	display: inline-block;
+}
+}
+@media all and (max-width:767px)
+{
+.navbar-default .navbar-nav .open .dropdown-menu > .active > a {
+	background-color: transparent;
+}
+.navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+	background-color: transparent;
+}
+.navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover {
+	background-color: transparent;
+}
+.navbar-default .navbar-nav .open .dropdown-menu > li > a {
+	color: rgb(255, 255, 255); display: inline-block; background-color: transparent;
+}
+.navbar-default .navbar-nav .open .dropdown-menu > .active > a {
+	color: rgb(218, 68, 83);
+}
+.navbar-default .navbar-nav .dropdown-menu > li.active > .caret {
+	color: rgb(218, 68, 83);
+}
+.navbar-default .navbar-nav .dropdown-menu > li.open > a {
+	color: rgb(218, 68, 83);
+}
+.navbar-default .navbar-nav > li:hover > a {
+	color: rgb(255, 255, 255);
+}
+.navbar-default .navbar-nav > li:hover > .caret {
+	color: rgb(255, 255, 255);
+}
+.dropdown-menu > li > .caret {
+	color: rgb(255, 255, 255);
+}
+.navbar-default .navbar-nav li.open > a {
+	color: rgb(218, 68, 83);
+}
+.navbar-default .navbar-nav li.open > .caret {
+	color: rgb(218, 68, 83);
+}
+.site-navigation-inner .dropdown-menu > .active {
+	background-color: transparent;
+}
+.navbar-default .navbar-nav .dropdown-menu > li:hover {
+	background-color: transparent;
+}
+.navbar-default .navbar-nav .dropdown-menu > li:focus {
+	background-color: transparent;
+}
+.dropdown-menu > li.open.dropdown {
+	padding-bottom: 0px;
+}
+}
+@media all and (min-width:1024px)
+{
+ul.nav li.dropdown:hover > ul.dropdown-menu {
+	display: block;
+}
+}
+.nav .open > a {
+	
+}
+.nav .open > a:hover {
+	
+}
+.nav .open > a:focus {
+	
+}
+.dropdown-menu > li > a {
+	padding: 0px; color: rgb(99, 100, 103);
+}
+.dropdown-menu > li {
+	padding: 10px 15px;
+}
+.dropdown-menu {
+	border: currentColor;
+}
+.dropdown-menu > .active > a {
+	border: currentColor;
+}
+.dropdown-menu > .active > a:hover {
+	border: currentColor;
+}
+.dropdown-menu > .active > a:focus {
+	border: currentColor;
+}
+.dropdown-menu > .active {
+	color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+.dropdown-menu > .active > a {
+	color: rgb(255, 255, 255); background-color: transparent;
+}
+.dropdown-menu > .active > a:focus {
+	color: rgb(255, 255, 255); background-color: transparent;
+}
+.dropdown-menu > .active > a:hover {
+	color: rgb(255, 255, 255); background-color: transparent;
+}
+.dropdown-menu > .active > .caret {
+	color: rgb(255, 255, 255); background-color: transparent;
+}
+.dropdown-menu .divider {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+.dropdown-menu ul.dropdown-menu {
+	padding: 0px; border-radius: 0px; left: 100%; top: -2px;
+}
+.navbar-nav > li > .dropdown-menu {
+	padding: 0px;
+}
+.navbar-nav > li {
+	padding: 15px; color: rgb(245, 247, 250);
+}
+.navbar-nav > li > a {
+	padding: 0px; display: inline-block;
+}
+.navbar-nav > li > .caret {
+	transition:0.3s; margin-left: 10px; -webkit-transition: all 0.3s; -o-transition: all 0.3s; -moz-transition: all 0.3s;
+}
+.navbar-nav > li:hover > .caret {
+	color: rgb(218, 68, 83);
+}
+.navbar-default .navbar-toggle:hover {
+	background-color: transparent;
+}
+.navbar-default .navbar-toggle:focus {
+	background-color: transparent;
+}
+.navbar-nav.nav {
+	float: right;
+}
+@media all and (max-width:767px)
+{
+.navbar-nav.nav {
+	float: none;
+}
+.navbar > .container .navbar-brand {
+	margin: 0px;
+}
+.navbar-default .navbar-nav > li > a {
+	line-height: 20px; padding-top: 10px; padding-bottom: 10px;
+}
+}
+.navigation .wp-pagenavi-pagination a {
+	border-radius: 0px; margin-bottom: 0px;
+}
+.navigation .wp-pagenavi-pagination span {
+	font-size: 12px;
+}
+.navigation .wp-pagenavi-pagination span.current {
+	border-color: rgb(218, 68, 83); color: rgb(255, 255, 255); text-decoration: none; background-color: rgb(218, 68, 83);
+}
+.navigation .wp-pagenavi-pagination a:hover {
+	border-color: rgb(218, 68, 83); color: rgb(255, 255, 255); text-decoration: none; background-color: rgb(218, 68, 83);
+}
+.pagination > li > a {
+	color: rgb(218, 68, 83);
+}
+.pagination > li > span {
+	color: rgb(218, 68, 83);
+}
+.pagination > li > a:focus {
+	color: rgb(218, 68, 83);
+}
+.pagination > li > a:hover {
+	color: rgb(218, 68, 83);
+}
+.pagination > li > span:focus {
+	color: rgb(218, 68, 83);
+}
+.pagination > li > span:hover {
+	color: rgb(218, 68, 83);
+}
+.nav-links {
+	text-align: center;
+}
+.comment-content a {
+	-ms-word-wrap: break-word;
+}
+.bypostauthor {
+	
+}
+#respond {
+	padding: 0px !important; box-shadow: none !important; background-color: transparent !important;
+}
+#respond > p {
+	margin-bottom: 10px;
+}
+#respond p.comment-notes {
+	margin-bottom: 10px;
+}
+p.logged-in-as {
+	margin-bottom: 10px;
+}
+p.logged-in-as {
+	padding-bottom: 0px;
+}
+.comment-list {
+	padding-left: 0px; margin-bottom: 40px !important; margin-left: 0px !important;
+}
+.comment-list {
+	list-style: none;
+}
+.comment-list .children {
+	list-style: none;
+}
+.comment .comment-body {
+	border-width: 1px; border-style: solid; border-color: rgb(232, 232, 232) rgb(232, 232, 232) rgb(218, 218, 218); margin: 2em 0px 0px; padding: 25px 25px 25px 100px; border-radius: 4px; overflow: hidden; position: relative; background-color: rgb(255, 255, 255);
+}
+.comment-list .children {
+	background-position: left 20px; padding-left: 40px; margin-left: 0px !important; border-left-color: rgb(218, 218, 218); border-left-width: 1px; border-left-style: solid; background-repeat: no-repeat;
+}
+.comment-list li.comment > div img.avatar {
+	left: 29px; top: 29px; position: absolute;
+}
+#comment-form-title {
+	padding-bottom: 10px; font-size: 24px;
+}
+.vcard.comment-author {
+	font-size: 12px;
+}
+.vcard .avatar {
+	border-radius: 2px; left: 20px; top: 29px; position: absolute;
+}
+.comment-metadata {
+	line-height: 16px; font-size: 11px; margin-bottom: 10px;
+}
+.comment-reply-link {
+	float: right;
+}
+.form-allowed-tags code {
+	white-space: inherit; -ms-word-wrap: break-word;
+}
+.comment-respond label {
+	font-weight: normal; display: block;
+}
+.comment-respond .required {
+	color: rgb(199, 37, 78);
+}
+#submit {
+	font-size: 12px;
+}
+.comment-navigation {
+	overflow: hidden; margin-top: 30px;
+}
+.single .nav-links {
+	overflow: hidden; margin-top: 30px;
+}
+.comment-reply-title {
+	font-size: 14px;
+}
+.comment-reply-link {
+	background: rgb(193, 192, 192); border: rgb(193, 192, 192); text-transform: uppercase; font-size: 10px;
+}
+@media all and (max-width:767px)
+{
+.post-inner-content {
+	padding: 20px 25px;
+}
+.comment-list .children {
+	padding-left: 10px;
+}
+}
+#image-navigation .nav-previous a {
+	padding: 5px 20px; border-radius: 4px; border: 1px solid rgb(232, 232, 232); display: block;
+}
+#image-navigation .nav-next a {
+	padding: 5px 20px; border-radius: 4px; border: 1px solid rgb(232, 232, 232); display: block;
+}
+#image-navigation .nav-previous a:hover {
+	color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+#image-navigation .nav-next a:hover {
+	color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+#image-navigation .nav-previous {
+	margin: 10px 0px;
+}
+#image-navigation .nav-next {
+	margin: 10px 0px;
+}
+#image-navigation .nav-previous a {
+	float: left;
+}
+#image-navigation .nav-next a {
+	float: right;
+}
+.gallery {
+	margin-bottom: 20px;
+}
+.gallery-item {
+	margin: 0px 4px 4px 0px; overflow: hidden; float: left; position: relative;
+}
+.gallery-columns-1 .gallery-item {
+	max-width: 100%;
+}
+.gallery-columns-2 .gallery-item {
+	max-width: calc(50% - 4px);
+}
+.gallery-columns-3 .gallery-item {
+	max-width: calc(33.3% - 4px);
+}
+.gallery-columns-4 .gallery-item {
+	max-width: calc(25% - 4px);
+}
+.gallery-columns-5 .gallery-item {
+	max-width: calc(20% - 4px);
+}
+.gallery-columns-6 .gallery-item {
+	max-width: calc(16.7% - 4px);
+}
+.gallery-columns-7 .gallery-item {
+	max-width: calc(14.28% - 4px);
+}
+.gallery-columns-8 .gallery-item {
+	max-width: calc(12.5% - 4px);
+}
+.gallery-columns-9 .gallery-item {
+	max-width: calc(11.1% - 4px);
+}
+.gallery-columns-1 :nth-of-type(n).gallery-item {
+	margin-right: 0px;
+}
+.gallery-columns-2 :nth-of-type(2n).gallery-item {
+	margin-right: 0px;
+}
+.gallery-columns-3 :nth-of-type(3n).gallery-item {
+	margin-right: 0px;
+}
+.gallery-columns-4 :nth-of-type(4n).gallery-item {
+	margin-right: 0px;
+}
+.gallery-columns-5 :nth-of-type(5n).gallery-item {
+	margin-right: 0px;
+}
+.gallery-columns-6 :nth-of-type(6n).gallery-item {
+	margin-right: 0px;
+}
+.gallery-columns-7 :nth-of-type(7n).gallery-item {
+	margin-right: 0px;
+}
+.gallery-columns-8 :nth-of-type(8n).gallery-item {
+	margin-right: 0px;
+}
+.gallery-columns-9 :nth-of-type(9n).gallery-item {
+	margin-right: 0px;
+}
+.gallery-size-medium.gallery-columns-1 figure:nth-of-type(n+1).gallery-item {
+	clear: left;
+}
+.gallery-size-thumbnail.gallery-columns-1 figure:nth-of-type(n+1).gallery-item {
+	clear: left;
+}
+.gallery-size-thumbnail.gallery-columns-2 figure:nth-of-type(2n+1).gallery-item {
+	clear: left;
+}
+.gallery-size-thumbnail.gallery-columns-3 figure:nth-of-type(3n+1).gallery-item {
+	clear: left;
+}
+.gallery-caption {
+	margin: 0px; padding: 6px 8px; left: 0px; width: 100%; text-align: left; bottom: 0px; color: rgb(255, 255, 255); line-height: 1.5; font-size: 12px; position: absolute; max-height: 50%; box-sizing: border-box; opacity: 0; background-color: rgba(0, 0, 0, 0.7); -webkit-box-sizing: border-box; -moz-box-sizing: border-box;
+}
+.gallery-caption::before {
+	left: 0px; top: 0px; width: 100%; height: 100%; position: absolute; min-height: 49px; content: "";
+}
+.gallery-item:hover .gallery-caption {
+	opacity: 1;
+}
+.gallery-columns-7 .gallery-caption {
+	display: none;
+}
+.gallery-columns-8 .gallery-caption {
+	display: none;
+}
+.gallery-columns-9 .gallery-caption {
+	display: none;
+}
+#footer-area {
+	color: rgb(153, 153, 153); background-color: rgb(49, 50, 51);
+}
+#footer-area a {
+	color: rgb(218, 218, 218);
+}
+#footer-area .footer-widget-area {
+	padding: 40px 0px 20px; overflow: hidden;
+}
+#footer-area ul li {
+	border-color: rgb(68, 68, 68);
+}
+#footer-area .widget_nav_menu ul li a {
+	border-color: rgb(68, 68, 68);
+}
+#footer-area .site-info nav ul li {
+	border-bottom-color: currentColor; border-bottom-width: medium; border-bottom-style: none;
+}
+.widgettitle {
+	color: inherit; text-transform: uppercase; font-size: 14px; margin-top: 0px; margin-bottom: 25px;
+}
+#footer-area .widget ul li {
+	list-style: none;
+}
+.nav.footer-nav li {
+	display: inline-block; position: relative;
+}
+.nav.footer-nav {
+	margin-bottom: 2px;
+}
+.nav.footer-nav ul {
+	list-style: none; padding: 0px;
+}
+.footer-widget {
+	overflow: hidden;
+}
+.copyright {
+	text-align: right; margin-top: 10px; float: right;
+}
+#colophon {
+	padding: 10px 0px; border-top-color: rgb(58, 58, 58); border-top-width: 1px; border-top-style: solid; background-color: rgb(31, 31, 31);
+}
+.site-info a {
+	color: rgb(119, 119, 119);
+}
+.site-info a:hover {
+	color: rgb(153, 153, 153);
+}
+#footer-area a:focus {
+	color: rgb(255, 255, 255);
+}
+#footer-area a:hover {
+	color: rgb(255, 255, 255);
+}
+.site-info {
+	color: rgb(153, 153, 153); font-size: 12px;
+}
+.nav.footer-nav > li > a:hover {
+	background-color: transparent;
+}
+.scroll-to-top {
+	background: rgba(100, 100, 100, 0.4); border-radius: 4px; transition:background-color 0.3s linear; width: 40px; text-align: center; right: 20px; bottom: 4%; color: rgb(255, 255, 255); line-height: 40px; font-size: 16px; display: none; position: fixed; z-index: 999; cursor: pointer; -webkit-transition: background-color 0.3s linear; -o-transition: background-color 0.3s linear; -moz-transition: background-color 0.3s linear;
+}
+.scroll-to-top:hover {
+	background: rgb(218, 68, 83); opacity: 0.8;
+}
+.footer-widget-area .widget {
+	margin-bottom: 50px;
+}
+.footer-widget-area .widget_calendar table {
+	margin-bottom: 0px;
+}
+.footer-widget-area .widget ul {
+	margin-bottom: 0px;
+}
+.footer-widget-area .widget ul > li:last-child {
+	margin-bottom: 0px;
+}
+.footer-widget-area .popular-posts-wrapper :last-child.post {
+	margin-bottom: 0px;
+}
+.site-info .nav ul {
+	display: inline-block;
+}
+.site-info .nav li {
+	display: inline-block;
+}
+.site-info .nav > li > a {
+	display: inline-block;
+}
+.site-info .nav a {
+	padding: 10px 15px; text-transform: uppercase;
+}
+@media all and (max-width:768px)
+{
+.site-info {
+	text-align: center;
+}
+.copyright {
+	text-align: center;
+}
+.nav.footer-nav {
+	float: none;
+}
+.copyright {
+	float: none;
+}
+}
+#secondary .widget .social-icons a {
+	color: rgb(255, 255, 255);
+}
+.social-icons {
+	text-align: center; position: relative;
+}
+#menu-social {
+	text-align: center; position: relative;
+}
+.sparkling-social #menu-social {
+	text-align: left;
+}
+#secondary .widget .social-icons {
+	text-align: left;
+}
+.social-icons a {
+	list-style: none; border-radius: 3px; transition:background-color 0.5s; width: 40px; height: 40px; text-align: center; line-height: 40px; font-size: 18px; margin-right: 5px; margin-bottom: 5px; display: inline-block; background-color: rgb(218, 218, 218); -webkit-transition: background-color 0.5s; -o-transition: background-color 0.5s; -moz-transition: background-color 0.5s;
+}
+#menu-social li {
+	margin: 0px; border: currentColor; display: inline-block;
+}
+.social-icons li a {
+	list-style: none; border-radius: 3px; transition:background-color 0.5s; width: 40px; height: 40px; text-align: center; line-height: 40px; font-size: 18px; margin-right: 5px; margin-bottom: 5px; display: inline-block; background-color: rgb(218, 218, 218); -webkit-transition: background-color 0.5s; -o-transition: background-color 0.5s; -moz-transition: background-color 0.5s;
+}
+#footer-area .social-icons a {
+	color: rgb(255, 255, 255); margin-right: 7px; background-color: rgb(54, 54, 54);
+}
+#footer-area .social-icons li a {
+	color: rgb(255, 255, 255); margin-right: 7px; background-color: rgb(54, 54, 54);
+}
+#menu-social li a span {
+	display: none;
+}
+#menu-social li a[href*='facebook.com']:hover {
+	background-color: rgb(66, 101, 185) !important;
+}
+#menu-social li a[href*='twitter.com']:hover {
+	background-color: rgb(85, 172, 238) !important;
+}
+#menu-social li a[href*='dribbble.com']:hover {
+	background-color: rgb(234, 76, 137) !important;
+}
+#menu-social li a[href*='flickr.com']:hover {
+	background-color: rgb(255, 0, 132) !important;
+}
+#menu-social li a[href*='plus.google.com']:hover {
+	background-color: rgb(214, 36, 8) !important;
+}
+#menu-social li a[href*='skype.com']:hover {
+	background-color: rgb(11, 191, 242) !important;
+}
+#menu-social li a[href*='pinterest.com']:hover {
+	background-color: rgb(195, 30, 38) !important;
+}
+#menu-social li a[href*='linkedin.com']:hover {
+	background-color: rgb(0, 89, 135) !important;
+}
+#menu-social li a[href*='vimeo.com']:hover {
+	background-color: rgb(27, 182, 236) !important;
+}
+#menu-social li a[href*='tumblr.com']:hover {
+	background-color: rgb(53, 80, 107) !important;
+}
+#menu-social li a[href*='youtube.com']:hover {
+	background-color: rgb(223, 51, 51) !important;
+}
+#menu-social li a[href*='instagram.com']:hover {
+	background-color: rgb(249, 91, 96) !important;
+}
+#menu-social li a[href*='/feed']:hover {
+	background-color: rgb(243, 156, 18) !important;
+}
+#menu-social li a[href*='foursquare.com']:hover {
+	background-color: rgb(35, 152, 201) !important;
+}
+#menu-social li a[href*='soundcloud.com']:hover {
+	background-color: rgb(255, 85, 0) !important;
+}
+#menu-social li a[href*='github.com']:hover {
+	background-color: rgb(65, 131, 196) !important;
+}
+#menu-social li a[href*='xing.com']:hover {
+	background-color: rgb(0, 101, 103) !important;
+}
+#menu-social li a[href*='spotify.com']:hover {
+	background-color: rgb(129, 183, 26) !important;
+}
+#menu-social li a[href*='mailto']:hover {
+	background-color: rgb(218, 68, 83) !important;
+}
+#menu-social li a[href*='t.me']:hover {
+	background-color: rgb(0, 136, 204) !important;
+}
+#menu-social li a[href*='telegram.me']:hover {
+	background-color: rgb(0, 136, 204) !important;
+}
+#menu-social li {
+	list-style: none; border: 0px currentColor !important; padding-left: 0px;
+}
+#menu-social ul {
+	list-style: none; border: 0px currentColor !important; padding-left: 0px;
+}
+#menu-social li a[href*='twitter.com'] .fa::before {
+	content: "\f099";
+}
+#menu-social li a[href*='xing.com'] .fa::before {
+	content: "\f168";
+}
+#menu-social li a[href*='facebook.com'] .fa::before {
+	content: "\f09a";
+}
+#menu-social li a[href*='github.com'] .fa::before {
+	content: "\f09b";
+}
+#menu-social li a[href*='/feed'] .fa::before {
+	content: "\f09e";
+}
+#menu-social li a[href*='dribbble.com'] .fa::before {
+	content: "\f17d";
+}
+#menu-social li a[href*='skype.com'] .fa::before {
+	content: "\f17e";
+}
+#menu-social li a[href*='foursquare.com'] .fa::before {
+	content: "\f180";
+}
+#menu-social li a[href*='spotify.com'] .fa::before {
+	content: "\f1bc";
+}
+#menu-social li a[href*='soundcloud.com'] .fa::before {
+	content: "\f1be";
+}
+#menu-social li a[href*='vimeo.com'] .fa::before {
+	content: "\f194";
+}
+#menu-social li a[href*='youtube.com'] .fa::before {
+	content: "\f167";
+}
+#menu-social li a[href*='instagram.com'] .fa::before {
+	content: "\f16d";
+}
+#menu-social li a[href*='flickr.com'] .fa::before {
+	content: "\f16e";
+}
+#menu-social li a[href*='tumblr.com'] .fa::before {
+	content: "\f173";
+}
+#menu-social li a[href*='pinterest.com'] .fa::before {
+	content: "\f0d2";
+}
+#menu-social li a[href*='plus.google.com'] .fa::before {
+	content: "\f0d5";
+}
+#menu-social li a[href*='linkedin.com'] .fa::before {
+	content: "\f0e1";
+}
+#menu-social li a[href*='mailto'] .fa::before {
+	content: "\f003";
+}
+#menu-social li a[href*='t.me'] .fa::before {
+	content: "\f2c6";
+}
+#menu-social li a[href*='telegram.me'] .fa::before {
+	content: "\f2c6";
+}
+@media all and (max-width:992px)
+{
+.site-branding {
+	text-align: center;
+}
+.side-pull-left .main-content-inner {
+	float: none;
+}
+.side-pull-right .main-content-inner {
+	float: none;
+}
+}
+.cfa {
+	background: rgb(255, 255, 255); padding: 30px 0px; text-align: center; border-bottom-color: rgb(218, 218, 218); border-bottom-width: 1px; border-bottom-style: solid;
+}
+.cfa-text {
+	color: rgb(218, 68, 83); padding-top: 10px; font-size: 22px; display: block;
+}
+.cfa-button {
+	border-color: rgb(218, 68, 83); padding: 15px 30px; color: rgb(218, 68, 83); background-color: transparent;
+}
+.cfa-button a {
+	color: rgb(218, 68, 83);
+}
+.cfa-button:hover {
+	color: rgb(255, 255, 255); background-color: rgb(218, 68, 83);
+}
+@media all and (max-width:767px)
+{
+.cfa {
+	padding: 0px 0px 20px;
+}
+.cfa-button {
+	padding: 10px 16px; margin-top: 10px;
+}
+}
+#submit {
+	display: none;
+}
+.tagcloud {
+	display: none;
+}
+.comment-reply-link {
+	display: none;
+}
+.widget_rss ul {
+	display: none;
+}
+button[type=submit] {
+	display: none;
+}
+.postform {
+	display: none;
+}
+table#wp-calendar {
+	display: none;
+}
+.no-js #submit {
+	display: block;
+}
+.no-js .tagcloud {
+	display: block;
+}
+.no-js .comment-reply-link {
+	display: block;
+}
+.no-js .widget_rss ul {
+	display: block;
+}
+button[type=submit] {
+	display: block;
+}
+.no-js .postform {
+	display: block;
+}
+.no-js table#wp-calendar {
+	display: block;
+}
+.woocommerce-cart .cart-collaterals .cart_totals table td {
+	padding: 6px;
+}
+.woocommerce-cart .cart-collaterals .cart_totals table th {
+	padding: 6px;
+}
+.woocommerce div.product .woocommerce-tabs .panel {
+	padding: 10px 30px 20px;
+}
+.woocommerce .main-content-inner {
+	padding: 45px 50px; border: 1px solid rgb(218, 218, 218); background-color: rgb(255, 255, 255);
+}
+.blog-item-wrap .entry-video > iframe {
+	margin: 0px auto; width: 100%; display: block; max-width: 100%;
+}
+.flexslider .flex-control-nav {
+	left: 50%; width: auto; transform: translateX(-50%);
+}
