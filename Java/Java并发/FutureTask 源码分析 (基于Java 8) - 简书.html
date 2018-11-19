@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<!-- saved from url=(0038)https://www.jianshu.com/p/b765c0d0165d -->
+<html><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+
+  <!-- Start of Baidu Transcode -->
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta name="applicable-device" content="pc,mobile">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="mobile-agent" content="format=html5;url=https://www.jianshu.com/p/b765c0d0165d">
+  <!-- End of Baidu Transcode -->
+
+    <meta name="description" content="FutureTask 是java实现异步编程的基础 1. Future API 2.以下以一个FutureTask实现cache的例子来进行介绍 计算结果 : 3.FutureTask 的运行方式是这样的 将一个 Callable 置为 FutureTask 的内置成员 执行 Callable 中的 call 方法 调用futureTask.get(timeout, TimeUnit) 方法...">
+
+  <meta name="360-site-verification" content="604a14b53c6b871206001285921e81d8">
+  <meta property="wb:webmaster" content="294ec9de89e7fadb">
+  <meta property="qc:admins" content="104102651453316562112116375">
+  <meta property="qc:admins" content="11635613706305617">
+  <meta property="qc:admins" content="1163561616621163056375">
+  <meta name="google-site-verification" content="cV4-qkUJZR6gmFeajx_UyPe47GW9vY6cnCrYtCHYNh4">
+  <meta name="google-site-verification" content="HF7lfF8YEGs1qtCE-kPml8Z469e2RHhGajy6JPVy5XI">
+  <meta http-equiv="mobile-agent" content="format=html5; url=https://www.jianshu.com/p/b765c0d0165d">
+
+  <!-- Apple -->
+  <meta name="apple-mobile-web-app-title" content="简书">
+
+    <!--  Meta for Smart App Banner -->
+  <meta name="apple-itunes-app" content="app-id=888237539, app-argument=jianshu://notes/7693884">
+  <!-- End -->
+
+  <!--  Meta for Twitter Card -->
+  <meta content="summary" property="twitter:card">
+  <meta content="@jianshucom" property="twitter:site">
+  <meta content="FutureTask 源码分析 (基于Java 8)" property="twitter:title">
+  <meta content="FutureTask 是java实现异步编程的基础 1. Future API 2.以下以一个FutureTask实现cache的例子来进行介绍 计算结果 : 3.Futur..." property="twitter:description">
+  <meta content="https://www.jianshu.com/p/b765c0d0165d" property="twitter:url">
+  <!-- End -->
+
+  <!--  Meta for OpenGraph -->
+  <meta property="fb:app_id" content="865829053512461">
+  <meta property="og:site_name" content="简书">
+  <meta property="og:title" content="FutureTask 源码分析 (基于Java 8)">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.jianshu.com/p/b765c0d0165d">
+  <meta property="og:description" content="FutureTask 是java实现异步编程的基础 1. Future API 2.以下以一个FutureTask实现cache的例子来进行介绍 计算结果 : 3.FutureTask 的运行方...">
+  <!-- End -->
+
+  <!--  Meta for Facebook Applinks -->
+  <meta property="al:ios:url" content="jianshu://notes/7693884">
+  <meta property="al:ios:app_store_id" content="888237539">
+  <meta property="al:ios:app_name" content="简书">
+
+  <meta property="al:android:url" content="jianshu://notes/7693884">
+  <meta property="al:android:package" content="com.jianshu.haruki">
+  <meta property="al:android:app_name" content="简书">
+  <!-- End -->
+
+
+    <title>FutureTask 源码分析 (基于Java 8) - 简书</title>
+
+  <meta name="csrf-param" content="authenticity_token">
+<meta name="csrf-token" content="tjh4Qk9H/E56rIYi7IjszNgwQKGLPMBrl2MbOlt9J0S5DmZw3QbyXDFblZxB12VbhocLglM27QbwnvNhzLgSxw==">
+
+  <link rel="stylesheet" media="all" href="./FutureTask 源码分析 (基于Java 8) - 简书_files/web-bfc15fabb3b20492f7d4.css">
+  
+  <link rel="stylesheet" media="all" href="./FutureTask 源码分析 (基于Java 8) - 简书_files/entry-00e12f5a757a30f65da3.css">
+
+  <link href="https://cdn2.jianshu.io/assets/favicons/favicon-e743bfb1821442341c3ab15bdbe804f7ad97676bd07a770ccc9483473aa76f06.ico" rel="shortcut icon" type="image/x-icon">
+      <link rel="apple-touch-icon-precomposed" href="https://cdn2.jianshu.io/assets/apple-touch-icons/57-a6f1f1ee62ace44f6dc2f6a08575abd3c3b163288881c78dd8d75247682a4b27.png" sizes="57x57">
+      <link rel="apple-touch-icon-precomposed" href="https://cdn2.jianshu.io/assets/apple-touch-icons/72-fb9834bcfce738fd7b9c5e31363e79443e09a81a8e931170b58bc815387c1562.png" sizes="72x72">
+      <link rel="apple-touch-icon-precomposed" href="https://cdn2.jianshu.io/assets/apple-touch-icons/76-49d88e539ff2489475d603994988d871219141ecaa0b1a7a9a1914f4fe3182d6.png" sizes="76x76">
+      <link rel="apple-touch-icon-precomposed" href="https://cdn2.jianshu.io/assets/apple-touch-icons/114-24252fe693524ed3a9d0905e49bff3cbd0228f25a320aa09053c2ebb4955de97.png" sizes="114x114">
+      <link rel="apple-touch-icon-precomposed" href="https://cdn2.jianshu.io/assets/apple-touch-icons/120-1bb7371f5e87f93ce780a5f1a05ff1b176828ee0d1d130e768575918a2e05834.png" sizes="120x120">
+      <link rel="apple-touch-icon-precomposed" href="https://cdn2.jianshu.io/assets/apple-touch-icons/152-bf209460fc1c17bfd3e2b84c8e758bc11ca3e570fd411c3bbd84149b97453b99.png" sizes="152x152">
+
+  <!-- Start of 访问统计 -->
+    <script src="./FutureTask 源码分析 (基于Java 8) - 简书_files/push.js"></script><script src="./FutureTask 源码分析 (基于Java 8) - 简书_files/hm.js"></script><script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?0c0e9d9b1e7d617b3e6842e85b9fb068";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+  <!-- End of 访问统计 -->
+<style type="text/css">@charset "UTF-8";.image-package .image-container{position:relative;z-index:2;background-color:#eee;-webkit-transition:background-color .1s linear;-o-transition:background-color .1s linear;transition:background-color .1s linear;margin:0 auto}body.reader-night-mode .image-package .image-container{background-color:#545454}.image-package .image-container-fill{z-index:1}.image-package .image-container .image-view{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden}.image-package .image-container .image-view-error:after{content:"图片获取失败，请点击重试";position:absolute;top:50%;left:50%;width:100%;-webkit-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);transform:translate(-50%,-50%);color:#888;font-size:14px}.image-package .image-container .image-view img.image-loading{opacity:.3}.image-package .image-container .image-view img{-webkit-transition:all .15s linear;-o-transition:all .15s linear;transition:all .15s linear;z-index:2;opacity:1}</style><style type="text/css">fieldset[disabled] .multiselect {
+  pointer-events: none;
+}
+
+.multiselect__spinner {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  width: 48px;
+  height: 35px;
+  background: #fff;
+  display: block;
+}
+
+.multiselect__spinner:after,
+.multiselect__spinner:before {
+  position: absolute;
+  content: "";
+  top: 50%;
+  left: 50%;
+  margin: -8px 0 0 -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  border-color: #41b883 transparent transparent;
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: 0 0 0 1px transparent;
+}
+
+.multiselect__spinner:before {
+  animation: a 2.4s cubic-bezier(.41,.26,.2,.62);
+  animation-iteration-count: infinite;
+}
+
+.multiselect__spinner:after {
+  animation: a 2.4s cubic-bezier(.51,.09,.21,.8);
+  animation-iteration-count: infinite;
+}
+
+.multiselect__loading-enter-active,
+.multiselect__loading-leave-active {
+  transition: opacity .4s ease-in-out;
+  opacity: 1;
+}
+
+.multiselect__loading-enter,
+.multiselect__loading-leave-active {
+  opacity: 0;
+}
+
+.multiselect,
+.multiselect__input,
+.multiselect__single {
+  font-family: inherit;
+  font-size: 14px;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+}
+
+.multiselect {
+  box-sizing: content-box;
+  display: block;
+  position: relative;
+  width: 100%;
+  min-height: 40px;
+  text-align: left;
+  color: #35495e;
+}
+
+.multiselect * {
+  box-sizing: border-box;
+}
+
+.multiselect:focus {
+  outline: none;
+}
+
+.multiselect--disabled {
+  opacity: .6;
+}
+
+.multiselect--active {
+  z-index: 1;
+}
+
+.multiselect--active:not(.multiselect--above) .multiselect__current,
+.multiselect--active:not(.multiselect--above) .multiselect__input,
+.multiselect--active:not(.multiselect--above) .multiselect__tags {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.multiselect--active .multiselect__select {
+  transform: rotate(180deg);
+}
+
+.multiselect--above.multiselect--active .multiselect__current,
+.multiselect--above.multiselect--active .multiselect__input,
+.multiselect--above.multiselect--active .multiselect__tags {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.multiselect__input,
+.multiselect__single {
+  position: relative;
+  display: inline-block;
+  min-height: 20px;
+  line-height: 20px;
+  border: none;
+  border-radius: 5px;
+  background: #fff;
+  padding: 0 0 0 5px;
+  width: 100%;
+  transition: border .1s ease;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  vertical-align: top;
+}
+
+.multiselect__tag~.multiselect__input,
+.multiselect__tag~.multiselect__single {
+  width: auto;
+}
+
+.multiselect__input:hover,
+.multiselect__single:hover {
+  border-color: #cfcfcf;
+}
+
+.multiselect__input:focus,
+.multiselect__single:focus {
+  border-color: #a8a8a8;
+  outline: none;
+}
+
+.multiselect__single {
+  padding-left: 6px;
+  margin-bottom: 8px;
+}
+
+.multiselect__tags-wrap {
+  display: inline;
+}
+
+.multiselect__tags {
+  min-height: 40px;
+  display: block;
+  padding: 8px 40px 0 8px;
+  border-radius: 5px;
+  border: 1px solid #e8e8e8;
+  background: #fff;
+}
+
+.multiselect__tag {
+  position: relative;
+  display: inline-block;
+  padding: 4px 26px 4px 10px;
+  border-radius: 5px;
+  margin-right: 10px;
+  color: #fff;
+  line-height: 1;
+  background: #41b883;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+
+.multiselect__tag-icon {
+  cursor: pointer;
+  margin-left: 7px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  font-weight: 700;
+  font-style: normal;
+  width: 22px;
+  text-align: center;
+  line-height: 22px;
+  transition: all .2s ease;
+  border-radius: 5px;
+}
+
+.multiselect__tag-icon:after {
+  content: "\D7";
+  color: #266d4d;
+  font-size: 14px;
+}
+
+.multiselect__tag-icon:focus,
+.multiselect__tag-icon:hover {
+  background: #369a6e;
+}
+
+.multiselect__tag-icon:focus:after,
+.multiselect__tag-icon:hover:after {
+  color: #fff;
+}
+
+.multiselect__current {
+  min-height: 40px;
+  overflow: hidden;
+  padding: 8px 12px 0;
+  padding-right: 30px;
+  white-space: nowrap;
+  border-radius: 5px;
+  border: 1px solid #e8e8e8;
+}
+
+.multiselect__current,
+.multiselect__select {
+  line-height: 16px;
+  box-sizing: border-box;
+  display: block;
+  margin: 0;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.multiselect__select {
+  position: absolute;
+  width: 40px;
+  height: 38px;
+  right: 1px;
+  top: 1px;
+  padding: 4px 8px;
+  text-align: center;
+  transition: transform .2s ease;
+}
+
+.multiselect__select:before {
+  position: relative;
+  right: 0;
+  top: 65%;
+  color: #999;
+  margin-top: 4px;
+  border-style: solid;
+  border-width: 5px 5px 0;
+  border-color: #999 transparent transparent;
+  content: "";
+}
+
+.multiselect__placeholder {
+  color: #adadad;
+  display: inline-block;
+  margin-bottom: 10px;
+  padding-top: 2px;
+}
+
+.multiselect--active .multiselect__placeholder {
+  display: none;
+}
+
+.multiselect__content-wrapper {
+  position: absolute;
+  display: block;
+  background: #fff;
+  width: 100%;
+  max-height: 240px;
+  overflow: auto;
+  border: 1px solid #e8e8e8;
+  border-top: none;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  z-index: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+.multiselect__content {
+  list-style: none;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  min-width: 100%;
+  vertical-align: top;
+}
+
+.multiselect--above .multiselect__content-wrapper {
+  bottom: 100%;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom: none;
+  border-top: 1px solid #e8e8e8;
+}
+
+.multiselect__content::webkit-scrollbar {
+  display: none;
+}
+
+.multiselect__element {
+  display: block;
+}
+
+.multiselect__option {
+  display: block;
+  padding: 12px;
+  min-height: 40px;
+  line-height: 16px;
+  text-decoration: none;
+  text-transform: none;
+  vertical-align: middle;
+  position: relative;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.multiselect__option:after {
+  top: 0;
+  right: 0;
+  position: absolute;
+  line-height: 40px;
+  padding-right: 12px;
+  padding-left: 20px;
+}
+
+.multiselect__option--highlight {
+  background: #41b883;
+  outline: none;
+  color: #fff;
+}
+
+.multiselect__option--highlight:after {
+  content: attr(data-select);
+  background: #41b883;
+  color: #fff;
+}
+
+.multiselect__option--selected {
+  background: #f3f3f3;
+  color: #35495e;
+  font-weight: 700;
+}
+
+.multiselect__option--selected:after {
+  content: attr(data-selected);
+  color: silver;
+}
+
+.multiselect__option--selected.multiselect__option--highlight {
+  background: #ff6a6a;
+  color: #fff;
+}
+
+.multiselect__option--selected.multiselect__option--highlight:after {
+  background: #ff6a6a;
+  content: attr(data-deselect);
+  color: #fff;
+}
+
+.multiselect--disabled {
+  background: #ededed;
+  pointer-events: none;
+}
+
+.multiselect--disabled .multiselect__current,
+.multiselect--disabled .multiselect__select,
+.multiselect__option--disabled {
+  background: #ededed;
+  color: #a6a6a6;
+}
+
+.multiselect__option--disabled {
+  cursor: text;
+  pointer-events: none;
+}
+
+.multiselect__option--disabled.multiselect__option--highlight {
+  background: #dedede!important;
+}
+
+.multiselect-enter-active,
+.multiselect-leave-active {
+  transition: all .15s ease;
+}
+
+.multiselect-enter,
+.multiselect-leave-active {
+  opacity: 0;
+}
+
+.multiselect__strong {
+  margin-bottom: 8px;
+  line-height: 20px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+[dir=rtl] .multiselect {
+  text-align: right;
+}
+
+[dir=rtl] .multiselect__select {
+  right: auto;
+  left: 1px;
+}
+
+[dir=rtl] .multiselect__tags {
+  padding: 8px 8px 0 40px;
+}
+
+[dir=rtl] .multiselect__content {
+  text-align: right;
+}
+
+[dir=rtl] .multiselect__option:after {
+  right: auto;
+  left: 0;
+}
+
+[dir=rtl] .multiselect__clear {
+  right: auto;
+  left: 12px;
+}
+
+[dir=rtl] .multiselect__spinner {
+  right: auto;
+  left: 1px;
+}
+
+@keyframes a {
+  0% {
+    transform: rotate(0);
+  }
+
+  to {
+    transform: rotate(2turn);
+  }
+}</style><style type="text/css">
+#free-reward-panel .reward-users-modal main {
+  padding: 0;
+}
+</style><style type="text/css">
+@charset "UTF-8";
+/*
+ * 变量
+*/
+.reward-note-modal .v-modal {
+  width: 620px;
+  text-align: center;
+}
+.reward-note-modal .v-modal form {
+    margin: 0 auto 25px auto;
+    padding: 0 40px;
+}
+.reward-note-modal .v-modal .reward-intro {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+.reward-note-modal .v-modal .reward-intro .avatar {
+      cursor: default !important;
+      width: 36px;
+      height: 36px;
+      margin-right: 10px;
+      display: inline-block;
+}
+.reward-note-modal .v-modal .reward-intro .intro {
+      margin-right: 5px;
+      font-weight: bold;
+      vertical-align: middle;
+}
+.reward-note-modal .v-modal .reward-intro i {
+      color: #EA6F5A;
+      vertical-align: middle;
+}
+.reward-note-modal .v-modal .main-inputs {
+    margin: 25px 0;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group {
+      margin: 0 -5px;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group input {
+        display: none;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group input:checked + .option {
+        color: #EA6F5A;
+        border-color: #EA6F5A;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .custom-amount:checked + .option .custom-text {
+        opacity: 0;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .custom-amount:checked + .option .custom-amount-input {
+        opacity: 1;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .option {
+        position: relative;
+        margin: 0 5px 15px;
+        width: 156px;
+        height: 56px;
+        line-height: 54px;
+        border: 1px solid #E6E6E6;
+        border-radius: 4px;
+        font-weight: normal;
+        color: #999999;
+        cursor: pointer;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .option i {
+          font-size: 16px;
+          vertical-align: middle;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .option .amount {
+          font-size: 28px;
+          vertical-align: middle;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .option .piece {
+          font-size: 13px;
+          vertical-align: sub;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .option .custom-amount-input {
+          position: absolute;
+          top: 0;
+          z-index: -1;
+          width: 100%;
+          opacity: 0;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .option .custom-amount-input i {
+            position: absolute;
+            top: 0;
+            left: 10px;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .option .custom-amount-input .piece {
+            position: absolute;
+            top: 4px;
+            right: 10px;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .option .custom-amount-input input {
+            display: block;
+            margin: 0 auto;
+            width: 80px;
+            height: 54px;
+            line-height: 54px;
+            border: none;
+            font-size: 28px;
+            text-align: center;
+            background: transparent;
+            -moz-appearance: textfield;
+}
+.reward-note-modal .v-modal .main-inputs .amount-group .option .custom-amount-input input::-webkit-outer-spin-button, .reward-note-modal .v-modal .main-inputs .amount-group .option .custom-amount-input input::-webkit-inner-spin-button {
+              -webkit-appearance: none !important;
+}
+.reward-note-modal .v-modal .main-inputs .message {
+      padding: 15px 20px;
+      margin-bottom: 0;
+      font-size: 14px;
+      border: 1px solid #E6E6E6;
+      color: #333333;
+      border-radius: 4px;
+      background-color: rgba(180, 180, 180, 0.1);
+}
+.reward-note-modal .v-modal .main-inputs .message textarea {
+        width: 100%;
+        height: 44px;
+        padding: 0;
+        margin: 0;
+        resize: none;
+        background: none !important;
+        border: none !important;
+        -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+        -webkit-box-shadow: none;
+                box-shadow: none;
+}
+.reward-note-modal .v-modal .main-inputs .message textarea:focus {
+          outline: none;
+}
+.reward-note-modal .v-modal .reward-info .amount {
+    font-size: 28px;
+    font-weight: bold;
+    color: #EA6F5A;
+}
+.reward-note-modal .v-modal .reward-info .pay-method {
+    font-size: 14px;
+}
+.reward-note-modal .v-modal .reward-info .pay-method a {
+      color: #3194D0;
+}
+.reward-note-modal .v-modal .choose-pay {
+    margin: 0 -5px;
+}
+.reward-note-modal .v-modal .choose-pay input {
+      display: none;
+}
+.reward-note-modal .v-modal .choose-pay input:checked + .option {
+      color: #EA6F5A;
+      border-color: #EA6F5A;
+}
+.reward-note-modal .v-modal .choose-pay .option {
+      margin: 20px 5px 10px;
+      width: 156px;
+      height: 56px;
+      line-height: 54px;
+      text-align: center;
+      border: 1px solid #E6E6E6;
+      border-radius: 4px;
+      cursor: pointer;
+}
+.reward-note-modal .v-modal .choose-pay .option img {
+        height: 30px;
+}
+.reward-note-modal .v-modal .choose-pay .option img.day.alipay, .reward-note-modal .v-modal .choose-pay .option img.night.alipay {
+        min-width: 85px;
+}
+.reward-note-modal .v-modal .choose-pay .option img.day.wechat, .reward-note-modal .v-modal .choose-pay .option img.night.wechat {
+        min-width: 112px;
+}
+.reward-note-modal .v-modal .choose-pay .option img.night {
+        display: none;
+}
+.reward-note-modal .v-modal .choose-pay .tooltip {
+      width: 230px;
+}
+.reward-note-modal .v-modal .modal-footer {
+    padding: 0 15px 20px;
+    border: none;
+    background-color: transparent;
+    text-align: center;
+}
+.reward-note-modal .v-modal .modal-footer .btn {
+      padding: 8px 45px;
+      font-size: 24px;
+}
+.reward-note-modal .v-modal .btn-pay {
+    padding: 8px 25px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #F5A623;
+}
+.weixin-pay, .success-pay {
+  text-align: center;
+}
+.weixin-pay .v-modal, .success-pay .v-modal {
+    width: 350px;
+}
+.weixin-pay .ic-successed, .success-pay .ic-successed {
+    font-size: 60px;
+    color: #3db922;
+}
+.weixin-pay h2, .weixin-pay h3, .success-pay h2, .success-pay h3 {
+    margin-bottom: 20px;
+    color: #333333;
+}
+.weixin-pay h2, .success-pay h2 {
+    margin: 0 0 40px 0;
+    font-size: 24px;
+}
+.weixin-pay .bind-text, .success-pay .bind-text {
+    position: relative;
+    margin-bottom: 30px;
+    font-size: 14px;
+    color: #999999;
+}
+.weixin-pay .bind-text:before, .weixin-pay .bind-text:after, .success-pay .bind-text:before, .success-pay .bind-text:after {
+      content: "";
+      border-top: 1px solid #999;
+      display: block;
+      position: absolute;
+      width: 40px;
+      top: 8px;
+}
+.weixin-pay .bind-text:before, .success-pay .bind-text:before {
+      left: 30px;
+}
+.weixin-pay .bind-text:after, .success-pay .bind-text:after {
+      right: 30px;
+}
+.weixin-pay .share-bind, .success-pay .share-bind {
+    display: block;
+    margin-bottom: 30px;
+}
+.weixin-pay .share-bind i, .success-pay .share-bind i {
+      margin-right: 4px;
+      font-size: 22px;
+      vertical-align: middle;
+}
+.weixin-pay .share-bind.wechat i, .success-pay .share-bind.wechat i {
+      color: #00BB29;
+}
+.weixin-pay .share-bind.weibo i, .success-pay .share-bind.weibo i {
+      color: #E05244;
+}
+.weixin-pay .wx-qr-code, .success-pay .wx-qr-code {
+    display: inline-block;
+}
+.weixin-pay .wx-qr-code img, .success-pay .wx-qr-code img {
+      margin: 0 auto;
+      padding: 10px;
+      width: 200px;
+      background-color: #ffffff;
+}
+.weixin-pay .pay-amount, .success-pay .pay-amount {
+    margin: 20px 0;
+    color: #787878;
+}
+.weixin-pay .pay-amount span, .success-pay .pay-amount span {
+      color: #F5A623;
+}
+</style><style type="text/css">
+@charset "UTF-8";
+/*
+ * 变量
+*/
+.v-modal-wrap {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background-color: transparent;
+}
+.v-modal-wrap.modal-leave-active {
+    -webkit-transition: opacity 0.3s;
+    -o-transition: opacity 0.3s;
+    transition: opacity 0.3s;
+}
+.v-modal-wrap.modal-enter-active .v-modal-mask, .v-modal-wrap.modal-leave-active .v-modal-mask {
+    opacity: 0;
+}
+.v-modal-wrap.modal-enter-active .v-modal, .v-modal-wrap.modal-leave-active .v-modal {
+    -webkit-transform: translate(-50%, -70%);
+        -ms-transform: translate(-50%, -70%);
+            transform: translate(-50%, -70%);
+    opacity: 0;
+}
+.v-modal-wrap .v-modal-mask {
+    background-color: rgba(255, 255, 255, 0.7);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    -webkit-transition: opacity 0.3s;
+    -o-transition: opacity 0.3s;
+    transition: opacity 0.3s;
+    opacity: 1;
+}
+.v-modal-wrap .v-modal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    -webkit-box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
+    transition: opacity 0.3s, -webkit-transform 0.3s;
+    -o-transition: opacity 0.3s, transform 0.3s;
+    transition: opacity 0.3s, transform 0.3s;
+    transition: opacity 0.3s, transform 0.3s, -webkit-transform 0.3s;
+    opacity: 1;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    overflow: hidden;
+}
+.v-modal-wrap .v-modal > header:before, .v-modal-wrap .v-modal > header:after, .v-modal-wrap .v-modal > main:before, .v-modal-wrap .v-modal > main:after, .v-modal-wrap .v-modal > footer:before, .v-modal-wrap .v-modal > footer:after {
+      content: '';
+      clear: both;
+      display: table;
+}
+.v-modal-wrap .v-modal > header {
+      padding: 20px;
+      border-bottom: 1px solid #F0F0F0;
+}
+.v-modal-wrap .v-modal > header h4 {
+        margin: 0;
+        color: #333;
+        text-align: left;
+}
+.v-modal-wrap .v-modal .close {
+      position: absolute;
+      right: 16px;
+      top: 20px;
+      font-size: 26px;
+      line-height: 20px;
+      color: rgba(0, 0, 0, 0.8);
+}
+.v-modal-wrap .v-modal .close:hover {
+        color: #000000;
+}
+.v-modal-wrap .v-modal > main {
+      padding: 20px 20px 20px 20px;
+      font-size: 15px;
+      color: #333;
+      -webkit-box-flex: 1;
+      -webkit-flex-grow: 1;
+          -ms-flex-positive: 1;
+              flex-grow: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+}
+.v-modal-wrap .v-modal > footer {
+      padding: 20px;
+      background-color: #fff;
+}
+.v-modal-wrap .v-modal > footer button {
+        padding: 0;
+        margin: 0;
+        background-color: transparent;
+        border: 0;
+        float: right;
+}
+.v-modal-wrap .v-modal > footer button:focus {
+          outline: 0;
+}
+.v-modal-wrap .v-modal > footer .submit {
+        padding: 4px 12px;
+        border: 1px solid;
+        border-radius: 20px;
+}
+.v-modal-wrap .v-modal > footer .cancel {
+        margin-top: 5px;
+}
+.v-modal-wrap .v-modal > footer .cancel:hover {
+          color: #333333;
+}
+.reader-night-mode .v-modal-wrap .v-modal-mask {
+  background-color: rgba(63, 63, 63, 0.7);
+}
+.reader-night-mode .v-modal-wrap .v-modal {
+  background-color: #3f3f3f;
+}
+.reader-night-mode .v-modal-wrap .v-modal header {
+    border-color: #2F2F2F;
+}
+.reader-night-mode .v-modal-wrap .v-modal header h4 {
+      color: #C8C8C8;
+}
+.reader-night-mode .v-modal-wrap .v-modal .close {
+    color: #C8C8C8;
+}
+.reader-night-mode .v-modal-wrap .v-modal .close:hover {
+      color: #ffffff;
+}
+.reader-night-mode .v-modal-wrap .v-modal main {
+    color: #C8C8C8;
+}
+.reader-night-mode .v-modal-wrap .v-modal footer {
+    background-color: #3f3f3f;
+}
+.reader-night-mode .v-modal-wrap .v-modal footer .cancel:hover {
+      color: #C8C8C8;
+}
+</style><style type="text/css">
+@charset "UTF-8";
+/*
+ * 变量
+*/
+.like[data-v-6ddd02c6] {
+  display: inline-block;
+}
+.like .like-group[data-v-6ddd02c6] {
+    position: relative;
+    padding: 13px 0 15px 0;
+    font-size: 0;
+    border: 1px solid #EA6F5A;
+    border-radius: 40px;
+}
+.like .like-group[data-v-6ddd02c6]:hover {
+      background-color: rgba(236, 97, 73, 0.05);
+}
+.like .like-group .btn-like[data-v-6ddd02c6] {
+      display: inline-block;
+      font-size: 19px;
+}
+.like .like-group .btn-like[data-v-6ddd02c6]:before {
+        content: '';
+        position: absolute;
+        left: 12px;
+        top: 2px;
+        width: 50px;
+        height: 50px;
+        background-image: url(//cdn2.jianshu.io/assets/web/like_animation_steps-62a00a7b52377d3069927cdb8e61fd34.png);
+        background-position: left;
+        background-repeat: no-repeat;
+        background-size: 1000px 50px;
+}
+.like .like-group .btn-like a[data-v-6ddd02c6] {
+        position: relative;
+        padding: 18px 30px 18px 55px;
+        color: #EA6F5A;
+}
+.like .like-group .modal-wrap[data-v-6ddd02c6] {
+      font-size: 18px;
+      border-left: 1px solid rgba(236, 97, 73, 0.4);
+      display: inline-block;
+      margin-left: -15px;
+}
+.like .like-group .modal-wrap a[data-v-6ddd02c6] {
+        color: #EA6F5A;
+        padding: 18px 26px 18px 18px;
+}
+.like .like-group.like-animation[data-v-6ddd02c6], .like .like-group.active[data-v-6ddd02c6] {
+      background-color: #EA6F5A;
+}
+.like .like-group.like-animation .btn-like a[data-v-6ddd02c6], .like .like-group.active .btn-like a[data-v-6ddd02c6] {
+        color: white;
+}
+.like .like-group.like-animation .modal-wrap[data-v-6ddd02c6], .like .like-group.active .modal-wrap[data-v-6ddd02c6] {
+        border-left: 1px solid white;
+}
+.like .like-group.like-animation .modal-wrap a[data-v-6ddd02c6], .like .like-group.active .modal-wrap a[data-v-6ddd02c6] {
+          color: white;
+}
+.like .like-group.like-animation .btn-like[data-v-6ddd02c6]:before {
+      -webkit-animation: likeBlast-data-v-6ddd02c6 0.6s 1 steps(19);
+              animation: likeBlast-data-v-6ddd02c6 0.6s 1 steps(19);
+      background-position: right;
+}
+@-webkit-keyframes likeBlast {
+0% {
+    background-position: left;
+}
+100% {
+    background-position: right;
+}
+}
+@keyframes likeBlast-data-v-6ddd02c6 {
+0% {
+    background-position: left;
+}
+100% {
+    background-position: right;
+}
+}
+.like .like-group.active .btn-like[data-v-6ddd02c6]:before {
+      background-position: right;
+}
+</style><style type="text/css">
+@charset "UTF-8";
+/*
+ * 变量
+*/
+.main {
+  position: relative;
+  margin: 0 auto;
+  padding: 0 0 30px 0;
+  width: 620px;
+}
+.main .title {
+    padding-left: 8px;
+    border-left: 3px solid #EA6F5A;
+    line-height: 1;
+    font-size: 15px;
+}
+.main .collection-settings {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    font-size: 13px;
+    color: #A0A0A0;
+}
+.main .collection-settings span {
+      padding-left: 4px;
+}
+.main .include-collection {
+    width: 100%;
+    padding-top: 20px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-pack: start;
+    -webkit-justify-content: flex-start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+}
+.main .include-collection .item {
+      display: inline-block;
+      margin: 0 12px 12px 0;
+      min-height: 32px;
+      background-color: white;
+      border: 1px solid #DCDCDC;
+      border-radius: 4px;
+      vertical-align: top;
+      overflow: hidden;
+}
+.main .include-collection .item img {
+        width: 32px;
+        height: 32px;
+}
+.main .include-collection .item .name {
+        display: inline-block;
+        padding: 0 10px;
+        font-size: 14px;
+}
+.main .include-collection .add-collection-wrap {
+      margin: 0 12px 12px 0;
+}
+.main .include-collection .add-collection {
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid #DCDCDC;
+      border-radius: 4px;
+}
+.main .include-collection .add-collection i {
+        margin-right: 4px;
+        color: #969696;
+}
+.main .recommend-note a {
+    position: relative;
+    margin: 20px 2px 0 0;
+    width: 200px;
+    height: 160px;
+    display: inline-block;
+}
+.main .recommend-note a:after {
+      content: "";
+      position: absolute;
+      width: 200px;
+      height: 160px;
+      border-radius: 0 0 4px 4px;
+      -webkit-box-shadow: inset 0px -80px 50px -22px rgba(0, 0, 0, 0.6);
+              box-shadow: inset 0px -80px 50px -22px rgba(0, 0, 0, 0.6);
+      top: 0;
+      left: 0;
+      z-index: 1;
+}
+.main .recommend-note .name {
+    position: absolute;
+    bottom: 40px;
+    left: 10px;
+    right: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #ffffff;
+    z-index: 2;
+}
+.main .recommend-note .author {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    z-index: 2;
+}
+.main .recommend-note .avatar {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+.main .recommend-note .avatar img {
+      border-radius: 50%;
+}
+.main .recommend-note .author-name {
+    font-size: 12px;
+    color: #ffffff;
+    display: inline-block;
+    vertical-align: -1px;
+}
+.main .show-more {
+    margin: 0 12px 12px 0;
+    font-size: 14px;
+    color: #A0A0A0;
+}
+</style></head>
+
+  <!-- 只给10%的用户添加代码 -->
+  <body lang="zh-CN" class="reader-song-font">
+    <!-- 全局顶部导航栏 -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="width-limit">
+    <!-- 左上方 Logo -->
+    <a class="logo" href="https://www.jianshu.com/"><img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/nav-logo-4c7bbafe27adc892f3046e6978459bac.png" alt="Nav logo"></a>
+
+    <!-- 右上角 -->
+      <!-- 登录显示写文章 -->
+      <a class="btn write-btn" target="_blank" href="https://www.jianshu.com/writer#/">
+        <i class="iconfont ic-write"></i>写文章
+</a>
+    <!-- 如果用户登录，显示下拉菜单 -->
+      <div class="user">
+        <div data-hover="dropdown">
+          <a class="avatar" href="https://www.jianshu.com/u/3c084cab313c"><img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/6d33af4a-cc0f-4e11-ac41-d6135f7e6d8e.png" alt="120"></a>
+        </div>
+        <ul class="dropdown-menu">
+          <li>
+            <a href="https://www.jianshu.com/u/3c084cab313c">
+              <i class="iconfont ic-navigation-profile"></i><span>我的主页</span>
+</a>          </li>
+          <li>
+            <!-- TODO bookmarks_path -->
+            <a href="https://www.jianshu.com/bookmarks">
+              <i class="iconfont ic-navigation-mark"></i><span>收藏的文章</span>
+</a>          </li>
+          <li>
+            <a href="https://www.jianshu.com/users/3c084cab313c/liked_notes">
+              <i class="iconfont ic-navigation-like"></i><span>喜欢的文章</span>
+</a>          </li>
+          <li>
+            <a href="https://www.jianshu.com/my/paid_notes">
+              <i class="iconfont ic-paid"></i><span>已购内容</span>
+</a>          </li>
+          <li>
+            <a href="https://www.jianshu.com/wallet">
+              <i class="iconfont ic-navigation-wallet"></i><span>我的钱包</span>
+</a>          </li>
+          <li>
+            <a href="https://www.jianshu.com/settings">
+              <i class="iconfont ic-navigation-settings"></i><span>设置</span>
+</a>          </li>
+          <li>
+            <a href="https://www.jianshu.com/faqs">
+              <i class="iconfont ic-navigation-feedback"></i><span>帮助与反馈</span>
+</a>          </li>
+          <li>
+            <a rel="nofollow" data-method="delete" href="https://www.jianshu.com/sign_out">
+              <i class="iconfont ic-navigation-signout"></i><span>退出</span>
+</a>          </li>
+        </ul>
+      </div>
+
+    <div class="style-mode"><a class="style-mode-btn"><i class="iconfont ic-navigation-mode"></i></a> <div class="popover-modal" style="left: 0px; display: none;"><div class="meta"><i class="iconfont ic-navigation-night"></i><span>夜间模式</span></div> <div class="switch day-night-group"><a class="switch-btn">开</a> <a class="switch-btn active">关</a></div> <hr> <div class="switch font-family-group"><a class="switch-btn font-song active">宋体</a> <a class="switch-btn font-hei">黑体</a></div> <div class="switch"><a class="switch-btn active">简</a> <a class="switch-btn">繁</a></div></div></div>
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu" aria-expanded="false">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="nav navbar-nav">
+            <li class="tab ">
+              <a href="https://www.jianshu.com/">
+                <span class="menu-text">发现</span><i class="iconfont ic-navigation-discover menu-icon"></i>
+</a>            </li>
+            <li class="tab ">
+              <a href="https://www.jianshu.com/subscriptions">
+                <span class="menu-text">关注</span><i class="iconfont ic-navigation-follow menu-icon"></i>
+</a>            </li>
+            <li class="tab notification"><a data-hover="dropdown" href="https://www.jianshu.com/notifications" class="notification-btn"><span class="menu-text">消息</span> <i class="iconfont ic-navigation-notification menu-icon"></i> <!----> <!----></a> <ul class="dropdown-menu"><li><a href="https://www.jianshu.com/notifications#/comments"><i class="iconfont ic-comments"></i> <span>评论</span> <!----></a></li><li><a href="https://www.jianshu.com/notifications#/chats"><i class="iconfont ic-chats"></i> <span>简信</span> <!----></a></li><li><a href="https://www.jianshu.com/notifications#/requests"><i class="iconfont ic-requests"></i> <span>投稿请求</span> <!----></a></li><li><a href="https://www.jianshu.com/notifications#/likes"><i class="iconfont ic-likes"></i> <span>喜欢和赞</span> <!----></a></li><li><a href="https://www.jianshu.com/notifications#/follows"><i class="iconfont ic-follows"></i> <span>关注</span> <!----></a></li><li><a href="https://www.jianshu.com/notifications#/money"><i class="iconfont ic-money"></i> <span>赞赏和付费</span> <!----></a></li><li><a href="https://www.jianshu.com/notifications#/others"><i class="iconfont ic-others"></i> <span>其它提醒</span> <!----></a></li></ul></li>
+          <li class="search">
+            <form target="_blank" action="https://www.jianshu.com/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="✓">
+              <input type="text" name="q" id="q" value="" autocomplete="off" placeholder="搜索" class="search-input">
+              <a class="search-btn" href="javascript:void(null)"><i class="iconfont ic-search"></i></a>
+</form>          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+<div class="note">
+  <div id="note-fixed-ad-container">
+    <div id="fixed-ad-container">
+      <span id="youdao-fixed-ad" class="ad-badge">广告</span>
+      <div id="_so_pdsBy_0"></div>
+    </div>
+  </div>
+  <div class="post">
+    <div class="article">
+        <h1 class="title">FutureTask 源码分析 (基于Java 8)</h1>
+
+        <!-- 作者区域 -->
+        <div class="author">
+          <a class="avatar" href="https://www.jianshu.com/u/f9577ef03ae0">
+            <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/d4206176495c.jpg" alt="96">
+</a>          <div class="info">
+            <span class="name"><a href="https://www.jianshu.com/u/f9577ef03ae0">爱吃鱼的KK</a></span>
+            <!-- 关注用户按钮 -->
+            <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+            <!-- 文章数据信息 -->
+            <div class="meta">
+              <!-- 如果文章更新时间大于发布时间，那么使用 tooltip 显示更新时间 -->
+                <span class="publish-time" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="最后编辑于 2018.03.06 21:39">2016.12.15 21:35*</span>
+              <span class="wordage">字数 800</span>
+            <span class="views-count">阅读 954</span><span class="comments-count">评论 1</span><span class="likes-count">喜欢 7</span><span class="rewards-count ">赞赏 1</span></div>
+          </div>
+          <!-- 如果是当前作者，加入编辑按钮 -->
+        </div>
+
+
+        <!-- 文章内容 -->
+        <div data-note-content="" class="show-content">
+          <div class="show-content-free">
+            <h5>FutureTask 是java实现异步编程的基础</h5>
+<h6>1. Future API</h6>
+<pre class="hljs java"><code class="java"><span class="hljs-number">1</span>) <span class="hljs-function">V <span class="hljs-title">get</span><span class="hljs-params">()</span> throwsInterruptedException, ExecutionException</span>;
+     获取计算的结果, 若计算没完成, 直接 await, 直到 计算结束或线程中断
+<span class="hljs-number">2</span>) <span class="hljs-function">V <span class="hljs-title">get</span> <span class="hljs-params">(<span class="hljs-keyword">long</span> timeout, TimeUnit unit)</span> throwsInterruptedException, ExecutionException, TimeoutException</span>;
+     获取计算的结果, 若计算没完成, 直接 await, 直到 计算结束或线程中断或time时间超时
+<span class="hljs-number">3</span>) <span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">isDone</span><span class="hljs-params">()</span></span>;
+     返回计算是否完成 , 若任务完成则返回<span class="hljs-keyword">true</span> ( 任务完成 state = narmal, exception, interrupted)
+<span class="hljs-number">4</span>) <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">awaitDone</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> timed, <span class="hljs-keyword">long</span> nanos)</span>    <span class="hljs-keyword">throws</span> InterruptedException
+     等待任务完成, 或时间超时, 返回值是 future 的state的状态<span class="hljs-params">(**await是实现future的重要方法**)</span>
+</span></code></pre>
+<h6>2.以下以一个FutureTask实现cache的例子来进行介绍</h6>
+<pre class="hljs java"><code class="java"><span class="hljs-comment">// 常用connection接口</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Connection</span> </span>{
+    <span class="hljs-function">String <span class="hljs-title">getName</span><span class="hljs-params">()</span></span>;
+}
+
+<span class="hljs-comment">// abstract cache 类</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbstractLocalCache</span>&lt;<span class="hljs-title">K</span>, <span class="hljs-title">V</span>&gt; </span>{
+
+    <span class="hljs-keyword">protected</span> Logger logger = Logger.getLogger(getClass());
+
+    <span class="hljs-comment">/** 本地缓存存储地址 */</span>
+    <span class="hljs-keyword">private</span> ConcurrentHashMap&lt;K, Future&lt;V&gt;&gt; pool = <span class="hljs-keyword">new</span> ConcurrentHashMap&lt;&gt;();
+
+    <span class="hljs-keyword">private</span> ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + <span class="hljs-number">1</span>);
+
+    <span class="hljs-comment">// 模版方法</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> V <span class="hljs-title">computeV</span><span class="hljs-params">(K k)</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Future&lt;V&gt; <span class="hljs-title">getResult</span><span class="hljs-params">(K k)</span></span>{
+        Future&lt;V&gt; result = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">if</span>(pool.containsKey(k)){
+            <span class="hljs-keyword">return</span> pool.get(k);
+        }
+        FutureTask&lt;V&gt; future = <span class="hljs-keyword">new</span> FutureTask&lt;V&gt;(<span class="hljs-keyword">new</span> Callable&lt;V&gt;() {
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> V <span class="hljs-title">call</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>{
+                <span class="hljs-keyword">return</span> computeV(k);
+            }
+        });
+
+        <span class="hljs-comment">// 说明map中以前没有对应的 futureTask</span>
+        <span class="hljs-comment">// 仔细体会 putIfAbsent 的作用</span>
+        <span class="hljs-keyword">if</span>(pool.putIfAbsent(k, future) == <span class="hljs-keyword">null</span>){
+            executorService.submit(future);
+        }
+        <span class="hljs-keyword">return</span> future;
+    }
+}
+
+<span class="hljs-comment">// connection cache</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LocalCacheConnection</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractLocalCache</span>&lt;<span class="hljs-title">String</span> , <span class="hljs-title">Connection</span>&gt; </span>{
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Connection <span class="hljs-title">computeV</span><span class="hljs-params">(String s)</span> </span>{
+
+        logger.info(<span class="hljs-string">"创建connection开始"</span>);
+        logger.info(<span class="hljs-string">"睡觉开始"</span>);
+
+        <span class="hljs-keyword">try</span> {
+            Thread.sleep(<span class="hljs-number">3</span>*<span class="hljs-number">1000</span>);
+        } <span class="hljs-keyword">catch</span> (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        logger.info(<span class="hljs-string">"睡觉结束"</span>);
+        logger.info(<span class="hljs-string">"创建connection结束"</span>);
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Connection() {
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getName</span><span class="hljs-params">()</span> </span>{
+                <span class="hljs-keyword">return</span> s;
+            }
+
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>{
+                <span class="hljs-keyword">return</span> <span class="hljs-string">"A connection("</span> + s + <span class="hljs-string">")"</span>;
+            }
+        };
+    }
+}
+
+<span class="hljs-comment">// future main 方法</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FutureMain</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = Logger.getLogger(FutureMain.class);
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception</span>{
+
+        LocalCacheConnection localCacheConnection = <span class="hljs-keyword">new</span> LocalCacheConnection();
+        Future&lt;?&gt; future = localCacheConnection.getResult(<span class="hljs-string">"connection"</span>);
+
+        <span class="hljs-keyword">new</span> Thread(){
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+                <span class="hljs-keyword">try</span> {
+                    logger.info(<span class="hljs-string">"future.get() : "</span> + future.get(<span class="hljs-number">2</span> , TimeUnit.SECONDS));
+                } <span class="hljs-keyword">catch</span> (Exception e) {
+                    e.printStackTrace();
+                }<span class="hljs-keyword">finally</span> {
+                    logger.info(<span class="hljs-string">"future.get() over"</span>);
+                }
+            }
+        }.start();
+
+        <span class="hljs-keyword">new</span> Thread(){
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+                <span class="hljs-keyword">try</span> {
+                    logger.info(<span class="hljs-string">"future.get() : "</span> + future.get(<span class="hljs-number">4</span>, TimeUnit.SECONDS));
+                } <span class="hljs-keyword">catch</span> (Exception e) {
+                    e.printStackTrace();
+                }<span class="hljs-keyword">finally</span> {
+                    logger.info(<span class="hljs-string">"future.get() over"</span>);
+                }
+            }
+        }.start();
+    }
+}
+
+</code></pre>
+<p>计算结果 :</p>
+<pre class="hljs bash"><code class="bash">[2016-12-17 21:25:22,945] INFO  pool-1-thread-1 (LocalCacheConnection.java:11) - 创建connection开始
+[2016-12-17 21:25:22,949] INFO  pool-1-thread-1 (LocalCacheConnection.java:12) - 睡觉开始
+[2016-12-17 21:25:24,948] INFO  Thread-0 (FutureMain.java:31) - future.get() over
+java.util.concurrent.TimeoutException
+    at java.util.concurrent.FutureTask.get(FutureTask.java:205)
+    at com.lami.tuomatuo.search.base.concurrent.future.example.FutureMain<span class="hljs-variable">$1</span>.run(FutureMain.java:27)
+[2016-12-17 21:25:25,955] INFO  pool-1-thread-1 (LocalCacheConnection.java:20) - 睡觉结束
+[2016-12-17 21:25:25,955] INFO  pool-1-thread-1 (LocalCacheConnection.java:21) - 创建connection结束
+[2016-12-17 21:25:25,956] INFO  Thread-1 (FutureMain.java:40) - future.get() : A connection(connection)
+[2016-12-17 21:25:25,957] INFO  Thread-1 (FutureMain.java:44) - future.get() over
+</code></pre>
+<h6>3.FutureTask 的运行方式是这样的</h6>
+<ol>
+<li>将一个 Callable 置为 FutureTask 的内置成员</li>
+<li>执行 Callable 中的 call 方法</li>
+<li>调用futureTask.get(timeout, TimeUnit) 方法, 获取call的执行结果, 超时的话就报 TimeoutException</li>
+</ol>
+<p>从上面可以看出: 只要将耗时的任务丢给FutureTask, 不必等待程序运行结束,继续往下执行, 从而实现程序异步执行的功能</p>
+<p>看到上面的例子, 你可能会有疑问: 两个都是调用future.get(timeout, TimeUnit) 方法, 一个报异常, 一个确得到了结果, futureTask 的内部执行机制到底是什么??<br>
+(PS: 对了, 有这样的疑惑才能往代码的深处走)</p>
+<p>我们都知道ExecutorService是个线程的工具类, 将FutureTask丢给它后会执行对应的run方法, 那我们就先看 FutureTask的run方法</p>
+<h6>FutureTask.run 方法</h6>
+<pre class="hljs java"><code class="java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-comment">// 判断 state 是否是new, 防止并发重复执行</span>
+        <span class="hljs-keyword">if</span>(state != NEW ||
+                !unsafe.compareAndSwapObject(<span class="hljs-keyword">this</span>, runnerOffset, <span class="hljs-keyword">null</span>, Thread.currentThread())){
+            <span class="hljs-keyword">return</span>;
+        }
+
+        <span class="hljs-keyword">try</span> {
+            Callable&lt;V&gt; c = callable;
+            <span class="hljs-keyword">if</span>(c != <span class="hljs-keyword">null</span> &amp;&amp; state == NEW){
+                V result ;
+                <span class="hljs-keyword">boolean</span> ran;
+                <span class="hljs-keyword">try</span>{ <span class="hljs-comment">// 调用call方法执行计算</span>
+                    result = c.call();
+                    ran = <span class="hljs-keyword">true</span>;
+                }<span class="hljs-keyword">catch</span> (Throwable ex){
+                    result = <span class="hljs-keyword">null</span>;
+                    ran = <span class="hljs-keyword">false</span>;
+                    <span class="hljs-comment">// 执行中抛异常, 更新state状态, 释放等待的线程(调用finishCompletion)</span>
+                    setException(ex);
+                }
+                <span class="hljs-keyword">if</span>(ran){ <span class="hljs-comment">// 执行成功, 进行赋值操作</span>
+                    set(result);
+                }
+            }
+        }<span class="hljs-keyword">finally</span> {
+             <span class="hljs-comment">// runner must be non-null until state is settled to prevent concurrent calls to run()</span>
+            runner = <span class="hljs-keyword">null</span>;
+            <span class="hljs-comment">// state must be re-read after nulling runner to prevent leaked interrupts</span>
+            <span class="hljs-keyword">int</span> s = state;
+            <span class="hljs-keyword">if</span>(s &gt;= INTERRUPTING){
+                handlePossibleCancellationInterrupt(s);
+            }
+        }
+    }
+</code></pre>
+<p>这里看到state这个变量, 它是futureTask执行任务的状态(一个有7种)</p>
+<pre class="hljs java"><code class="java">  <span class="hljs-comment">/**
+     * 这几种状态比较重要, 下面是 FutureTask 中 state 的状态转变的几种情况
+     * Possible state's transitions
+     * NEW -&gt; COMPLETING -&gt; NORMAL
+     * NEW -&gt; COMPLETING -&gt; EXCEPTIONAL
+     * NEW -&gt; CANCELLED
+     * NEW -&gt; INTERRUPTING -&gt; INETRRUPTED
+     */</span>
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> state;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> NEW             = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> COMPLETING     = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> NORMAL          = <span class="hljs-number">2</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> EXCEPTIONAL    = <span class="hljs-number">3</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> CANCELLED      = <span class="hljs-number">4</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> INTERRUPTING   = <span class="hljs-number">5</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> INTERRUPTED      = <span class="hljs-number">6</span>;
+</code></pre>
+<p>而run其实没做什么, 就是执行 callable.call方法,  成功的话将执行结果调用set进行赋值, 并更新state的值(通过cas)</p>
+<h6>下面看例子中的 future.get(timeout,TimeUnit) 的源码</h6>
+<pre class="hljs java"><code class="java"><span class="hljs-function"><span class="hljs-keyword">public</span> V <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-keyword">long</span> timeout, TimeUnit unit)</span> <span class="hljs-keyword">throws</span> InterruptedException, ExecutionException, TimeoutException </span>{
+        <span class="hljs-comment">// get(timeout, unit) 也很简单, 主要还是在 awaitDone里面</span>
+        <span class="hljs-keyword">if</span>(unit == <span class="hljs-keyword">null</span>){
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> NullPointerException();
+        }
+        <span class="hljs-keyword">int</span> s = state;
+        <span class="hljs-comment">// 判断state状态是否 &lt;= Completing, 调用awaitDone进行旋转</span>
+        <span class="hljs-keyword">if</span>(s &lt;= COMPLETING &amp;&amp; (s = awaitDone(<span class="hljs-keyword">true</span>, unit.toNanos(timeout))) &lt;= COMPLETING){
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> TimeoutException();
+        }
+        <span class="hljs-comment">// 根据state的值进行返回结果或抛出异常</span>
+        <span class="hljs-keyword">return</span> report(s);
+    }
+</code></pre>
+<p>get() 方法中涉及到 awaitDone 方法,  将awaitDone的运行结果赋值给state, 最后report方法根据state值进行返回相应的值, 而awaitDone是整个 FutureTask  运行的核心</p>
+<h6>那下面来看 awaitDone的方法</h6>
+<pre class="hljs java"><code class="java"><span class="hljs-comment">/**
+     * Awaits completion or aborts on interrupt or timeout
+     * 调用 awaitDone 进行线程的自旋
+     * 自旋一般调用步骤
+     *  1) 若支持线程中断, 判断当前的线程是否中断
+     *      a. 中断, 退出自旋, 在线程队列中移除对应的节点
+     *      b. 进行下面的步骤
+     *  2) 将当前的线程构造成一个 WaiterNode 节点, 加入到当前对象的队列里面 (进行 cas 操作)
+     *  3) 判断当前的调用是否设置阻塞超时时间
+     *      a. 有 超时时间, 调用 LockSupport.parkNanos; 阻塞结束后, 再次进行 自旋 , 还是到同一个if, 但 nanos = 0L, 删除链表中对应的 WaiterdNode, 返回 state值
+     *      b. 没 超时时间, 调用 LockSupport.park
+     *
+     * <span class="hljs-doctag">@param</span> timed true if use timed waits
+     * <span class="hljs-doctag">@param</span> nanos time to waits, if timed
+     * <span class="hljs-doctag">@return</span> state upon completion
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> <span class="hljs-title">awaitDone</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> timed, <span class="hljs-keyword">long</span> nanos)</span> <span class="hljs-keyword">throws</span> InterruptedException</span>{
+        <span class="hljs-comment">// default timed = false, nanos = 0, so deadline = 0</span>
+        <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> deadline = timed ? System.nanoTime() + nanos : <span class="hljs-number">0L</span>;
+        WaitNode q = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">boolean</span> queued = <span class="hljs-keyword">false</span>;
+        <span class="hljs-keyword">for</span>(;;){
+            <span class="hljs-comment">// Thread.interrupted 判断当前的线程是否中断(调用两次会清楚对应的状态位)</span>
+            <span class="hljs-comment">// Thread.interrupt 将当前的线程设置成中断状态</span>
+            <span class="hljs-keyword">if</span>(Thread.interrupted()){
+                removeWaiter(q, Thread.currentThread().getId());
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> InterruptedException();
+            }
+
+            <span class="hljs-keyword">int</span> s = state;
+            <span class="hljs-comment">/** 1. s = NORMAL, 说明程序执行成功, 直接获取对应的 V
+             */</span>
+            <span class="hljs-keyword">if</span>(s &gt; COMPLETING){
+                <span class="hljs-keyword">if</span>(q != <span class="hljs-keyword">null</span>){
+                    q.thread = <span class="hljs-keyword">null</span>;
+                }
+                <span class="hljs-keyword">return</span> s;
+            }
+            <span class="hljs-comment">// s = COMPLETING ; 看了全部的代码说明整个任务在处理的中间状态, s紧接着会进行改变</span>
+            <span class="hljs-comment">// s 变成 NORMAL 或 EXCEPTION</span>
+            <span class="hljs-comment">// 所以调用 yield 让线程状态变更, 重新进行CPU时间片竞争, 并且进行下次循环</span>
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(s == COMPLETING){ <span class="hljs-comment">// cannot time out yet</span>
+                Thread.yield();
+            }
+            <span class="hljs-comment">// 当程序调用 get 方法时, 一定会调用一次下面的方法, 对 q 进行赋值</span>
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(q == <span class="hljs-keyword">null</span>){
+                q = <span class="hljs-keyword">new</span> WaitNode();
+            }
+            <span class="hljs-comment">// 判断有没将当前的线程构造成一个节点, 赋值到对象对应的属性里面</span>
+            <span class="hljs-comment">// 第一次 waiters 一定是 null 的, 进行赋值的是一个以 q 为首节点的栈(JUC里面还有一处用栈的就在 SynchronousQueue中)</span>
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(!queued){
+                queued = unsafe.compareAndSwapObject(<span class="hljs-keyword">this</span>, waitersOffset, q.next = waiters, q);
+            }
+            <span class="hljs-comment">// 调用默认的 get()时, timed = false, 所以不执行这一步</span>
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(timed){
+                <span class="hljs-comment">// 进行阻塞时间的判断, 第二次循环时, nanos = 0L, 直接 removeWaiter 返回现在 FutureTask 的 state</span>
+                nanos = deadline - System.nanoTime();
+                <span class="hljs-keyword">if</span>(nanos &lt;= <span class="hljs-number">0L</span>){
+                    removeWaiter(q, Thread.currentThread().getId());
+                    <span class="hljs-keyword">return</span> state;
+                }
+                LockSupport.parkNanos(<span class="hljs-keyword">this</span>, nanos);
+            }
+            <span class="hljs-comment">// 进行线程的阻塞</span>
+            <span class="hljs-keyword">else</span>{
+                LockSupport.park(<span class="hljs-keyword">this</span>);
+            }
+        }
+    }
+</code></pre>
+<p>结合我们刚才例子(FutureMain)中的两个调用futureTask.get()方法</p>
+<p>第一个futureTask.get(2. TimeUnit.SECOND), 因为执行的任务需要花费3秒, 所以它先会LockSupport.parkNanos(2<em>1000</em>1000*1000) 阻塞2秒, 之后再次进行同样的地方, 但nanos已是0, 所以调用removeWaiter方法, 最后抛出异常</p>
+<p>第二个futureTask.get(4. TimeUnit.SECOND), 因为执行的任务需要花费3秒, 所以它先会LockSupport.parkNanos(4<em>1000</em>1000*1000) 阻塞4秒, 但是任务只花费3秒, 所以执行完成后会调用set方法进行赋值, 在set方法中有个finishCompletion方法, 这个方法会唤醒所有阻塞的节点, 所以第二个futureTask.get只花费3秒就得到了结果</p>
+<h6>分析一下 removeWaiter 方法(这是实现并发链表中移除队列节点的一个操作)</h6>
+<pre class="hljs java"><code class="java"><span class="hljs-comment">/**
+     * 这个 removeWaiter 个人认为是最搞人的, 尤其在多线程环境中, 同时进行节点的删除
+     * 时隔一个月回头再看, 下面的代码就是一个并发安全的栈中进行一个节点的删除操作
+     * Tries to unlinked a time-out
+     * <span class="hljs-doctag">@param</span> node
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span>  <span class="hljs-title">removeWaiter</span><span class="hljs-params">(WaitNode node, <span class="hljs-keyword">long</span> i)</span></span>{
+        logger.info(<span class="hljs-string">"removeWaiter node"</span>  + node +<span class="hljs-string">", i: "</span>+ i +<span class="hljs-string">" begin"</span>);
+        <span class="hljs-keyword">if</span>(node != <span class="hljs-keyword">null</span>){
+            node.thread = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// 将移除的节点的thread＝null, 为移除做标示</span>
+
+            retry:
+            <span class="hljs-keyword">for</span>(;;){ <span class="hljs-comment">// restart on removeWaiter race</span>
+                <span class="hljs-keyword">for</span>(WaitNode pred = <span class="hljs-keyword">null</span>, q = waiters, s; q != <span class="hljs-keyword">null</span>; q = s){
+                    logger.info(<span class="hljs-string">"q : "</span> + q +<span class="hljs-string">", i:"</span>+i);
+                    s = q.next;
+                    <span class="hljs-comment">// 通过 thread 判断当前 q 是否是需要移除的 q节点</span>
+                    <span class="hljs-keyword">if</span>(q.thread != <span class="hljs-keyword">null</span>){
+                        pred = q;
+                        logger.info(<span class="hljs-string">"q : "</span> + q +<span class="hljs-string">", i:"</span>+i);
+                    }
+                    <span class="hljs-comment">// 何时执行到这个if条件 ?</span>
+                    <span class="hljs-comment">// hehe 只有第一步不满足时, 也就是q.thread=null (p就是应该移除的节点)</span>
+                    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(pred != <span class="hljs-keyword">null</span>){
+                        logger.info(<span class="hljs-string">"q : "</span> + q +<span class="hljs-string">", i:"</span>+i);
+                        pred.next = s; <span class="hljs-comment">// 将前一个节点的 next 指向当前节点的 next 节点</span>
+                        <span class="hljs-comment">// pred.thread == null 这种情况是在多线程进行并发 removeWaiter 时产生的</span>
+                        <span class="hljs-comment">// 而此时真好移除节点 node 和 pred, 所以loop跳到retry, 在进行一次</span>
+                        <span class="hljs-keyword">if</span>(pred.thread == <span class="hljs-keyword">null</span>){ <span class="hljs-comment">// check for race</span>
+                            <span class="hljs-keyword">continue</span> retry;
+                        }
+                    }
+                    <span class="hljs-comment">// 这一步何时操作呢?</span>
+                    <span class="hljs-comment">// 想想 若p是头节点</span>
+                    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(!unsafe.compareAndSwapObject(<span class="hljs-keyword">this</span>, waitersOffset, q, s)){
+                        logger.info(<span class="hljs-string">"q : "</span> + q +<span class="hljs-string">", i:"</span>+i);
+                        <span class="hljs-keyword">continue</span> retry; <span class="hljs-comment">// 这一步还是 cheak for race</span>
+                    }
+                }
+                <span class="hljs-keyword">break</span> ;
+            }
+            logger.info(<span class="hljs-string">"removeWaiter node"</span>  + node +<span class="hljs-string">", i: "</span>+ i +<span class="hljs-string">" end"</span>);
+        }
+    }
+</code></pre>
+<p>removeWaiter 这个方法我认为是最复杂的, 你需要考虑多种情况(1. 移除的节点是队列的头节点, 2. 移除的节点是队列中的中间节点, 3. 在并发情况下, 两个线程同时removeWaiter操作), 重要的地方我都加了注解</p>
+<h6>至此FutureTask的源码我们都差不多看到了,  总结一下实现Future的要点</h6>
+<ol>
+<li>需要实现一个链表(每个节点包含当前线程的引用)</li>
+<li>通过 Thread.wait 或LockSupport.park 对线程进行阻塞</li>
+<li>有个公共方法进行节点的唤醒(task完成, 线程Interrupt, 或await超时), 并且次方法要线程安全<br>
+有了这些在大脑中, 相信自己实现一个简易Future也不是什么难事</li>
+</ol>
+
+          </div>
+        </div>
+    </div>
+
+    <!-- 如果是付费文章，未购买，则显示购买按钮 -->
+
+    <!-- 连载目录项 -->
+
+    <!-- 如果是付费文章 -->
+      <!-- 如果是付费连载，已购买，且作者允许赞赏，则显示付费信息和赞赏 -->
+        <div id="free-reward-panel" class="support-author"><p>小礼物走一走，来简书关注我</p> <div class="btn btn-pay">赞赏支持</div> <div class="supporter"><ul class="support-list"><li><a target="_blank" href="https://www.jianshu.com/u/bbb6b32d09d6" class="avatar"><img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/0707880d-11ad-4b12-ab84-4a9b0144d669"></a></li></ul> <!----></div> <!----> <!----></div>
+
+      <div class="show-foot">
+        <a class="notebook" href="https://www.jianshu.com/nb/541675">
+          <i class="iconfont ic-search-notebook"></i>
+          <span>日记本</span>
+</a>        <div class="copyright" data-toggle="tooltip" data-html="true" data-original-title="转载请联系作者获得授权，并标注“简书作者”。">
+          © 著作权归作者所有
+        </div>
+        <div class="modal-wrap" data-report-note="">
+          <a id="report-modal">举报文章</a>
+        </div>
+      </div>
+
+      <!-- 文章底部作者信息 -->
+        <div class="follow-detail">
+          <div class="info">
+            <a class="avatar" href="https://www.jianshu.com/u/f9577ef03ae0">
+              <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/d4206176495c.jpg" alt="96">
+</a>            <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+            <a class="title" href="https://www.jianshu.com/u/f9577ef03ae0">爱吃鱼的KK</a>
+          <p>写了 38903 字，被 184 人关注，获得了 114 个喜欢</p></div>
+        </div>
+
+    <div class="meta-bottom">
+      <div data-v-6ddd02c6="" class="like"><div data-v-6ddd02c6="" class="btn like-group active"><div data-v-6ddd02c6="" class="btn-like"><a data-v-6ddd02c6="">喜欢</a></div> <div data-v-6ddd02c6="" class="modal-wrap"><a data-v-6ddd02c6="">7</a></div></div> <!----></div>
+      <div class="share-group">
+        <a class="share-circle" data-action="weixin-share" data-toggle="tooltip" data-original-title="分享到微信">
+          <i class="iconfont ic-wechat"></i>
+        </a>
+        <a class="share-circle" data-action="weibo-share" data-toggle="tooltip" href="javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f=&#39;http://v.t.sina.com.cn/share/share.php?appkey=1881139527&#39;,u=z||d.location,p=[&#39;&amp;url=&#39;,e(u),&#39;&amp;title=&#39;,e(t||d.title),&#39;&amp;source=&#39;,e(r),&#39;&amp;sourceUrl=&#39;,e(l),&#39;&amp;content=&#39;,c||&#39;gb2312&#39;,&#39;&amp;pic=&#39;,e(p||&#39;&#39;)].join(&#39;&#39;);function%20a(){if(!window.open([f,p].join(&#39;&#39;),&#39;mb&#39;,[&#39;toolbar=0,status=0,resizable=1,width=440,height=430,left=&#39;,(s.width-440)/2,&#39;,top=&#39;,(s.height-430)/2].join(&#39;&#39;)))u.href=[f,p].join(&#39;&#39;);};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,&#39;&#39;,&#39;&#39;,&#39;&#39;, &#39;推荐 爱吃鱼的KK 的文章《FutureTask 源码分析 (基于Java 8)》（ 分享自 @简书 ）&#39;,&#39;https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=weibo&#39;,&#39;页面编码gb2312|utf-8默认gb2312&#39;));" data-original-title="分享到微博">
+          <i class="iconfont ic-weibo"></i>
+        </a>
+        <a class="share-circle" data-toggle="tooltip" id="longshare" target="_blank" data-original-title="" title="">
+            <div class="qrcode" id="qrcode">
+             <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/download-index-side-qrcode-cb13fc9106a478795f8d10f9f632fccf.png" alt="Download index side qrcode">
+             <p>下载app生成长微博图片</p>
+             </div>
+          <i class="iconfont ic-picture"></i>
+        </a>
+        <a class="share-circle more-share" tabindex="0" data-toggle="popover" data-placement="top" data-html="true" data-trigger="focus" href="javascript:void(0);" data-content="
+          &lt;ul class=&quot;share-list&quot;&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=&#39;+e(&#39;https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=qzone&#39;)+&#39;&amp;title=&#39;+e(&#39;推荐 爱吃鱼的KK 的文章《FutureTask 源码分析 (基于Java 8)》&#39;),x=function(){if(!window.open(r,&#39;qzone&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-zone&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到QQ空间&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://twitter.com/share?url=&#39;+e(&#39;https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=twitter&#39;)+&#39;&amp;text=&#39;+e(&#39;推荐 爱吃鱼的KK 的文章《FutureTask 源码分析 (基于Java 8)》（ 分享自 @jianshucom ）&#39;)+&#39;&amp;related=&#39;+e(&#39;jianshucom&#39;),x=function(){if(!window.open(r,&#39;twitter&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-twitter&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到Twitter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://www.facebook.com/dialog/share?app_id=483126645039390&amp;display=popup&amp;href=https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=facebook&#39;,x=function(){if(!window.open(r,&#39;facebook&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-facebook&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到Facebook&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://plus.google.com/share?url=&#39;+e(&#39;https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=google_plus&#39;),x=function(){if(!window.open(r,&#39;google_plus&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-google&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到Google+&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:&#39;&#39;,r=&#39;http://www.douban.com/recommend/?url=&#39;+e(&#39;https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=douban&#39;)+&#39;&amp;title=&#39;+e(&#39;FutureTask 源码分析 (基于Java 8)&#39;)+&#39;&amp;sel=&#39;+e(s)+&#39;&amp;v=1&#39;,x=function(){if(!window.open(r,&#39;douban&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r+&#39;&amp;r=1&#39;};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-douban&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到豆瓣&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+          &lt;/ul&gt;
+        " data-original-title="" title="">更多分享</a>
+      </div>
+    </div>
+    <!--
+    <div id="note-comment-above-ad-container">
+      <span id="youdao-comment-ad" class="ad-badge">广告</span>
+    </div>
+    -->
+    <div id="vue_comment"></div>
+  </div>
+
+  <div class="side-tool"><ul><li data-placement="left" data-toggle="tooltip" data-container="body" data-original-title="回到顶部" style="display: none;"><a class="function-button"><i class="iconfont ic-backtop"></i></a></li> <!----> <li data-placement="left" data-toggle="tooltip" data-container="body" data-original-title="将文章加入专题"><a class="js-submit-button"><i class="iconfont ic-addcollectionmodal"></i></a> <!----></li> <li data-placement="left" data-toggle="tooltip" data-container="body" data-original-title="收藏文章"><a class="function-button"><i class="iconfont ic-mark"></i></a></li> <li data-placement="left" data-toggle="tooltip" data-container="body" data-original-title="分享文章" id="share"><a tabindex="0" role="button" data-toggle="popover" data-placement="left" data-html="true" data-trigger="focus" href="javascript:void(0);" data-content="&lt;ul class=&#39;share-list&#39; style=&quot;width:220px&quot;&gt;
+                  &lt;li&gt;&lt;a class=&quot;weixin-share&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-weixin&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到微信&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                  &lt;li&gt;&lt;a href=&quot;javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f=&#39;http://v.t.sina.com.cn/share/share.php?appkey=1881139527&#39;,u=z||d.location,p=[&#39;&amp;url=&#39;,e(u),&#39;&amp;title=&#39;,e(t||d.title),&#39;&amp;source=&#39;,e(r),&#39;&amp;sourceUrl=&#39;,e(l),&#39;&amp;content=&#39;,c||&#39;gb2312&#39;,&#39;&amp;pic=&#39;,e(p||&#39;&#39;)].join(&#39;&#39;);function%20a(){if(!window.open([f,p].join(&#39;&#39;),&#39;mb&#39;,[&#39;toolbar=0,status=0,resizable=1,width=440,height=430,left=&#39;,(s.width-440)/2,&#39;,top=&#39;,(s.height-430)/2].join(&#39;&#39;)))u.href=[f,p].join(&#39;&#39;);};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,&#39;&#39;,&#39;&#39;,&#39;&#39;, &#39;推荐 爱吃鱼的KK 的文章《FutureTask 源码分析 (基于Java 8)》（ 分享自 @简书 ）&#39;,&#39;https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=weibo&#39;,&#39;页面编码gb2312|utf-8默认gb2312&#39;));&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-weibo&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到微博&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                  
+                  &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=&#39;+e(&#39;https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=qzone&#39;)+&#39;&amp;title=&#39;+e(&#39;推荐 爱吃鱼的KK 的文章《FutureTask 源码分析 (基于Java 8)》&#39;),x=function(){if(!window.open(r,&#39;qzone&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-zone&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到QQ空间&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                  &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://twitter.com/share?url=&#39;+e(&#39;https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=twitter&#39;)+&#39;&amp;text=&#39;+e(&#39;推荐 爱吃鱼的KK 的文章《FutureTask 源码分析 (基于Java 8)》（ 分享自 @jianshucom ）&#39;)+&#39;&amp;related=&#39;+e(&#39;jianshucom&#39;),x=function(){if(!window.open(r,&#39;twitter&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-twitter&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到Twitter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                  &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://www.facebook.com/dialog/share?app_id=483126645039390&amp;display=popup&amp;href=https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=facebook&#39;,x=function(){if(!window.open(r,&#39;facebook&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-facebook&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到Facebook&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                  &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://plus.google.com/share?url=&#39;+e(&#39;https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=google_plus&#39;),x=function(){if(!window.open(r,&#39;google_plus&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-google&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到Google+&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                  &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:&#39;&#39;,r=&#39;http://www.douban.com/recommend/?url=&#39;+e(&#39;https://www.jianshu.com/p/b765c0d0165d?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=douban&#39;)+&#39;&amp;title=&#39;+e(&#39;FutureTask 源码分析 (基于Java 8)&#39;)+&#39;&amp;sel=&#39;+e(s)+&#39;&amp;v=1&#39;,x=function(){if(!window.open(r,&#39;douban&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r+&#39;&amp;r=1&#39;};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-douban&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到豆瓣&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;" data-original-title="" title="" class="function-button"><i class="iconfont ic-share"></i></a> <!----></li> <!----></ul></div>
+</div>
+<div class="note-bottom">
+  <div><div class="main"><div class="title">被以下专题收入，发现更多相似内容</div> <!----> <div class="include-collection"><div class="modal-wrap add-collection-wrap"><a class="add-collection"><i class="iconfont ic-follow"></i>收入我的专题</a></div> <a href="https://www.jianshu.com/c/7f66d90f31dd?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/d62a6059252dd42ad7c6658f013b5bb5c8eab8c3.jpg"><div class="name">IT面试</div></a><a href="https://www.jianshu.com/c/4b6fb8ba9eac?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/JAVA_icon.png"><div class="name">JVM虚拟机&amp;...</div></a> <!----></div></div> <!----> <!----></div>
+  <div data-vcomp="recommended-notes" data-note-id="7693884"></div>
+  <!-- 相关文章 -->
+  <div class="seo-recommended-notes">
+
+        <div class="note ">
+                    <a class="title" target="_blank" href="https://www.jianshu.com/p/106a86ef02c7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">Java并发（2）</a>
+          <p class="description">1.如何暂停或恢复线程 在JDK中提供了以下两个方法（类Thread）用来暂停线程和恢复线程。 Øsuspend方法：暂停线程 Øresume方法：恢复线程 Østop方法：终止线程 这两个方法和stop方法一样是被废弃的方法，其用法和stop一样，暴力地暂停线程和恢复线程...</p>
+          <a class="author" target="_blank" href="https://www.jianshu.com/u/270d1aaf2df8?utm_campaign=maleskine&amp;utm_content=user&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <div class="avatar">
+              <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/8520e99a351e.JPG" alt="48">
+            </div>
+            <span class="name">pgl2011</span>
+</a>        </div>
+
+        <div class="note have-img">
+          <a class="cover" target="_blank" href="https://www.jianshu.com/p/23f6ef4cf441?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/5713484-845992814b025912.png" alt="240">
+</a>          <a class="title" target="_blank" href="https://www.jianshu.com/p/23f6ef4cf441?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">Android Handler机制12之Callable、Future和FutureTask</a>
+          <p class="description">Android Handler机制系列文章整体内容如下： Android Handler机制1之ThreadAndroid Handler机制2之ThreadLocalAndroid Handler机制3之SystemClock类Android Handler机制4之Loo...</p>
+          <a class="author" target="_blank" href="https://www.jianshu.com/u/8b9c629f69dd?utm_campaign=maleskine&amp;utm_content=user&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <div class="avatar">
+              <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/0dbe60df-26f7-4174-a821-e1e7eea864c4.jpeg" alt="48">
+            </div>
+            <span class="name">隔壁老李头</span>
+</a>        </div>
+
+        <div class="note ">
+                    <a class="title" target="_blank" href="https://www.jianshu.com/p/0d77a717c52a?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">多线程知识梳理(1) - 并发编程的艺术笔记</a>
+          <p class="description">第三章 Java内存模型 3.1 Java内存模型的基础 通信在共享内存的模型里，通过写-读内存中的公共状态进行隐式通信；在消息传递的并发模型里，线程之间必须通过发送消息来进行显示的通信。 同步在共享内存并发模型里，同步是显示进行的，程序员必须显示指定某个方法或者某段代码需...</p>
+          <a class="author" target="_blank" href="https://www.jianshu.com/u/37baa8a86582?utm_campaign=maleskine&amp;utm_content=user&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <div class="avatar">
+              <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/e0d049c6-3aca-4d9f-8bdd-4c92dcab919f.jpg" alt="48">
+            </div>
+            <span class="name">泽毛</span>
+</a>        </div>
+
+        <div class="note have-img">
+          <a class="cover" target="_blank" href="https://www.jianshu.com/p/4b0721633009?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/2397836-be53f837e8a28fad.jpg" alt="240">
+</a>          <a class="title" target="_blank" href="https://www.jianshu.com/p/4b0721633009?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">Java核心技术点之多线程</a>
+          <p class="description">**本文主要从整体上介绍Java中的多线程技术，对于一些重要的基础概念会进行相对详细的介绍，若有叙述不清晰或是不正确的地方，希望大家指出，谢谢大家：） ** 为什么使用多线程 并发与并行 我们知道，在单核机器上，“多进程”并不是真正的多个进程在同时执行，而是通过CPU时间分...</p>
+          <a class="author" target="_blank" href="https://www.jianshu.com/u/640ce09fd6ec?utm_campaign=maleskine&amp;utm_content=user&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <div class="avatar">
+              <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/e577473dafff.png" alt="48">
+            </div>
+            <span class="name">absfree</span>
+</a>        </div>
+
+        <div class="note ">
+                    <a class="title" target="_blank" href="https://www.jianshu.com/p/9415c51ea38a?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">Java 并发入门</a>
+          <p class="description">一、并发 进程：每个进程都拥有自己的一套变量 线程：线程之间共享数据 1.线程 Java中为多线程任务提供了很多的类。包括最基础的Thread类、Runnable等接口，用于线程同步的锁、阻塞队列、同步器，使用线程池的执行器、执行框架，还有可以在多线程中使用的线程安全集合等...</p>
+          <a class="author" target="_blank" href="https://www.jianshu.com/u/e9e33496e846?utm_campaign=maleskine&amp;utm_content=user&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <div class="avatar">
+              <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/d97e2a21-94e1-45f7-a63f-dc8b850b1215.jpg" alt="48">
+            </div>
+            <span class="name">SeanMa</span>
+</a>        </div>
+
+        <div class="note have-img">
+          <a class="cover" target="_blank" href="https://www.jianshu.com/p/1a851da3b7b9?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/3477048-6db718c90f5af83f.jpg" alt="240">
+</a>          <a class="title" target="_blank" href="https://www.jianshu.com/p/1a851da3b7b9?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">杰出人物老王</a>
+          <p class="description">老王连续四年被评为村里的杰出青年，因为老实本分，生活寂静无声顽固原则性又特别强，老王对于杰出人物做到最极致，雷打不动的锦旗一面面送到他手里。 这天，老王走到一家金店门口，想想口袋的空空如也，内心真想抓一条最大最亮的就走，可是想想就好，老王对自己说，我是杰出青年不能偷不能抢。...</p>
+          <a class="author" target="_blank" href="https://www.jianshu.com/u/7f76f2e47f66?utm_campaign=maleskine&amp;utm_content=user&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <div class="avatar">
+              <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/b0666d6b-dffc-4e10-87a6-acc1b6e75b5e.jpg" alt="48">
+            </div>
+            <span class="name">甜暖我歆</span>
+</a>        </div>
+
+        <div class="note ">
+                    <a class="title" target="_blank" href="https://www.jianshu.com/p/84cf6d2d4d3f?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">UIBezierPath贝塞尔弧线</a>
+          <p class="description">下面两个网页是我学习时发现的相关的知识网页，总结了常用的知识点。以免忘记，特记录在此。UIBezierPath贝塞尔弧线常用方法iOS UIBezierPath类介绍 几点需要注意：绘制的图形要写在drawRect函数里面，在View里面绘制图形。 下面是我熟悉UIBezi...</p>
+          <a class="author" target="_blank" href="https://www.jianshu.com/u/d01bec4245b2?utm_campaign=maleskine&amp;utm_content=user&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <div class="avatar">
+              <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/12-aeeea4bedf10f2a12c0d50d626951489.jpg" alt="48">
+            </div>
+            <span class="name">落夏简叶</span>
+</a>        </div>
+
+        <div class="note have-img">
+          <a class="cover" target="_blank" href="https://www.jianshu.com/p/23864770fe00?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/1677557-980c40c6df5c22bd.jpg" alt="240">
+</a>          <a class="title" target="_blank" href="https://www.jianshu.com/p/23864770fe00?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">长投学堂——坐拥财富自由，笑傲理财江湖</a>
+          <p class="description">前言：水湄物语是谁？ 她是谁？所有见过她本人的，听过她声音的都很喜欢她，为什么很多理财小白喜欢她？她创办了什么公司？ 她是畅销书《三十岁前每一天》的作者，而每一个长投理财小白课的院生都可以免费看到这本电子书，理财课中还有两本免费电子书《小狗钱钱》《跟钱钱学理财》，作为当年对...</p>
+          <a class="author" target="_blank" href="https://www.jianshu.com/u/fcaae510e51d?utm_campaign=maleskine&amp;utm_content=user&amp;utm_medium=seo_notes&amp;utm_source=recommendation">
+            <div class="avatar">
+              <img src="./FutureTask 源码分析 (基于Java 8) - 简书_files/53687f357a59.jpeg" alt="48">
+            </div>
+            <span class="name">慢10拍</span>
+</a>        </div>
+  </div>
+</div>
+
+    <script type="application/json" data-name="page-data">{"user_signed_in":true,"locale":"zh-CN","os":"windows","read_mode":"day","read_font":"font1","current_user":{"id":5679451,"nickname":"小北觅","slug":"3c084cab313c","avatar":"http://upload.jianshu.io/users/upload_avatars/5679451/6d33af4a-cc0f-4e11-ac41-d6135f7e6d8e.png","unread_counts":{"chats":0,"total":0},"has_editable_collection":true},"note_show":{"is_author":false,"is_following_author":false,"is_liked_note":true,"follow_state":0,"uuid":"9bffbda2-0443-4d26-9988-ca9904900b48"},"note":{"id":7693884,"slug":"b765c0d0165d","user_id":263562,"notebook_id":541675,"commentable":true,"likes_count":7,"views_count":954,"public_wordage":800,"comments_count":1,"featured_comments_count":0,"total_rewards_count":1,"is_author":false,"paid_type":"free","paid":false,"paid_content_accessible":false,"author":{"nickname":"爱吃鱼的KK","total_wordage":38903,"followers_count":184,"total_likes_count":114}}}</script>
+    
+    <script src="./FutureTask 源码分析 (基于Java 8) - 简书_files/babel-polyfill-d171e3dec4b6c15634dd.js" crossorigin="anonymous"></script>
+    <script src="./FutureTask 源码分析 (基于Java 8) - 简书_files/web-base-b9608e2ea37894929454.js" crossorigin="anonymous"></script>
+<script src="./FutureTask 源码分析 (基于Java 8) - 简书_files/web-e452f2bf4d92309dc7c1.js" crossorigin="anonymous"></script>
+    
+    <script src="./FutureTask 源码分析 (基于Java 8) - 简书_files/entry-cdb8bd3264abc721fa90.js" crossorigin="anonymous"></script>
+    <script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+  
+
+<!----><!----><!----></body></html>
