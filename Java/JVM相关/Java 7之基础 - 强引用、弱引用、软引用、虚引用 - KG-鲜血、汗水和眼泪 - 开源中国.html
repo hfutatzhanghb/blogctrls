@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)https://my.oschina.net/ydsakyclguozi/blog/404389 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="Content-Language" content="zh-CN">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="referrer" content="always">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国</title>
+            <meta name="keywords" content="凯文加内特,ydsakyclguozi,Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪,开源中国博客">
+                <meta name="description" content="1、强引用（StrongReference） 强引用是使用最普遍的引用。如果一个对象具有强引用，那垃圾回收器绝不会回收它。如下： Object o=new Object();   //  强引用 当内存空间不足，Java虚拟机宁愿抛出OutOfMemoryError错误，使程序异常终止，也不会靠随意回收具有强引用的对象来解决内存不足的问题。如果不使用时，要...">
+        <link rel="stylesheet" type="text/css" href="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/semantic.min.css">
+                <link type="text/css" rel="stylesheet" href="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/space.1583f368.css">        <script src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/hm.js"></script><script src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/push.js"></script><script src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/jquery.min.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="https://my.oschina.net/new-osc/img/favicon.ico">
+    <link rel="alternate" type="application/rss+xml" title="最新开源项目" href="https://www.oschina.net/project/rss">
+    <link rel="alternate" type="application/rss+xml" title="最新开源资讯" href="https://www.oschina.net/news/rss">
+    <link rel="alternate" type="application/rss+xml" title="最新问题列表" href="https://www.oschina.net/question/rss">
+    <link rel="alternate" type="application/rss+xml" title="最新翻译列表" href="https://www.oschina.net/translate/rss">
+    <link rel="alternate" type="application/rss+xml" title="最新博客列表" href="https://www.oschina.net/blog/rss">
+    <link rel="alternate" type="application/rss+xml" title="推荐博客列表" href="https://www.oschina.net/blog/rss?show=more">
+    <link rel="alternate" type="application/rss+xml" title="推荐软件列表" href="https://www.oschina.net/project/rss?show=recomms">
+    <link rel="alternate" type="application/rss+xml" title="最新代码分享列表" href="https://www.oschina.net/code/rss">
+    <link rel="alternate" type="application/rss+xml" title="开源中国 - 源码列表" href="https://www.oschina.net/code/source_rss">
+<script src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/share.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/jquery.serialize-object.min.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/jquery.serialize-object.min.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/radarChart.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/jquery.serialize-object.min.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/jquery.serialize-object.min.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/vue.min.js"></script><link rel="stylesheet" type="text/css" href="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/viewer.min.css"><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/viewer.min.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/vue.min.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/osc-message.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/osc-message.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/osc-message.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/osc-message.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/jquery-viewer.min.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/jquery.caret.min.js"></script><script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/jquery.atwho.min.js"></script></head>
+<body class="pushable">
+        <val data-name="space_user_url" data-value="https://my.oschina.net/ydsakyclguozi"></val>      <val data-name="g_user_url" data-value=""></val>      <val data-name="api_prefix" data-value="/action"></val>      <val data-name="g_user_code" data-value=""></val>     <val data-name="g_user_id" data-value=""></val>     <val data-name="g_user" data-value=""></val>     <val data-name="login_page" data-value="https://www.oschina.net/home/login?goto_page=https%3A%2F%2Fmy.oschina.net%2Fydsakyclguozi%2Fblog%2F404389"></val>     
+    
+                <val data-name="weixinAppId" data-value=""></val>
+        <val data-name="weixinTimestamp" data-value=""></val>
+        <val data-name="weixinNonceStr" data-value=""></val>
+        <val data-name="weixinSignature" data-value=""></val>
+        <val data-name="weixinShareUrl" data-value=""></val>                             
+                <val data-name="is_detail_page" data-value="true"></val>
+
+        
+        <div class="ui left inverted sidebar vertical menu" id="mobileNavSidebar">
+        <a href="https://www.oschina.net/project" class="item project">开源软件</a>
+        <a href="https://www.oschina.net/question" class="item question">问答</a>
+        <a href="https://www.oschina.net/tweets" class="item tweet">动弹</a>
+        <a href="https://www.oschina.net/blog" class="item blog">博客</a>
+        <a href="https://www.oschina.net/translate" class="item translate">翻译</a>
+        <a href="https://www.oschina.net/news" class="item news">资讯</a>
+        <a href="https://gitee.com/?from=osc-index" class="item gitee" target="_blank">码云</a>
+        <a href="https://zb.oschina.net/" class="item" target="_blank">众包</a>
+        <a href="https://www.oschina.net/event/ych" class="item meetup">源创会</a>
+        <a href="https://www.oschina.net/event" class="item">活动</a>
+        <a href="https://job.oschina.net/" class="item" target="_blank">求职/招聘</a>
+        <a href="https://www.oschina.net/question/topic/masteronline" class="item">高手问答</a>
+        <a href="https://www.oschina.net/question/topic/osc-interview" class="item">开源访谈</a>
+        <a href="https://my.oschina.net/editorial-story" class="item">周刊</a>
+        <a href="https://www.oschina.net/company" class="item">公司开源导航页</a>
+    </div>
+        <div class="ui right inverted sidebar vertical menu" id="mobileUserSidebar">
+                    <a class="item" href="https://www.oschina.net/home/login?goto_page=https%3A%2F%2Fmy.oschina.net%2Fydsakyclguozi%2Fblog%2F404389">登录</a>
+            <a class="item" href="https://www.oschina.net/home/reg?goto_page=https%3A%2F%2Fmy.oschina.net%2Fydsakyclguozi%2Fblog%2F404389">注册</a>
+            </div>
+
+        <div class="ui vertical inverted right sidebar menu" id="sideMenu">
+    <div class="header">
+        <b>文档章节</b>
+    </div>
+    <div class="ui basic segment" id="sideMenuBody"></div>
+</div>
+<div class="ui black big launch right attached fixed button" id="sideMenuLauncher">
+    <i class="list icon"></i>
+    <span class="text">文档章节</span>
+</div>
+
+
+        <div class="pusher  mobile-disabled-fixed-menu  ">
+                <div class="ui secondary inverted fixed menu" id="headerNavMenu">
+            <a class="item logo" href="https://www.oschina.net/" title="开源中国"><img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/logo.svg" alt="开源中国"></a>
+            <form action="https://www.oschina.net/search" class="item search-item" target="_blank">
+                <div class="ui icon input">
+                    <input type="hidden" name="scope" value="all">
+                    <input placeholder="大家都在搜...." id="keyword" name="q" size="24" value="" type="text">
+                    <i class="search link icon"></i>
+                </div>
+                <div class="results"></div>
+            </form>
+            <div class="item download-item">
+                <a class="ui primary button" id="btnDownloadApp" href="https://www.oschina.net/app" target="_blank">下载APP</a>
+            </div>
+            <div class="ui popup top left transition hidden" id="btnDownloadAppContent">
+                <h3 class="header">开源中国 App —— <br>关注技术领域的头条文章</h3>
+                <p>聚合全网技术文章，根据你的阅读喜好进行个性推荐</p>
+                <img width="200" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/osc_app_download_qrcode.png" alt="下载APP">
+            </div>
+            <div class="ui secondary text menu" id="menuList">
+                <a href="https://www.oschina.net/project" class="item project">开源软件</a>
+                <a href="https://www.oschina.net/question" class="item question">问答</a>
+                <a href="https://www.oschina.net/tweets" class="item tweet">动弹</a>
+                <a href="https://www.oschina.net/blog" class="item blog">博客</a>
+                <a href="https://www.oschina.net/translate" class="item translate">翻译</a>
+                <a href="https://www.oschina.net/news" class="item news">资讯</a>
+                <a href="https://gitee.com/?from=osc-index" class="item gitee" target="_blank">码云<span class="floating ui red label giteetip">代码托管</span></a>
+                <a href="https://zb.oschina.net/" class="item" target="_blank">众包</a>
+                <a href="https://www.oschina.net/event" class="item event">活动</a>
+            </div>
+            <div class="ui dropdown item" id="moreMenu" tabindex="0">
+                更多 <i class="dropdown icon" tabindex="0"><div class="menu" tabindex="-1"></div></i>
+                <div class="menu" tabindex="-1">
+                    <a href="https://www.oschina.net/event/ych" class="item meetup"><i class="world icon"></i>源创会</a>
+                    <a href="https://job.oschina.net/" class="item" target="_blank"><i class="address card outline icon"></i>求职/招聘</a>
+                    <a href="https://www.oschina.net/question/topic/masteronline" class="item"><i class="spy icon"></i>高手问答</a>
+                    <a href="https://www.oschina.net/question/topic/osc-interview" class="item"><i class="coffee icon"></i>开源访谈</a>
+                    <a href="https://my.oschina.net/editorial-story" class="item"><i class="calendar outline icon"></i>周刊</a>
+                    <a href="https://www.oschina.net/company" class="item"><i class="building outline icon"></i>公司开源导航页</a>
+                </div>
+            </div>
+            <div class="right menu">
+                                    <a class="item" href="https://www.oschina.net/home/login?goto_page=https%3A%2F%2Fmy.oschina.net%2Fydsakyclguozi%2Fblog%2F404389">登录</a>
+                    <a class="item" href="https://www.oschina.net/home/reg?goto_page=https%3A%2F%2Fmy.oschina.net%2Fydsakyclguozi%2Fblog%2F404389">注册</a>
+                            </div>
+        </div>
+                <div class="ui secondary inverted fixed menu" id="mobileHeaderNavMenu">
+            <a class="icon item toggle-mobile-nav-sidebar">
+                <i class="large content icon"></i>
+            </a>
+            <div class="logo back-to-top-toggle"><img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/logo.svg" alt="开源中国"></div>
+            <a class="icon item toggle-mobile-user-sidebar">
+                                    <i class="large user outline icon"></i>
+                            </a>
+        </div>
+                <div class="ui basic segment" id="mainScreen">
+            <div class="ui container">
+                
+
+
+
+
+
+
+
+
+
+
+
+<x-foo-define data-define="space-blog-detail"></x-foo-define> 
+<val data-name="objId" data-value="404389"></val> <val data-name="author_id" data-value="123050"></val> <val data-name="space_user_id" data-value="123050"></val> 
+<val data-name="fetchCommentsUrl" data-value="?type=comments"></val>              <val data-name="publishCommentUrl" data-value="/space/blog/add_comment"></val>    <val data-name="replyCommentUrl" data-value="/space/blog/add_comment"></val>      <val data-name="deleteCommentUrl" data-value="/space/blog/delete_blog_comments"></val>  
+<val data-name="weixinShareTitle" data-value="Java 7之基础 - 强引用、弱引用、软引用、虚引用"></val> <val data-name="weixinShareImgUrl" data-value="http://static.oschina.net/uploads/img/201504/21112519_Fkk5.jpg"></val> 
+<div class="ui internally grid blog-detail bg-wrap">
+    <div class="row">
+        <div class="two wide computer only column" style="height: 6003px; min-height: 342px;">
+            <div class="ui sticky float-menu fixed top" id="floatMenu" style="width: 128px !important; height: 342px !important; margin-top: 200px; left: 64.5px;">
+                <div class="ui vertical large compact menu">
+                                            <a class="item donate" donate="" data-id="404389" data-obj-type="16344358" data-subject="Java 7之基础 - 强引用、弱引用、软引用、虚引用" data-donater="" data-author="123050" data-return-url="https://my.oschina.net/ydsakyclguozi/blog/404389" data-notify-url="https://my.oschina.net/action/donate/paySuccess">                             <i class="yen icon"></i>打赏</a>
+                                        <a class="item comment-btn" href="https://my.oschina.net/ydsakyclguozi/blog/404389#comments" title="共有 0 条评论"><i class="comment outline icon"></i>评论</a>
+                    <a class="item collect-btn " data-id="404389" data-user-id="123050" data-obj-type="3" data-max="99" data-tag-required="" data-current-user-id="" data-recommend-tags=""><i class="star outline icon"></i>收藏</a>
+                    <a class="item like article-like " data-id="404389"><i class="thumbs up outline icon"></i>点赞</a>
+                    <h5 class="ui item inverted brown header">分享文章</h5>
+                    <div class="bdsharebuttonbox reset left-menu bdshare-button-style0-16" data-tag="share-news" data-bd-bind="1542897725849">
+                        <a class="item" data-cmd="tsina" title="分享到新浪微博"><i class="weibo icon"></i>微博</a>
+                        <a class="item" data-cmd="sqq" title="分享到QQ好友"><i class="qq icon"></i>QQ</a>
+                        <a class="item" data-cmd="weixin" title="分享到微信"><i class="weixin icon"></i>微信</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="twelve wide computer sixteen wide tablet sixteen wide mobile column body-container">
+            <div class="float-menu-content">
+                <div class="ui large breadcrumb">
+                    <a class="section" href="https://my.oschina.net/ydsakyclguozi">KG-鲜血、汗水和眼泪</a>
+                                                                <i class="right chevron icon divider"></i>
+                        <a class="section" href="https://my.oschina.net/ydsakyclguozi?tab=newest&amp;catalogId=366738">java基础</a>
+                                        <i class="right chevron icon divider"></i>
+                    <div class="active section">正文</div>
+                </div>
+                <div class="article-detail">
+                                            <div class="ad-wrap">
+                                                    <div id="blog-title-ad" data-traceid="blog_ali" data-tracepid="blogup" style="">
+<a href="https://ad.doubleclick.net/ddm/trackclk/N5751.2025702OSCHINA/B21990959.233718143;dc_trk_aid=431403887;dc_trk_cid=108683596;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=?http://clickc.admaster.com.cn/c/a118936,b3057626,c3159,i0,m101,8a1,8b3,0k10038,h,uhttps://www.intel.cn/content/www/cn/zh/technology-innovation/artificial-intelligence-dong-bei-hu.html?utm_campaign=2018_q4_na_cn_na_na_Master_Brand_AI_WWF&amp;utm_source=oschina&amp;utm_content=o_dss_fpos_cn_bus_custom_18_q4_40_banner_tracking_Oschina_BlogBanner&amp;utm_medium=display&amp;cid=2018_q4_na_china-prc_na_Master_Brand_AI_WWF" target="_blank" style="max-width:780px;"><img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/091244_1RHZ_2663968.jpg"></a>
+</div>
+
+<!--
+<script>
+    function success_jsonpCallback(data) {
+        var obj = eval(data);
+        if( obj.success ){
+            var contents = eval(obj.data[0].content);
+            if(contents.length > 0){
+                var content = contents[0];
+                $('#blog-title-ad').prepend("<a  href='"+ content.url +"' target='_blank' style='max-width:780px;'><img src='"+content.img+"'/></a>");
+                $('#blog-title-ad').show();
+            }
+            
+        }else {
+            $('#blog-title-ad').hide();
+        }
+    }
+    window.addEventListener("load", function() {
+         var url="  http://clickc.admaster.com.cn/c/a116493,b2949390,c3159,i0,m101,8a1,8b2,h";
+        $.ajax({
+            type: 'POST',
+            url: url,
+            jsonp: "callback",
+            dataType: 'jsonp',
+            jsonpCallback: 'success_jsonpCallback',
+            contentType: "application/json; charset=utf-8",
+            success: function( response ) {
+                // do in callback
+            },
+            error:function(){
+                $('#blog-title-ad').hide();
+            }
+        });
+    }, false);
+</script>
+-->
+                                    </div>
+                                        <h1 class="header">
+                        Java 7之基础 - 强引用、弱引用、软引用、虚引用
+                                                                            <div class="ui brown label horizontal" data-tooltip="转载">转</div>
+                                                                                            </h1>
+                    <div class="extra ui horizontal list meta-wrap">
+                        <div class="item">
+                            <a href="https://my.oschina.net/ydsakyclguozi" class="__user">                        <div class="osc-avatar small-portrait _35x35 avatar" title="凯文加内特" data-user-id="123050">
+                <img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/123050_50.jpeg" alt="凯文加内特" title="凯文加内特">
+            </div>
+            &nbsp;<span>凯文加内特</span></a>
+                            发布于 2015/04/21 11:25</div>
+                        <div class="item">字数 1914</div>
+                        <div class="item">阅读 14918</div>
+                        <div class="item collect-btn " data-id="404389" data-user-id="123050" data-obj-type="3" data-max="99" data-tag-required="" data-current-user-id="" data-recommend-tags="">收藏 <span data-collect-count="" data-id="404389" data-obj-type="3">26</span></div>
+                        <div class="item"><a class="normal like article-like " data-id="404389">点赞 <span data-article-like-count="">6</span></a></div>
+                        <div class="item comment-count"><a href="https://my.oschina.net/ydsakyclguozi/blog/404389#comments" class="normal"><i class="comment outline icon"></i> 评论 <span data-article-reply-count="">0</span></a></div>
+                                            </div>
+                                        <div class="content" id="articleContent">
+                                                    <div class="ad-wrap">
+                                                        <p style="margin:0 0 10px 0;"><a data-traceid="blog_detail_above_text_link_1" data-tracepid="blog_detail_above_text_link" style="color:#A00;font-weight:bold;" href="https://my.oschina.net/u/3779583/blog/2885612" target="_blank">开发十年，就只剩下这套架构体系了！
+&gt;&gt;&gt; </a>&nbsp;&nbsp;<img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/hot3.png" align="absmiddle" style="max-height: 32px; max-width: 32px;"></p>
+                                        </div>
+                                                <p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">1、强引用（StrongReference）</span><br>&nbsp;&nbsp;&nbsp;</p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp; &nbsp; &nbsp; 强引用是使用最普遍的引用。如果一个对象具有强引用，那垃圾回收器绝不会回收它。如下：</p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs javascript"><span class="hljs-built_in">Object</span>&nbsp;o=<span class="hljs-keyword">new</span>&nbsp;<span class="hljs-built_in">Object</span>();&nbsp;&nbsp;&nbsp;<span class="hljs-comment">//&nbsp;&nbsp;强引用</span></code></pre> 
+<p><span style="font-family: Arial; font-size: 14px; line-height: 26px; background-color: rgb(255, 255, 255);">当内存空间不足，Java虚拟机宁愿抛出OutOfMemoryError错误，使程序异常终止，也不会靠随意回收具有强引用的对象来解决内存不足的问题。如果不使用时，要通过如下方式来弱化引用，如下：</span></p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs javascript">o=<span class="hljs-literal">null</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-comment">//&nbsp;帮助垃圾收集器回收此对象</span></code></pre> 
+<p><span style="font-family: Arial; font-size: 14px; line-height: 26px; background-color: rgb(255, 255, 255);">&nbsp; 显式地设置o为null，或超出对象的生命周期范围，则gc认为该对象不存在引用，这时就可以回收这个对象。具体什么时候收集这要取决于gc的算法。</span><br></p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">举例：</p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs javascript">public&nbsp;<span class="hljs-keyword">void</span>&nbsp;test(){
+	<span class="hljs-built_in">Object</span>&nbsp;o=<span class="hljs-keyword">new</span>&nbsp;<span class="hljs-built_in">Object</span>();
+	<span class="hljs-comment">//&nbsp;省略其他操作</span>
+}</code></pre> 
+<p><span style="font-family: Arial; font-size: 14px; line-height: 26px; background-color: rgb(255, 255, 255);">在一个方法的内部有一个强引用，这个引用保存在栈中，而真正的引用内容（Object）保存在堆中。当这个方法运行完成后就会退出方法栈，则引用内容的引用不存在，这个Object会被回收。</span></p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">但是如果这个o是全局的变量时，就需要在不用这个对象时赋值为null，因为强引用不会被垃圾回收。</p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">强引用在实际中有非常重要的用处，举个ArrayList的实现源代码：</p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs java"><span class="hljs-keyword">private</span>&nbsp;<span class="hljs-keyword">transient</span>&nbsp;Object[]&nbsp;elementData;
+<span class="hljs-function"><span class="hljs-keyword">public</span>&nbsp;<span class="hljs-keyword">void</span>&nbsp;<span class="hljs-title">clear</span><span class="hljs-params">()</span>&nbsp;</span>{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modCount++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-comment">//&nbsp;Let&nbsp;gc&nbsp;do&nbsp;its&nbsp;work</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-keyword">for</span>&nbsp;(<span class="hljs-keyword">int</span>&nbsp;i&nbsp;=&nbsp;<span class="hljs-number">0</span>;&nbsp;i&nbsp;&lt;&nbsp;size;&nbsp;i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elementData[i]&nbsp;=&nbsp;<span class="hljs-keyword">null</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;size&nbsp;=&nbsp;<span class="hljs-number">0</span>;
+}</code></pre> 
+<p><span style="font-family: Arial; font-size: 14px; line-height: 26px; background-color: rgb(255, 255, 255);">在ArrayList类中定义了一个私有的变量elementData数组，在调用方法清空数组时可以看到为每个数组内容赋值为null。不同于elementData=null，强引用仍然存在，避免在后续调用 add()等方法添加元素时进行重新的内存分配。</span><span style="font-family: Arial; font-size: 14px; line-height: 26px; color: rgb(255, 0, 0); background-color: rgb(255, 255, 255);">使用如clear()方法中释放内存的方法对数组中存放的引用类型特别适用，这样就可以及时释放内存。</span><br></p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><br></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">2、软引用（SoftReference）</span></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp; &nbsp;&nbsp;</p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp; &nbsp; &nbsp; &nbsp; 如果一个对象只具有软引用，则内存空间足够，垃圾回收器就不会回收它；如果内存空间不足了，就会回收这些对象的内存。只要垃圾回收器没有回收它，该对象就可以被程序使用。<span style="color: rgb(255, 0, 0);">软引用可用来实现内存敏感的高速缓存。</span><span style="font-size: 12px;">&nbsp; &nbsp;</span></p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs javascript">&nbsp;<span class="hljs-built_in">String</span>&nbsp;str=<span class="hljs-keyword">new</span>&nbsp;<span class="hljs-built_in">String</span>(<span class="hljs-string">"abc"</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-comment">//&nbsp;强引用</span>
+&nbsp;SoftReference&lt;<span class="hljs-built_in">String</span>&gt;&nbsp;softRef=<span class="hljs-keyword">new</span>&nbsp;SoftReference&lt;<span class="hljs-built_in">String</span>&gt;(str);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-comment">//&nbsp;软引用</span></code></pre> 
+<p><span style="font-family: Arial; font-size: 14px; line-height: 26px; background-color: rgb(255, 255, 255);">&nbsp; 当内存不足时，等价于：</span></p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs php"><span class="hljs-keyword">If</span>(JVM.内存不足())&nbsp;{
+&nbsp;&nbsp;&nbsp;str&nbsp;=&nbsp;<span class="hljs-keyword">null</span>;&nbsp;&nbsp;<span class="hljs-comment">//&nbsp;转换为软引用</span>
+&nbsp;&nbsp;&nbsp;System.gc();&nbsp;<span class="hljs-comment">//&nbsp;垃圾回收器进行回收</span>
+}</code></pre> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">虚引用在实际中有重要的应用，例如浏览器的后退按钮。按后退时，这个后退时显示的网页内容是重新进行请求还是从缓存中取出呢？这就要看具体的实现策略了。</p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">（1）如果一个网页在浏览结束时就进行内容的回收，则按后退查看前面浏览过的页面时，需要重新构建</p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">（2）如果将浏览过的网页存储到内存中会造成内存的大量浪费，甚至会造成内存溢出</p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">这时候就可以使用软引用</p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs cs">Browser&nbsp;prev&nbsp;=&nbsp;<span class="hljs-keyword">new</span>&nbsp;Browser();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-comment">//&nbsp;获取页面进行浏览</span>
+SoftReference&nbsp;sr&nbsp;=&nbsp;<span class="hljs-keyword">new</span>&nbsp;SoftReference(prev);&nbsp;<span class="hljs-comment">//&nbsp;浏览完毕后置为软引用		</span>
+<span class="hljs-keyword">if</span>(sr.<span class="hljs-keyword">get</span>()!=<span class="hljs-literal">null</span>){&nbsp;
+	rev&nbsp;=&nbsp;(Browser)&nbsp;sr.<span class="hljs-keyword">get</span>();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-comment">//&nbsp;还没有被回收器回收，直接获取</span>
+}<span class="hljs-keyword">else</span>{
+	prev&nbsp;=&nbsp;<span class="hljs-keyword">new</span>&nbsp;Browser();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-comment">//&nbsp;由于内存吃紧，所以对软引用的对象回收了</span>
+	sr&nbsp;=&nbsp;<span class="hljs-keyword">new</span>&nbsp;SoftReference(prev);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-comment">//&nbsp;重新构建</span>
+}</code></pre> 
+<p><span style="font-family: Arial; font-size: 14px; line-height: 26px; background-color: rgb(255, 255, 255);">这样就很好的解决了实际的问题。</span><br></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 12px;">&nbsp; &nbsp; &nbsp; &nbsp;软引用可以和一个引用队列（ReferenceQueue）联合使用，如果软引用所引用的对象被垃圾回收器回收，Java虚拟机就会把这个软引用加入到与之关联的引用队列中。</span></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 12px;"><br></span></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">3、弱引用（WeakReference）</span></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp;&nbsp;&nbsp;&nbsp;</p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp; &nbsp; &nbsp; 弱引用与软引用的区别在于：只具有弱引用的对象拥有更短暂的生命周期。在垃圾回收器线程扫描它所管辖的内存区域的过程中，一旦发现了只具有弱引用的对象，<span style="color: rgb(255, 0, 0);">不管当前内存空间足够与否，都会回收它的内存</span>。不过，由于垃圾回收器是一个优先级很低的线程，因此不一定会很快发现那些只具有弱引用的对象。</p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs javascript"><span class="hljs-built_in">String</span>&nbsp;str=<span class="hljs-keyword">new</span>&nbsp;<span class="hljs-built_in">String</span>(<span class="hljs-string">"abc"</span>);&nbsp;&nbsp;&nbsp;&nbsp;
+WeakReference&lt;<span class="hljs-built_in">String</span>&gt;&nbsp;abcWeakRef&nbsp;=&nbsp;<span class="hljs-keyword">new</span>&nbsp;WeakReference&lt;<span class="hljs-built_in">String</span>&gt;(str);
+str=<span class="hljs-literal">null</span>;</code></pre> 
+<p><span style="font-family: Arial; font-size: 14px; line-height: 26px; background-color: rgb(255, 255, 255);">当垃圾回收器进行扫描回收时等价于：</span></p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs makefile">str&nbsp;=&nbsp;null;
+System.gc();</code></pre> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(255, 0, 0);">&nbsp;如果这个对象是偶尔的使用，并且希望在使用时随时就能获取到，但又不想影响此对象的垃圾收集，那么你应该用 Weak Reference 来记住此对象。</span><span style="font-size: 12px;">&nbsp;&nbsp;&nbsp;</span></p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 12px;">&nbsp; &nbsp;下面的代码会让str再次变为一个强引用：</span></p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs javascript"><span class="hljs-built_in">String</span>&nbsp;&nbsp;abc&nbsp;=&nbsp;abcWeakRef.get();</code></pre> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">弱引用可以和一个引用队列（ReferenceQueue）联合使用，如果弱引用所引用的对象被垃圾回收，Java虚拟机就会把这个弱引用加入到与之关联的引用队列中。</p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 12px;">当你想引用一个对象，但是这个对象有自己的生命周期，你不想介入这个对象的生命周期，这时候你就是用弱引用。</span></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">这个引用不会在对象的垃圾回收判断中产生任何附加的影响。</p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs java"><span class="hljs-keyword">public</span>&nbsp;<span class="hljs-class"><span class="hljs-keyword">class</span>&nbsp;<span class="hljs-title">ReferenceTest</span>&nbsp;</span>{
+
+	<span class="hljs-keyword">private</span>&nbsp;<span class="hljs-keyword">static</span>&nbsp;ReferenceQueue&lt;VeryBig&gt;&nbsp;rq&nbsp;=&nbsp;<span class="hljs-keyword">new</span>&nbsp;ReferenceQueue&lt;VeryBig&gt;();
+
+	<span class="hljs-function"><span class="hljs-keyword">public</span>&nbsp;<span class="hljs-keyword">static</span>&nbsp;<span class="hljs-keyword">void</span>&nbsp;<span class="hljs-title">checkQueue</span><span class="hljs-params">()</span>&nbsp;</span>{
+		Reference&lt;?&nbsp;extends&nbsp;VeryBig&gt;&nbsp;ref&nbsp;=&nbsp;<span class="hljs-keyword">null</span>;
+		<span class="hljs-keyword">while</span>&nbsp;((ref&nbsp;=&nbsp;rq.poll())&nbsp;!=&nbsp;<span class="hljs-keyword">null</span>)&nbsp;{
+			<span class="hljs-keyword">if</span>&nbsp;(ref&nbsp;!=&nbsp;<span class="hljs-keyword">null</span>)&nbsp;{
+				System.out.println(<span class="hljs-string">"In&nbsp;queue:&nbsp;"</span>	+&nbsp;((VeryBigWeakReference)&nbsp;(ref)).id);
+			}
+		}
+	}
+
+	<span class="hljs-function"><span class="hljs-keyword">public</span>&nbsp;<span class="hljs-keyword">static</span>&nbsp;<span class="hljs-keyword">void</span>&nbsp;<span class="hljs-title">main</span><span class="hljs-params">(String&nbsp;args[])</span>&nbsp;</span>{
+		<span class="hljs-keyword">int</span>&nbsp;size&nbsp;=&nbsp;<span class="hljs-number">3</span>;
+		LinkedList&lt;WeakReference&lt;VeryBig&gt;&gt;&nbsp;weakList&nbsp;=&nbsp;<span class="hljs-keyword">new</span>&nbsp;LinkedList&lt;WeakReference&lt;VeryBig&gt;&gt;();
+		<span class="hljs-keyword">for</span>&nbsp;(<span class="hljs-keyword">int</span>&nbsp;i&nbsp;=&nbsp;<span class="hljs-number">0</span>;&nbsp;i&nbsp;&lt;&nbsp;size;&nbsp;i++)&nbsp;{
+			weakList.add(<span class="hljs-keyword">new</span>&nbsp;VeryBigWeakReference(<span class="hljs-keyword">new</span>&nbsp;VeryBig(<span class="hljs-string">"Weak&nbsp;"</span>&nbsp;+&nbsp;i),&nbsp;rq));
+			System.out.println(<span class="hljs-string">"Just&nbsp;created&nbsp;weak:&nbsp;"</span>&nbsp;+&nbsp;weakList.getLast());
+
+		}
+
+		System.gc();&nbsp;
+		<span class="hljs-keyword">try</span>&nbsp;{&nbsp;<span class="hljs-comment">//&nbsp;下面休息几分钟，让上面的垃圾回收线程运行完成</span>
+			Thread.currentThread().sleep(<span class="hljs-number">6000</span>);
+		}&nbsp;<span class="hljs-keyword">catch</span>&nbsp;(InterruptedException&nbsp;e)&nbsp;{
+			e.printStackTrace();
+		}
+		checkQueue();
+	}
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span>&nbsp;<span class="hljs-title">VeryBig</span>&nbsp;</span>{
+	<span class="hljs-keyword">public</span>&nbsp;String&nbsp;id;
+	<span class="hljs-comment">//&nbsp;占用空间,让线程进行回收</span>
+	<span class="hljs-keyword">byte</span>[]&nbsp;b&nbsp;=&nbsp;<span class="hljs-keyword">new</span>&nbsp;<span class="hljs-keyword">byte</span>[<span class="hljs-number">2</span>&nbsp;*&nbsp;<span class="hljs-number">1024</span>];
+
+	<span class="hljs-function"><span class="hljs-keyword">public</span>&nbsp;<span class="hljs-title">VeryBig</span><span class="hljs-params">(String&nbsp;id)</span>&nbsp;</span>{
+		<span class="hljs-keyword">this</span>.id&nbsp;=&nbsp;id;
+	}
+
+	<span class="hljs-function"><span class="hljs-keyword">protected</span>&nbsp;<span class="hljs-keyword">void</span>&nbsp;<span class="hljs-title">finalize</span><span class="hljs-params">()</span>&nbsp;</span>{
+		System.out.println(<span class="hljs-string">"Finalizing&nbsp;VeryBig&nbsp;"</span>&nbsp;+&nbsp;id);
+	}
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span>&nbsp;<span class="hljs-title">VeryBigWeakReference</span>&nbsp;<span class="hljs-keyword">extends</span>&nbsp;<span class="hljs-title">WeakReference</span>&lt;<span class="hljs-title">VeryBig</span>&gt;&nbsp;</span>{
+	<span class="hljs-keyword">public</span>&nbsp;String&nbsp;id;
+
+	<span class="hljs-function"><span class="hljs-keyword">public</span>&nbsp;<span class="hljs-title">VeryBigWeakReference</span><span class="hljs-params">(VeryBig&nbsp;big,&nbsp;ReferenceQueue&lt;VeryBig&gt;&nbsp;rq)</span>&nbsp;</span>{
+		<span class="hljs-keyword">super</span>(big,&nbsp;rq);
+		<span class="hljs-keyword">this</span>.id&nbsp;=&nbsp;big.id;
+	}
+
+	<span class="hljs-function"><span class="hljs-keyword">protected</span>&nbsp;<span class="hljs-keyword">void</span>&nbsp;<span class="hljs-title">finalize</span><span class="hljs-params">()</span>&nbsp;</span>{
+		System.out.println(<span class="hljs-string">"Finalizing&nbsp;VeryBigWeakReference&nbsp;"</span>&nbsp;+&nbsp;id);
+	}
+}</code></pre> 
+<p><span style="font-family: Arial; font-size: 14px; line-height: 26px; background-color: rgb(255, 255, 255);">最后的输出结果为：</span></p> 
+<pre class="brush:java;toolbar: true; auto-links: false;"><code class="hljs css"><span class="hljs-selector-tag">Just</span>&nbsp;<span class="hljs-selector-tag">created</span>&nbsp;<span class="hljs-selector-tag">weak</span>:&nbsp;<span class="hljs-selector-tag">com</span><span class="hljs-selector-class">.javabase</span><span class="hljs-selector-class">.reference</span><span class="hljs-selector-class">.VeryBigWeakReference</span>@<span class="hljs-keyword">1641c0</span>
+Just&nbsp;created&nbsp;weak:&nbsp;com.javabase.reference.VeryBigWeakReference@<span class="hljs-number">136</span>ab79
+Just&nbsp;created&nbsp;weak:&nbsp;com.javabase.reference.VeryBigWeakReference@<span class="hljs-number">33</span>c1aa
+Finalizing&nbsp;VeryBig&nbsp;Weak&nbsp;<span class="hljs-number">2</span>
+Finalizing&nbsp;VeryBig&nbsp;Weak&nbsp;<span class="hljs-number">1</span>
+Finalizing&nbsp;VeryBig&nbsp;Weak&nbsp;<span class="hljs-number">0</span>
+In&nbsp;queue:&nbsp;Weak&nbsp;<span class="hljs-number">1</span>
+In&nbsp;queue:&nbsp;Weak&nbsp;<span class="hljs-number">2</span>
+In&nbsp;queue:&nbsp;Weak&nbsp;<span class="hljs-number">0</span></code></pre> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">4、虚引用（PhantomReference）</span></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp;&nbsp;&nbsp;</p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp; &nbsp; &nbsp;“虚引用”顾名思义，就是形同虚设，与其他几种引用都不同，虚引用并不会决定对象的生命周期。如果一个对象仅持有虚引用，那么它就和没有任何引用一样，在任何时候都可能被垃圾回收器回收。</p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp; &nbsp; 虚引用主要用来跟踪对象被垃圾回收器回收的活动。虚引用与软引用和弱引用的一个区别在于：虚引用必须和引用队列 （ReferenceQueue）联合使用。当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在回收对象的内存之前，把这个虚引用加入到与之 关联的引用队列中。</p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><br></p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><br></p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">5、总结</span><br></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp;Java4种引用的级别由高到低依次为：</p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; white-space: normal; color: rgb(0, 0, 102); line-height: 19px; background-color: rgb(255, 255, 255);"><span style="font-weight: bold;"><span style="color: rgb(255, 0, 0);"><span style="font-family: SimSun;">强引用 &nbsp;&gt; &nbsp;软引用 &nbsp;&gt; &nbsp;弱引用 &nbsp;&gt; &nbsp;虚引用</span></span></span></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">通过图来看一下他们之间在垃圾回收时的区别：</p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/21112519_Fkk5.jpg" alt="" class="zoom-in-cursor"><br></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">当垃圾回收器回收时，某些对象会被回收，某些不会被回收。垃圾回收器会从根对象Object来标记存活的对象，然后将某些不可达的对象和一些引用的对象进行回收，如果对这方面不是很了解，可以参考如下的文章：</p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">传送门：Java内存管理 &nbsp;<a target="_blank" href="http://blog.csdn.net/mazhimazh/article/category/1907599" rel="nofollow">http://blog.csdn.net/mazhimazh/article/category/1907599</a></p> 
+<p style="margin-top: 10px; margin-right: auto; margin-left: auto; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">通过表格来说明一下，如下：</p> 
+<p><br><img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/112458_s10v_123050.jpg" class="zoom-in-cursor"></p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">参考文献：</p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><br></p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">1、<a target="_blank" href="http://www.cnblogs.com/skywang12345/p/3154474.html" rel="nofollow">http://www.cnblogs.com/skywang12345/p/3154474.html</a></p> 
+<p style="margin-top: 0px; margin-bottom: 0px; padding: 0px; font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">2、<a target="_blank" href="http://blog.csdn.net/lifetragedy?viewmode=contents" rel="nofollow">http://blog.csdn.net/lifetragedy?viewmode=contents</a></p> 
+<p><br></p>
+                                                    <div class="ad-wrap" style="margin-top: 12px;">
+                                                        <div id="blog-title-ad" data-traceid="blog_ali" data-tracepid="blogdown" style="">
+<a href="http://clickc.admaster.com.cn/c/a116493,b2949390,c3159,i0,m101,8a1,8b2,h" target="_blank" style="max-width:780px;"><img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/223916_bL9y_2663968.jpg"></a>
+</div>
+
+<!--
+<script>
+    function success_jsonpCallback(data) {
+        var obj = eval(data);
+        if( obj.success ){
+            var contents = eval(obj.data[0].content);
+            if(contents.length > 0){
+                var content = contents[0];
+                $('#blog-title-ad').prepend("<a  href='"+ content.url +"' target='_blank' style='max-width:780px;'><img src='"+content.img+"'/></a>");
+                $('#blog-title-ad').show();
+            }
+            
+        }else {
+            $('#blog-title-ad').hide();
+        }
+    }
+    window.addEventListener("load", function() {
+         var url="  http://clickc.admaster.com.cn/c/a116493,b2949390,c3159,i0,m101,8a1,8b2,h";
+        $.ajax({
+            type: 'POST',
+            url: url,
+            jsonp: "callback",
+            dataType: 'jsonp',
+            jsonpCallback: 'success_jsonpCallback',
+            contentType: "application/json; charset=utf-8",
+            success: function( response ) {
+                // do in callback
+            },
+            error:function(){
+                $('#blog-title-ad').hide();
+            }
+        });
+    }, false);
+</script>
+-->
+                                        </div>
+                                            </div>
+                    <div class="ui hidden divider"></div>
+                    <p style="text-align:center;">
+                                                    本文转载自：http://blog.csdn.net/mazhimazh/article/details/19752475
+                                            </p>
+                </div>
+
+                                <div class="ui basic center aligned segment action">
+                    <div class="ui huge buttons">
+                                                    <a class="ui green button donate" donate="" data-id="404389" data-obj-type="16344358" data-subject="Java 7之基础 - 强引用、弱引用、软引用、虚引用" data-donater="" data-author="123050" data-return-url="https://my.oschina.net/ydsakyclguozi/blog/404389" data-notify-url="https://my.oschina.net/action/donate/paySuccess">                                 <i class="yen icon"></i>打赏</a>
+                                                <a class="ui basic button like article-like " data-id="404389">
+                            <i class="thumbs up outline icon"></i>点赞 (<span data-article-like-count="">6</span>)
+                        </a>
+                        <a class="ui basic button collect-btn hover" data-id="404389" data-user-id="123050" data-obj-type="3" data-max="99" data-tag-required="" data-current-user-id="" data-recommend-tags=""><i class="star outline icon"></i>收藏 (<span data-collect-count="" data-id="404389" data-obj-type="3">26</span>)</a>
+                        <div class="ui basic dropdown share button bdsharebuttonbox reset dropdown-share bdshare-button-style0-16" data-tag="share-blog" tabindex="0" data-bd-bind="1542897725849">
+                            <i class="share icon"></i> <span>分享</span>
+                            <div class="menu" tabindex="-1">
+                                <a class="item" data-cmd="tsina"><i class="weibo icon"></i>微博</a>
+                                <a class="item" data-cmd="sqq"><i class="qq icon"></i>QQ</a>
+                                <a class="item" data-cmd="weixin"><i class="weixin icon"></i>微信</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui basic segment">
+                        <a class="ban" style="cursor: pointer" ban-report="" data-id="404389" data-obj-type="3" data-url="https://my.oschina.net/ydsakyclguozi/blog/404389">
+                            <i class="flag red icon"></i>举报</a>
+                    </div>
+                </div>
+
+                                                    <div class="reward-list hide">
+                        <div class="reward-list-title">
+                            共有 <span id="reward-num"></span> 人打赏支持<span id="donate_money"></span>
+                        </div>
+                                                <div class="donate-user-list" id="donate_user_list"></div>
+                    </div>
+                
+                                <div class="around-articles-wrap">
+                                                            <div class="around-item around-left">
+                        <i class="angle left icon"></i>
+                        <span class="text">上一篇：</span>
+                        <a class="link" href="https://my.oschina.net/ydsakyclguozi/blog/404625">redis 数据类型详解 以及 redis适用场景场合</a>
+                    </div>
+                    
+                                                            <div class="around-item around-right">
+                        <span class="text">下一篇：</span>
+                        <a class="link" href="https://my.oschina.net/ydsakyclguozi/blog/403829">Android实现推送方式解决方案</a>
+                        <i class="angle right icon"></i>
+                    </div>
+                                    </div>
+
+                                <div class="ui info message author-card">
+                    <div class="ui items">
+                        <div class="item author-card-item">
+                            <a class="ui avatar tiny image" href="https://my.oschina.net/ydsakyclguozi">
+                                                        <div class="osc-avatar large-portrait _80x80" title="凯文加内特" data-user-id="123050">
+                <img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/123050_200.jpeg" alt="凯文加内特" title="凯文加内特">
+            </div>
+                                        </a>
+                            <div class="content author-card-info">
+                                <div class="author-header clearfix">
+                                                                        <h3 class="author-name"><a class="__user" href="https://my.oschina.net/ydsakyclguozi">凯文加内特</a></h3>
+                                                                                                        </div>
+                                <div class="ui horizontal list">
+                                    <div class="item">粉丝 337</div>
+                                    <div class="item">博文 672</div>
+                                    <div class="item">码字总数 94457</div>
+                                    <div class="item">作品 0</div>
+                                </div>
+                                <div class="ui hidden fitted clearing divider"></div>
+                                                                                                    <div class="ui horizontal list">
+                                                                                    <div class="item"><i class="map marker alternate icon"></i> 青岛</div>
+                                                                                                                            <div class="item"><i class="address card outline icon"></i> 后端工程师</div>
+                                                                            </div>
+                                                                                                    <div class="ui hidden fitted clearing divider"></div>
+                                                                                                                    <a class="ui green compact button follow-btn" data-user-id="123050" data-follow-status="1"><i class="heart outline icon"></i><span class="text">关注</span></a>
+                                                                                                            <a class="ui green basic compact button send-message-btn" data-user-id="123050" data-user-name="凯文加内特"><i class="envelope outline icon"></i>私信</a>
+                                                                        <a class="ui green basic compact button" href="https://www.oschina.net/question/ask?user=123050" target="_blank"><i class="comment outline icon"></i>提问</a>
+                                                            </div>
+                            <div class="content panel-skills-radar" style="">
+                                <div class="skills-radar">
+                                    <div class="radar-wrap" radar="" data-user-id="123050" data-skills-num="5" data-detail-url="https://my.oschina.net/ydsakyclguozi/radar" data-container=".panel-skills-radar">
+                                        <div class="radar-map" style="position: relative;"><canvas width="280" height="122" style="width: 280px; height: 122px;"></canvas></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                                                            </div>
+                        <div class="ui basic segment article-list">
+                <div class="scroll-tab hidden-scroll">
+                    <div class="ui green pointing secondary massive menu spaceBlog-tab">
+                        <a class="active item" data-tab="relArticleList">相关文章</a>
+                        <a class="item" data-tab="newArticleList">最新文章</a>
+                    </div>
+                </div>
+                <div class="ui basic segment active tab article-list" data-tab="relArticleList" id="relArticleList">
+                                          
+
+    <div class="ui very relaxed items list-container blog-detail-list-container">
+                                    <div class="item blog-item">
+                    <div class="content">
+                        <a class="header" href="https://my.oschina.net/u/3906750/blog/2244774" target="_blank" title="彻底理解JVM常考题之分级引用模型">彻底理解JVM常考题之分级引用模型</a>
+                        <div class="description">
+                            <p class="line-clamp">本文通过探析Java中的引用模型，分析比较强引用、软引用、弱引用、虚引用的概念及使用场景，知其然且知其所以然，希望给大家在实际开发实践、学习开源项目提供参考。 Java的引用 对于Java中的...</p>
+                        </div>
+                        <div class="extra">
+                            <div class="ui horizontal list">
+                                <div class="item">Java填坑之路</div>
+                                <div class="item">10/12</div>
+
+                                <div class="item"><i class="eye icon"></i> 0</div>
+                                <div class="item"><i class="comment outline icon"></i> 0</div>
+                            </div>
+                        </div>
+                    </div>
+                                                        </div>
+                                                <div class="item blog-item">
+                    <div class="content">
+                        <a class="header" href="https://my.oschina.net/u/3972077/blog/2245457" target="_blank" title="带你深入探解Java的分级引用模型">带你深入探解Java的分级引用模型</a>
+                        <div class="description">
+                            <p class="line-clamp">本文通过探析Java中的引用模型，分析比较强引用、软引用、弱引用、虚引用的概念及使用场景， 知其然且知其所以然 ，希望给大家在实际开发实践、学习开源项目提供参考。 1 Java的引用 对于Jav...</p>
+                        </div>
+                        <div class="extra">
+                            <div class="ui horizontal list">
+                                <div class="item">小刀爱编程</div>
+                                <div class="item">10/14</div>
+
+                                <div class="item"><i class="eye icon"></i> 0</div>
+                                <div class="item"><i class="comment outline icon"></i> 0</div>
+                            </div>
+                        </div>
+                    </div>
+                                                        </div>
+                                                <div class="item blog-item">
+                    <div class="content">
+                        <a class="header" href="https://my.oschina.net/u/1023355/blog/1922311" target="_blank" title="Java拾遗：005 - Java的四种引用类型">Java拾遗：005 - Java的四种引用类型</a>
+                        <div class="description">
+                            <p class="line-clamp">简介 Java中为了让程序员可以自己控制对象生命周期，提供了四种引用方式，都继承自类，它们分别是：强引用、软引用、弱引用、虚引用。 强引用（FinalReference / Finalizer） 在Java中像这种...</p>
+                        </div>
+                        <div class="extra">
+                            <div class="ui horizontal list">
+                                <div class="item">一别丶经年</div>
+                                <div class="item">08/03</div>
+
+                                <div class="item"><i class="eye icon"></i> 0</div>
+                                <div class="item"><i class="comment outline icon"></i> 0</div>
+                            </div>
+                        </div>
+                    </div>
+                                                        </div>
+                                                <div class="item blog-item">
+                    <div class="content">
+                        <a class="header" href="https://my.oschina.net/u/103999/blog/66047" target="_blank" title="[转]Java 强引用、 软引用、 弱引用、虚引用">[转]Java 强引用、 软引用、 弱引用、虚引用</a>
+                        <div class="description">
+                            <p class="line-clamp">1、对象的强、软、弱和虚引用 在JDK 1.2以前的版本中，若一个对象不被任何变量引用，那么程序就无法再使用这个对象。也就是说，只有对象处于可触及（reachable）状态，程序才能使用它。从JDK...</p>
+                        </div>
+                        <div class="extra">
+                            <div class="ui horizontal list">
+                                <div class="item">mj4738</div>
+                                <div class="item">2012/07/08</div>
+
+                                <div class="item"><i class="eye icon"></i> 0</div>
+                                <div class="item"><i class="comment outline icon"></i> 2</div>
+                            </div>
+                        </div>
+                    </div>
+                                                        </div>
+                                                <div class="item blog-item">
+                    <div class="content">
+                        <a class="header" href="https://my.oschina.net/u/255456/blog/523659" target="_blank" title="Android 内存泄露检测工具 LeakCanary 的监控原理">Android 内存泄露检测工具 LeakCanary 的监控原理</a>
+                        <div class="description">
+                            <p class="line-clamp">首先回顾一下 java 的几种 reference： 从jdk 1.2 开始，引用分为 强引用，软引用、弱引用 和虚引用， 其中 软引用、弱引用 和虚引用 和 ReferenceQueue 关联。 在JDK 1.2以前的版本中，若一...</p>
+                        </div>
+                        <div class="extra">
+                            <div class="ui horizontal list">
+                                <div class="item">lightUp</div>
+                                <div class="item">2015/10/29</div>
+
+                                <div class="item"><i class="eye icon"></i> 0</div>
+                                <div class="item"><i class="comment outline icon"></i> 0</div>
+                            </div>
+                        </div>
+                    </div>
+                                                        </div>
+                        </div>
+    <div class="page-load-status">
+        <p class="infinite-scroll-request">
+            <i class="ui active small inline loader" style="display: none;"></i>
+        </p>
+        <p class="infinite-scroll-last">没有更多内容</p>
+        <p class="infinite-scroll-error">加载失败，请刷新页面</p>
+    </div>
+    <a class="ui fluid button load-more-button">加载更多</a>
+                <p class="pagination" style="display: none;">
+            <a class="rel-pagination pagination__next" style="display: none" href="https://my.oschina.net/ydsakyclguozi/blog/widgets/_blog_detail_list_rel?obj=404389&amp;p=2&amp;type=ajax">下一页</a>
+        </p>
+                    </div>
+                <div class="ui basic segment tab article-list" data-tab="newArticleList" id="newArticleList">
+                                          
+
+    <div class="ui very relaxed items list-container blog-detail-list-container">
+                                                        <div class="item blog-item">
+                        <div class="content">
+                            <a class="header" href="https://my.oschina.net/qingqingdego/blog/2909899" target="_blank" title="微信第三方授权登陆">微信第三方授权登陆</a>
+                            <div class="description">
+                                <p class="line-clamp">一些概念： 关于UnionID机制 1、请注意，网页授权获取用户基本信息也遵循UnionID机制。即如果开发者有在多个公众号，或在公众号、移动应用之间统一用户帐号的需求，需要前往微信开放平台（o...</p>
+                            </div>
+                            <div class="extra">
+                                <div class="ui horizontal list">
+                                    <div class="item">轻轻的往前走</div>
+                                    <div class="item">43分钟前</div>
+
+                                    <div class="item"><i class="eye icon"></i> 1</div>
+                                    <div class="item"><i class="comment outline icon"></i> 0</div>
+                                                                    </div>
+                            </div>
+                        </div>
+                                                                    </div>
+                                                                                    <div class="item blog-item">
+                        <div class="content">
+                            <a class="header" href="https://my.oschina.net/u/3972188/blog/2909898" target="_blank" title="使用canvas保存网页为pdf文件支持跨域">使用canvas保存网页为pdf文件支持跨域</a>
+                            <div class="description">
+                                <p class="line-clamp">前言 之前上一篇随笔说了Canvas截图网页为图片，下来个新需求，把网页截图后保存为PDF文件供用户下载。 使用canvas保存网页为pdf文件支持跨域 正文 需求：用户点击下载，将页面保存为PDF文件...</p>
+                            </div>
+                            <div class="extra">
+                                <div class="ui horizontal list">
+                                    <div class="item">嫣然丫丫丫</div>
+                                    <div class="item">43分钟前</div>
+
+                                    <div class="item"><i class="eye icon"></i> 1</div>
+                                    <div class="item"><i class="comment outline icon"></i> 0</div>
+                                                                    </div>
+                            </div>
+                        </div>
+                                                                    </div>
+                                                                                    <div class="item blog-item">
+                        <div class="content">
+                            <a class="header" href="https://my.oschina.net/u/1590490/blog/2909688" target="_blank" title="03.Beetl模板变量以及自定义模板配置---《Beetl视频课程》">03.Beetl模板变量以及自定义模板配置---《Beetl视频课程》</a>
+                            <div class="description">
+                                <p class="line-clamp">本期视频设置一个全局可配置的网站标题； 内容简介：使用临时变量、全局变量、共享变量、自定义Beetl配置、使用ctxPath解决乱码、404等问题 一起学beetl目录：https://my.oschina.net/u/1590...</p>
+                            </div>
+                            <div class="extra">
+                                <div class="ui horizontal list">
+                                    <div class="item">Gavin-King</div>
+                                    <div class="item">51分钟前</div>
+
+                                    <div class="item"><i class="eye icon"></i> 1</div>
+                                    <div class="item"><i class="comment outline icon"></i> 0</div>
+                                                                    </div>
+                            </div>
+                        </div>
+                                                                    </div>
+                                                                                    <div class="item blog-item">
+                        <div class="content">
+                            <a class="header" href="https://my.oschina.net/u/3567851/blog/2909656" target="_blank" title="php Word成功转PDF">php Word成功转PDF</a>
+                            <div class="description">
+                                <p class="line-clamp">一、配置环境 （1）配置php.ini 添加：extension=php_com_dotnet.dll com.allow_dcom = true // 去掉号，改为true 重启环境 （2） 安装：microsoft office 2010 （microsoft office 2007 需要...</p>
+                            </div>
+                            <div class="extra">
+                                <div class="ui horizontal list">
+                                    <div class="item">wenzhizhon</div>
+                                    <div class="item">52分钟前</div>
+
+                                    <div class="item"><i class="eye icon"></i> 2</div>
+                                    <div class="item"><i class="comment outline icon"></i> 0</div>
+                                                                    </div>
+                            </div>
+                        </div>
+                                                                            <div class="images">
+                                <a class="ui small image" href="https://my.oschina.net/u/3567851/blog/2909656" target="_blank" title="php Word成功转PDF">
+                                    <img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/8fbb3ee1f37c2a5d684583137b1bfcb10cc.jpg" alt="" data-img-render="" style="width: auto; height: 100%;">
+                                </a>
+                            </div>
+                                            </div>
+                                                                                    <div class="item blog-item">
+                        <div class="content">
+                            <a class="header" href="https://my.oschina.net/boreboluomiduo/blog/2909354" target="_blank" title="Kubernates常用命令">Kubernates常用命令</a>
+                            <div class="description">
+                                <p class="line-clamp">参考文章：http://docs.kubernetes.org.cn/242.html 1.查看与创建命名空间 #获取当前命名空间kubectl get namespaces #创建命名空间kubectl create namespace test 2.未完待续。。。...</p>
+                            </div>
+                            <div class="extra">
+                                <div class="ui horizontal list">
+                                    <div class="item">真智能胜</div>
+                                    <div class="item">今天</div>
+
+                                    <div class="item"><i class="eye icon"></i> 7</div>
+                                    <div class="item"><i class="comment outline icon"></i> 0</div>
+                                                                    </div>
+                            </div>
+                        </div>
+                                                                            <div class="images">
+                                <a class="ui small image" href="https://my.oschina.net/boreboluomiduo/blog/2909354" target="_blank" title="Kubernates常用命令">
+                                    <img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/ec88c06d207572a35207cb9a91b337ef216.jpg" alt="" data-img-render="" style="width: auto; height: 100%;">
+                                </a>
+                            </div>
+                                            </div>
+                                        </div>
+    <div class="page-load-status">
+        <p class="infinite-scroll-request">
+            <i class="ui active small inline loader" style="display: none"></i>
+        </p>
+        <p class="infinite-scroll-last">没有更多内容</p>
+        <p class="infinite-scroll-error">加载失败，请刷新页面</p>
+    </div>
+    <a class="ui fluid button load-more-button">加载更多</a>
+                <p class="pagination">
+            <a class="news-pagination pagination__next" style="display: none" href="https://my.oschina.net/ydsakyclguozi/blog/widgets/_blog_detail_list_news?p=2&amp;type=ajax">下一页</a>
+        </p>
+                    </div>
+            </div>
+        </div>
+        <div class="two wide computer only column">
+                        <div class="ad-wrap">
+                                </div>
+                    </div>
+    </div>
+</div>
+
+
+<div class="ui mini delete-blog modal">
+    <div class="header">删除文章</div>
+    <div class="content">
+        <p>文章删除后无法恢复，确定取消删除此文章吗？</p>
+    </div>
+    <div class="actions">
+        <div class="ui cancel button">取消</div>
+        <div class="ui red ok button">确定</div>
+    </div>
+</div>
+<div class="ui mini recommend-self modal">
+    <div class="header">自荐文章</div>
+    <div class="content">
+        <p>亲，自荐的博客将通过私信方式通知管理员，优秀的博客文章审核通过后将在博客推荐列表中显示</p>
+    </div>
+    <div class="actions">
+        <div class="ui cancel button">取消</div>
+        <div class="ui red ok button">确定</div>
+    </div>
+</div>
+<div class="ui mini recommend-blog modal">
+    <div class="header">推荐文章</div>
+    <div class="content">
+        <p>确定推荐此文章吗？</p>
+    </div>
+    <div class="actions">
+        <div class="ui cancel button">取消</div>
+        <div class="ui green ok button">确定</div>
+    </div>
+</div>
+<div class="ui mini recommend-author modal">
+    <div class="header">推荐博主</div>
+    <div class="content">
+        <p>确定推荐此博主吗？</p>
+    </div>
+    <div class="actions">
+        <div class="ui cancel button">取消</div>
+        <div class="ui green ok button">确定</div>
+    </div>
+</div>
+
+<script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/blog" defer="defer"></script>
+<script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/space"></script>
+
+<script>
+    // 百度分享
+    window._bd_share_config = {
+        common : {
+            bdText : 'Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国',
+            bdDesc : '1、强引用（StrongReference） 强引用是使用最普遍的引用。如果一个对象具有强引用，那垃圾回收器绝不会回收它。如下： Object o=new Object();   //  强引用 当内存空间不足，Java虚拟机宁愿抛出OutOfMemoryError错误，使程序异常终止，也不会靠随意回收具有强引用的对象来解决内存不足的问题。如果不使用时，要...',
+            bdUrl  : 'https://my.oschina.net/ydsakyclguozi/blog/404389',
+            bdPic  : 'http://static.oschina.net/uploads/img/201504/21112519_Fkk5.jpg'
+        },
+        share : [{
+            bdSize : 16
+        }]
+    };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/new-osc/js/utils/plugins/bdshare_api/share.js?v='+~(-new Date()/36e5)];
+</script>
+                        <div name="detail_show_footer" data-traceid="detail_show" data-tracepid="detail_show_footer">
+                <style>
+    .detail_banner_ad {
+        display: none;
+        position: fixed;
+        margin: auto;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10001;
+        width: 100%;
+    }
+    .detail_banner_ad_bg {
+        position: relative;
+        height: 114px;
+        width: 1200px;
+        margin: 0 auto;
+        background: url("https://oscimg.oschina.net/oscnet/1912cd8d2abdfac552d7e6a006c1666e372.jpg") no-repeat center bottom;
+        background-size: 1200px 114px;
+    }
+    .detail_banner_ad_close {
+        position: absolute;
+        left: 15px;
+        bottom: 60px;
+        width: 30px;
+        height: 30px;
+        margin: auto;
+        background: url("https://oscimg.oschina.net/oscnet/711a5b275b3a7ce1afb407fa6051659d1d2.jpg") no-repeat left;
+        background-size: 30px;
+        cursor: pointer;
+    }
+    @media screen and (max-width: 768px) {
+        .detail_banner_ad_bg {
+            background-size: 100%;
+            width: 100%;
+        }
+        .detail_banner_ad_close{
+            bottom: 15px!important;
+            left: 0px!important;
+            width: 18px;
+            height: 18px;
+            background-size: 100%;
+        }
+    }
+</style>
+<div class="detail_banner_ad" style="display: none;">
+    <a href="https://www.oschina.net/2018-shenzhen-ceremony?origin=dl2&amp;from=dl2" target="_blank">
+            <div class="detail_banner_ad_bg"><span class="detail_banner_ad_close"></span></div>
+    </a>
+</div>
+<!-- <script src="https://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script> -->
+<script src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/js.cookie.min.js"></script>
+<script type="text/javascript">
+    (function () {
+        function loadScript(src, callback) {
+            var script = document.createElement('script'),
+                head = document.getElementsByTagName('head')[0];
+            script.type = 'text/javascript';
+            script.charset = 'UTF-8';
+            script.src = src;
+            if (script.addEventListener) {
+                script.addEventListener('load', function () {
+                    callback();
+                }, false);
+            } else if (script.attachEvent) {
+                script.attachEvent('onreadystatechange', function () {
+                    var target = window.event.srcElement;
+                    if (target.readyState == 'loaded') {
+                        callback();
+                    }
+                });
+            }
+            head.appendChild(script);
+        }
+        function loadAd() {
+            var leftPeople = $('.detail_banner_ad');
+            var cookieName = 'visit-detail-banner-ad-1120-nzsd';
+            var isVisit = Cookies.get(cookieName);
+            if (isVisit == 1) {
+                leftPeople.hide();
+            } else {
+                leftPeople.show();
+            }
+            $('.detail_banner_ad_close').on('click', function (e) {
+                e.preventDefault();
+                Cookies.set(cookieName, 1, {expires: 90, path: '/'});
+                leftPeople.slideUp();
+            })
+        };
+        if (window.jQuery) {
+            loadAd();
+        } else {
+            loadScript('https://www.oschina.net/public/bower_components/jquery/dist/jquery.min.js', function () {
+                loadAd();
+            });
+        }
+    })();
+</script>
+
+            </div>
+            
+            </div>
+        </div>
+                <div id="footer" class="ui vertical footer segment mb-hide">
+            <div class="ui container">
+                <div class="ui grid">
+                    <div class="eight wide mobile four wide tablet four wide computer column">
+                        <h4 class="ui header">开源中国社区</h4>
+                        <div class="ui link list">
+                            <a class="item" href="https://www.oschina.net/home/aboutosc" target="_blank">关于我们</a>
+                            <a class="item" href="https://www.oschina.net/home/aboutosc" target="_blank">联系我们</a>
+                            <a class="item" href="https://www.oschina.net/home/aboutosc#partners#" target="_blank">合作伙伴</a>
+                            <a class="item" href="https://www.oschina.net/openapi" target="_blank">Open API</a>
+                        </div>
+                    </div>
+                    <div class="eight wide mobile four wide tablet four wide computer column">
+                        <h4 class="ui header">在线工具</h4>
+                        <div class="ui link list">
+                            <a class="item" href="https://gitee.com/" target="_blank">码云 Gitee.com</a>
+                            <a class="item" href="http://tool.oschina.net/" target="_blank">在线工具</a>
+                            <a class="item" href="http://team.oschina.net/" target="_blank">Team@OSC 项目协作平台</a>
+                            <a class="item" href="http://runjs.cn/" target="_blank">RunJS 在线开发</a>
+                        </div>
+                    </div>
+                    <div class="center aligned eight wide mobile two wide tablet two wide computer column">
+                        <h4 class="ui header">微信公众号</h4>
+                        <img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/wechat_qrcode.jpg" alt="微信公众号">
+                    </div>
+                    <div class="center aligned eight wide mobile six wide tablet six wide computer column">
+                        <h3 class="ui header">开源中国 APP</h3>
+                        <p>聚合全网技术文章，根据你的阅读喜好进行个性推荐</p>
+                        <a href="https://www.oschina.net/app" target="_blank" class="ui large primary button">下载 APP</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+                <div id="copyright">
+            <div class="ui container">
+                <div class="ui clearing basic segment">
+                    <div class="ui left floated horizontal link list">
+                        <div class="item">©开源中国(OSChina.NET)</div>
+                        <div class="item mb-hide">工信部</div>
+                        <a class="item mb-hide" href="http://www.copu.org.cn/" target="_blank" title="开源软件推进联盟">开源软件推进联盟</a>
+                        <div class="item mb-hide">指定官方社区</div>
+                    </div>
+                    <div class="ui right floated horizontal link list">
+                        <div class="item mb-hide">深圳市奥思网络科技有限公司版权所有</div>
+                        <a href="http://www.miitbeian.gov.cn/" target="_blank" class="item">粤ICP备12009483号-3</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                                                        <div class="back-to-top back-to-top-toggle" style="display: none;">
+        <div class="icon"><img src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/back-to-top.svg" alt="返回顶部"></div>
+        <div class="text">顶部</div>
+    </div>
+
+        <script src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/semantic.min.js"></script>
+    <script src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/jweixin-1.2.0.js"></script>
+                <script type="text/javascript" src="./Java 7之基础 - 强引用、弱引用、软引用、虚引用 - KG-鲜血、汗水和眼泪 - 开源中国_files/space.dff7af7d.js"></script>                <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https'){
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else{
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?cb47adfe0fabd7059a2a90a495077efe";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+    
+
+<!-- Generated by oschina (init:1[ms],page:518[ms],ip:61.132.138.216) //--></body></html>
