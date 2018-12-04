@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)http://www.cnblogs.com/yunfeifei/p/3850440.html#!comments -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="origin">
+<title>数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园</title>
+<meta property="og:description" content="网上关于SQL优化的教程很多，但是比较杂乱。近日有空整理了一下，写出来跟大家分享一下，其中有错误和不足的地方，还请大家纠正补充。这篇文章我花费了大量的时间查找资料、修改、排版，希望大家阅读之后，感觉好">
+<link type="text/css" rel="stylesheet" href="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/blog-common.css">
+<link type="text/css" rel="stylesheet" href="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/182241.css">
+<link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/bundle-darkgreentrip-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/yunfeifei/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/yunfeifei/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/yunfeifei/wlwmanifest.xml">
+<script async="" src="https://www.google-analytics.com/analytics.js"></script><script type="text/javascript" src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/encoder.js"></script><script src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/jquery-2.2.0.min.js"></script>
+<script type="text/javascript">var currentBlogApp = 'yunfeifei', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/blog-common.js" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="https://www.cnblogs.com/yunfeifei/"><img id="blogLogo" src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/logo.gif" alt="返回主页"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="https://www.cnblogs.com/yunfeifei/">雲霏霏</a></h1>
+<h2></h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">博客园</a></li>
+<li><a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/yunfeifei/">首页</a></li>
+<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li></li>
+<li><a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/yunfeifei/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="https://www.cnblogs.com/yunfeifei/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<span id="stats_post_count">随笔 - 97&nbsp; </span>
+<span id="stats_article_count">文章 - 2&nbsp; </span>
+<span id="stats-comment_count">评论 - 1138</span>
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/yunfeifei/p/3850440.html">数据库SQL优化大总结之 百万级数据库优化方案</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body" class="blogpost-body"><p style="text-align: left;" align="center">&nbsp;</p>
+<p style="text-align: left;" align="center">网上关于SQL优化的教程很多，但是比较杂乱。近日有空整理了一下，写出来跟大家分享一下，其中有错误和不足的地方，还请大家纠正补充。</p>
+<p style="text-align: left;" align="center">这篇文章我花费了大量的时间查找资料、修改、排版，希望大家阅读之后，感觉好的话推荐给更多的人，让更多的人看到、纠正以及补充。</p>
+<p style="text-align: left;" align="center">&nbsp;</p>
+<p>1.对查询进行优化，要尽量避免全表扫描，首先应考虑在 where 及 order by 涉及的列上建立索引。</p>
+<p><br>
+2.应尽量避免在 where 子句中对字段进行 null 值判断，否则将导致引擎放弃使用索引而进行全表扫描，如：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> num <span style="color: #0000ff;">is</span> <span style="color: #0000ff;">null</span></pre>
+</div>
+<p><span style="color: #ff0000; background-color: #ffffff;">最好不要给数据库留NULL，尽可能的使用&nbsp;NOT NULL填充数据库.</span></p>
+<p>备注、描述、评论之类的可以设置为&nbsp;NULL，其他的，最好不要使用NULL。</p>
+<p>不要以为&nbsp;NULL&nbsp;不需要空间，比如：char(100)&nbsp;型，在字段建立时，空间就固定了，&nbsp;不管是否插入值（NULL也包含在内），都是占用&nbsp;100个字符的空间的，如果是varchar这样的变长字段，&nbsp;null&nbsp;不占用空间。</p>
+<p><br>
+可以在num上设置默认值0，确保表中num列没有null值，然后这样查询：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> num <span style="color: #808080;">=</span> <span style="color: #800000; font-weight: bold;">0</span></pre>
+</div>
+<p> <br>
+3.应尽量避免在 where 子句中使用 != 或 &lt;&gt; 操作符，否则将引擎放弃使用索引而进行全表扫描。<br>
+<br>
+4.应尽量避免在 where 子句中使用 or 来连接条件，<span style="color: #ff0000;">如果一个字段有索引，一个字段没有索引，将导致引擎放弃使用索引而进行全表扫描</span>，如：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> num<span style="color: #808080;">=</span><span style="color: #800000; font-weight: bold;">10</span> <span style="color: #808080;">or</span> Name <span style="color: #808080;">=</span> <span style="color: #ff0000;">'</span><span style="color: #ff0000;">admin</span><span style="color: #ff0000;">'</span></pre>
+</div>
+<p> 可以这样查询：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> num <span style="color: #808080;">= </span><span style="color: #800000; font-weight: bold;">10</span>
+<span style="color: #0000ff;">union</span> <span style="color: #808080;">all</span>
+<span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> Name <span style="color: #808080;">=</span> <span style="color: #ff0000;">'</span><span style="color: #ff0000;">admin</span><span style="color: #ff0000;">'</span></pre>
+</div>
+<p> <br>
+5.in 和
+not
+in 也要慎用，否则会导致全表扫描，如：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> num <span style="color: #808080;">in</span>(<span style="color: #800000; font-weight: bold;">1</span>,<span style="color: #800000; font-weight: bold;">2</span>,<span style="color: #800000; font-weight: bold;">3</span>)</pre>
+</div>
+<p><span style="color: #ff0000;"> 对于连续的数值，能用 between 就不要用 in 了</span>：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> num <span style="color: #808080;">between</span> <span style="color: #800000; font-weight: bold;">1</span> <span style="color: #808080;">and</span> <span style="color: #800000; font-weight: bold;">3</span></pre>
+</div>
+<p>很多时候用<span style="color: #ff0000;"> exists 代替 in</span> 是一个好的选择：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> num <span style="color: #0000ff;">from</span> a <span style="color: #0000ff;">where</span> num <span style="color: #808080;">in</span>(<span style="color: #0000ff;">select</span> num <span style="color: #0000ff;">from</span> b)</pre>
+</div>
+<p> 用下面的语句替换：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> num <span style="color: #0000ff;">from</span> a <span style="color: #0000ff;">where</span> <span style="color: #808080;">exists</span>(<span style="color: #0000ff;">select</span> <span style="color: #800000; font-weight: bold;">1</span> <span style="color: #0000ff;">from</span> b <span style="color: #0000ff;">where</span> num<span style="color: #808080;">=</span>a.num)</pre>
+</div>
+<p>&nbsp;</p>
+<p> 6.下面的查询也将导致全表扫描：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> name <span style="color: #808080;">like</span> ‘<span style="color: #808080;">%</span>abc<span style="color: #808080;">%</span>’</pre>
+</div>
+<p> 若要提高效率，可以考虑全文检索。<br>
+<br>
+7.如果在 where 子句中使用参数，也会导致全表扫描。因为SQL只有在运行时才会解析局部变量，但优化程序不能将访问计划的选择推迟到运行时；它必须在编译时进行选择。然 而，如果在编译时建立访问计划，变量的值还是未知的，因而无法作为索引选择的输入项。如下面语句将进行全表扫描：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> num <span style="color: #808080;">= </span><span style="color: #008000;">@num</span></pre>
+</div>
+<p> 可以改为强制查询使用索引：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">with</span>(<span style="color: #0000ff;">index</span>(索引名)) <span style="color: #0000ff;">where</span> num <span style="color: #808080;">= </span><span style="color: #008000;">@num</span></pre>
+</div>
+<p> .应尽量<span style="color: #ff0000;">避免在 where 子句中对字段进行表达式操作</span>，这将导致引擎放弃使用索引而进行全表扫描。如：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> num<span style="color: #808080;">/</span><span style="color: #800000; font-weight: bold;">2 </span><span style="color: #808080;">= </span><span style="color: #800000; font-weight: bold;">100</span></pre>
+</div>
+<p> 应改为:</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> num <span style="color: #808080;">= </span><span style="color: #800000; font-weight: bold;">100</span><span style="color: #808080;">*</span><span style="color: #800000; font-weight: bold;">2</span></pre>
+</div>
+<p><br>
+9.应尽量<span style="color: #ff0000;">避免在where子句中对字段进行函数操作</span>，这将导致引擎放弃使用索引而进行全表扫描。如：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> <span style="color: #ff00ff;">substring</span>(name,<span style="color: #800000; font-weight: bold;">1</span>,<span style="color: #800000; font-weight: bold;">3</span>) <span style="color: #808080;">= </span><span style="color: #000000;">’abc’       -–name以abc开头的id
+</span><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> <span style="color: #ff00ff;">datediff</span>(<span style="color: #ff00ff;">day</span>,createdate,’<span style="color: #800000; font-weight: bold;">2005</span><span style="color: #808080;">-</span><span style="color: #800000; font-weight: bold;">11</span><span style="color: #808080;">-</span><span style="color: #800000; font-weight: bold;">30</span>′) <span style="color: #808080;">= </span><span style="color: #800000; font-weight: bold;">0    -</span>–‘<span style="color: #800000; font-weight: bold;">2005</span><span style="color: #808080;">-</span><span style="color: #800000; font-weight: bold;">11</span><span style="color: #808080;">-</span><span style="color: #800000; font-weight: bold;">30</span>’    --生成的id</pre>
+</div>
+<p> 应改为:</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> name <span style="color: #808080;">like</span> <span style="color: #ff0000;">'</span><span style="color: #ff0000;">abc%</span><span style="color: #ff0000;">'</span>
+<span style="color: #0000ff;">select</span> id <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> createdate <span style="color: #808080;">&gt;=</span> <span style="color: #ff0000;">'</span><span style="color: #ff0000;">2005-11-30</span><span style="color: #ff0000;">'</span> <span style="color: #808080;">and</span> createdate <span style="color: #808080;">&lt;</span> <span style="color: #ff0000;">'</span><span style="color: #ff0000;">2005-12-1</span><span style="color: #ff0000;">'</span></pre>
+</div>
+<p> <br>
+10.不要在 where 子句中的“=”左边进行函数、算术运算或其他表达式运算，否则系统将可能无法正确使用索引。<br>
+<br>
+11.在使用索引字段作为条件时，如果该索引是复合索引，那么必须使用到该索引中的第一个字段作为条件时才能保证系统使用该索引，否则该索引将不会被使用，并且应尽可能的让字段顺序与索引顺序相一致。<br>
+<br>
+12.不要写一些没有意义的查询，如需要生成一个空表结构：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">select</span> col1,col2 <span style="color: #0000ff;">into</span> #t <span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">where</span> <span style="color: #800000; font-weight: bold;">1</span><span style="color: #808080;">=</span><span style="color: #800000; font-weight: bold;">0</span></pre>
+</div>
+<p> 这类代码不会返回任何结果集，但是会消耗系统资源的，应改成这样：<br>
+create table #t(…)</p>
+<p>13.Update 语句，如果只更改1、2个字段，<span style="color: #ff0000;">不要Update全部字段</span>，否则频繁调用会引起明显的性能消耗，同时带来大量日志。<br>
+<br>
+14.对于多张大数据量（这里几百条就算大了）的表JOIN，要先分页再JOIN，否则逻辑读会很高，性能很差。<br>
+<br>
+15.select count(*) from table；这样不带任何条件的count会引起全表扫描，并且没有任何业务意义，是一定要杜绝的。</p>
+<p><br>
+16.索引并不是越多越好，索引固然可以提高相应的 select 的效率，但同时也降低了 insert 及 update 的效率，因为
+insert 或 update 时有可能会重建索引，所以怎样建索引需要慎重考虑，视具体情况而定。一个表的索引数最好不要超过6个，若太多则应考虑一些不常使用到的列上建的索引是否有 必要。<br>
+<br>
+17.应尽可能的避免更新 clustered 索引数据列，因为 clustered 索引数据列的顺序就是表记录的物理存储顺序，一旦该列值改变将导致整个表记录的顺序的调整，会耗费相当大的资源。若应用系统需要频繁更新 clustered 索引数据列，那么需要考虑是否应将该索引建为 clustered 索引。<br>
+<br>
+18.尽量使用数字型字段，若只含数值信息的字段尽量不要设计为字符型，这会降低查询和连接的性能，并会增加存储开销。这是因为引擎在处理查询和连 接时会逐个比较字符串中每一个字符，而对于数字型而言只需要比较一次就够了。<br>
+<br>
+19.<span style="color: #ff0000;">尽可能的使用 varchar/nvarchar 代替 char/nchar</span> ，因为首先变长字段存储空间小，可以节省存储空间，其次对于查询来说，在一个相对较小的字段内搜索效率显然要高些。<br>
+<br>
+20.任何地方都不要使用 select * from t ，用具体的字段列表代替“*”，<span style="color: #ff0000;">不要返回用不到的任何字段</span>。<br>
+<br>
+21.尽量使用表变量来代替临时表。如果表变量包含大量数据，请注意索引非常有限（只有主键索引）。<br>
+<br>
+22. 避免频繁创建和删除临时表，以减少系统表资源的消耗。临时表并不是不可使用，适当地使用它们可以使某些例程更有效，例如，当需要重复引用大型表或常用表中的某个数据集时。但是，对于一次性事件， 最好使用导出表。<br>
+<br>
+23.在新建临时表时，如果一次性插入数据量很大，那么可以使用 select into 代替 create table，避免造成大量 log ，以提高速度；如果数据量不大，为了缓和系统表的资源，应先create table，然后insert。<br>
+<br>
+24.如果使用到了临时表，在存储过程的最后务必将所有的临时表显式删除，先 truncate table ，然后 drop table ，这样可以避免系统表的较长时间锁定。<br>
+<br>
+25.<span style="color: #ff0000;">尽量避免使用游标，因为游标的效率较差</span>，如果游标操作的数据超过1万行，那么就应该考虑改写。<br>
+<br>
+26.使用基于游标的方法或临时表方法之前，应先寻找基于集的解决方案来解决问题，基于集的方法通常更有效。<br>
+<br>
+27.与临时表一样，游标并不是不可使用。对小型数据集使用 FAST_FORWARD 游标通常要优于其他逐行处理方法，尤其是在必须引用几个表才能获得所需的数据时。在结果集中包括“合计”的例程通常要比使用游标执行的速度快。如果开发时 间允许，基于游标的方法和基于集的方法都可以尝试一下，看哪一种方法的效果更好。<br>
+<br>
+28.在所有的存储过程和触发器的开始处设置 SET NOCOUNT ON ，在结束时设置 SET NOCOUNT OFF 。无需在执行存储过程和触发器的每个语句后向客户端发送 DONE_IN_PROC 消息。<br>
+<br>
+29.<span style="color: #ff0000;">尽量避免大事务操作，提高系统并发能力。</span><br>
+<br>
+30.尽量避免向客户端返回大数据量，若数据量过大，应该考虑相应需求是否合理。</p>
+<p>&nbsp;</p>
+<p><strong>实际案例分析</strong>：拆分大的&nbsp;DELETE&nbsp;或INSERT&nbsp;语句，批量提交SQL语句<br>
+　　如果你需要在一个在线的网站上去执行一个大的&nbsp;DELETE&nbsp;或&nbsp;INSERT&nbsp;查询，你需要非常小心，要避免你的操作让你的整个网站停止相应。因为这两个操作是会锁表的，表一锁住了，别的操作都进不来了。<br>
+　　Apache&nbsp;会有很多的子进程或线程。所以，其工作起来相当有效率，而我们的服务器也不希望有太多的子进程，线程和数据库链接，这是极大的占服务器资源的事情，尤其是内存。<br>
+　　<span style="color: #ff0000;">如果你把你的表锁上一段时间，比如30秒钟，那么对于一个有很高访问量的站点来说，这30秒所积累的访问进程/线程，数据库链接，打开的文件数，可能不仅仅会让你的WEB服务崩溃，还可能会让你的整台服务器马上挂了。</span><br>
+　　所以，如果你有一个大的处理，你一定把其拆分，使用&nbsp;LIMIT&nbsp;oracle(rownum),sqlserver(top)条件是一个好的方法。下面是一个mysql示例：<br>
+<br>
+</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #0000ff;">while</span>(1<span style="color: #000000;">){
+
+ 　　</span><span style="color: #008000;">//</span><span style="color: #008000;">每次只做1000条</span>
+
+　　 <span style="color: #008080;">mysql_query</span>(“delete from logs where log_date &lt;= ’2012-11-01’ limit 1000<span style="color: #000000;">”);
+
+ 　　</span><span style="color: #0000ff;">if</span>(<span style="color: #008080;">mysql_affected_rows</span>() == 0<span style="color: #000000;">){<br>
+　　 　　</span><span style="color: #008000;">//</span><span style="color: #008000;">删除完成，退出！</span>
+　　 　　<span style="color: #0000ff;">break</span><span style="color: #000000;">；
+　　}
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">每次暂停一段时间，释放表让其他进程/线程访问。</span>
+<span style="color: #008080;">usleep</span>(50000<span style="color: #000000;">)
+
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p>
+<p>好了，到这里就写完了。我知道还有很多没有写到的，还请大家补充。后面有空会介绍一些SQL优化工具给大家。让我们一起学习，一起进步吧！</p>
+<p>
+<br>
+</p>
+</div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="https://www.cnblogs.com/yunfeifei/category/592080.html" target="_blank">SQL </a></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(3850440,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;6a2925e0-97c0-e311-8d02-90b11c0b17d6&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/yunfeifei/" target="_blank"><img src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/20140709181338.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/yunfeifei/">雲霏霏</a><br>
+            <a href="http://home.cnblogs.com/u/yunfeifei/followees">关注 - 1</a><br>
+            <a href="http://home.cnblogs.com/u/yunfeifei/followers">粉丝 - 867</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;6a2925e0-97c0-e311-8d02-90b11c0b17d6&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(3850440,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">164</span>
+    </div>
+    <div class="buryit" onclick="votePost(3850440,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">13</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="https://www.cnblogs.com/yunfeifei/p/3848644.html" class="p_n_p_prefix">« </a> 上一篇：<a href="https://www.cnblogs.com/yunfeifei/p/3848644.html" title="发布于2014-07-16 14:36">SQLServer性能优化之 nolock，大幅提升数据库查询性能</a><br><a href="https://www.cnblogs.com/yunfeifei/p/3863696.html" class="p_n_p_prefix">» </a> 下一篇：<a href="https://www.cnblogs.com/yunfeifei/p/3863696.html" title="发布于2014-07-23 18:16">必须知道的十二大著名法则</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2014-07-17 10:42</span> <a href="https://www.cnblogs.com/yunfeifei/">雲霏霏</a> 阅读(<span id="post_view_count">54843</span>) 评论(<span id="post_comment_count">109</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=3850440" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#" onclick="AddToWz(3850440);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=182241,cb_entryId=3850440,cb_blogApp=currentBlogApp,cb_blogUserGuid='6a2925e0-97c0-e311-8d02-90b11c0b17d6',cb_entryCreatedDate='2014/7/17 10:42:00';loadViewCount(cb_entryId);var cb_postType=1;</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"><div id="comments_pager_top"><div class="pager"><span class="current">1</span><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#!comments" onclick="commentManager.renderComments(2,50);return false;">2</a><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#!comments" onclick="commentManager.renderComments(3,50);return false;">3</a><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#!comments" onclick="commentManager.renderComments(2,50);return false;">Next &gt;</a></div></div>
+<br>
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems"></div>	
+
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988087" class="layer">#1楼</a><a name="2988087" id="comment_anchor_2988087"></a>  <span class="comment_date">2014-07-17 10:50</span> <a id="a_comment_author_2988087" href="http://home.cnblogs.com/u/50162/" target="_blank">听话</a> <a href="http://msg.cnblogs.com/send/%E5%90%AC%E8%AF%9D" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988087" class="blog_comment_body">mark</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988087,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988087,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988088" class="layer">#2楼</a><a name="2988088" id="comment_anchor_2988088"></a>  <span class="comment_date">2014-07-17 10:51</span> <a id="a_comment_author_2988088" href="https://www.cnblogs.com/slyzly/" target="_blank">事理</a> <a href="http://msg.cnblogs.com/send/%E4%BA%8B%E7%90%86" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988088" class="blog_comment_body">不错，谢谢分享。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988088,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988088,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988088_avatar" style="display:none;">http://pic.cnblogs.com/face/168226/20150724144145.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988100" class="layer">#3楼</a><a name="2988100" id="comment_anchor_2988100"></a>  <span class="comment_date">2014-07-17 10:57</span> <a id="a_comment_author_2988100" href="https://www.cnblogs.com/zxj159/" target="_blank">烧点饭</a> <a href="http://msg.cnblogs.com/send/%E7%83%A7%E7%82%B9%E9%A5%AD" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988100" class="blog_comment_body">不错，收藏了！</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988100,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988100,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988100_avatar" style="display:none;">http://pic.cnblogs.com/face/u362290.gif?id=19192022</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988116" class="layer">#4楼</a><a name="2988116" id="comment_anchor_2988116"></a>  <span class="comment_date">2014-07-17 11:06</span> <a id="a_comment_author_2988116" href="https://www.cnblogs.com/qadada/" target="_blank">毛灬毛</a> <a href="http://msg.cnblogs.com/send/%E6%AF%9B%E7%81%AC%E6%AF%9B" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988116" class="blog_comment_body">Perfect</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988116,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988116,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988116_avatar" style="display:none;">http://pic.cnblogs.com/face/361580/20150430123722.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988129" class="layer">#5楼</a><a name="2988129" id="comment_anchor_2988129"></a>  <span class="comment_date">2014-07-17 11:15</span> <a id="a_comment_author_2988129" href="http://home.cnblogs.com/u/84123/" target="_blank">toEverybody</a> <a href="http://msg.cnblogs.com/send/toEverybody" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988129" class="blog_comment_body">MS SQL百万数据就要去优化了呀？？这么差劲</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988129,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988129,&#39;Bury&#39;,this)">反对(2)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988132" class="layer">#6楼</a><a name="2988132" id="comment_anchor_2988132"></a>  <span class="comment_date">2014-07-17 11:18</span> <a id="a_comment_author_2988132" href="https://www.cnblogs.com/LiveCoding/" target="_blank">LiveCoding</a> <a href="http://msg.cnblogs.com/send/LiveCoding" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988132" class="blog_comment_body">mark</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988132,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988132,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988132_avatar" style="display:none;">http://pic.cnblogs.com/face/333723/20150704014014.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988133" class="layer">#7楼</a><a name="2988133" id="comment_anchor_2988133"></a>  <span class="comment_date">2014-07-17 11:19</span> <a id="a_comment_author_2988133" href="https://www.cnblogs.com/liuyanhua/" target="_blank">liuyanhua</a> <a href="http://msg.cnblogs.com/send/liuyanhua" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988133" class="blog_comment_body">good</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988133,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988133,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988134" class="layer">#8楼</a><a name="2988134" id="comment_anchor_2988134"></a>  <span class="comment_date">2014-07-17 11:19</span> <a id="a_comment_author_2988134" href="https://www.cnblogs.com/cwwhy/" target="_blank">cwwhy</a> <a href="http://msg.cnblogs.com/send/cwwhy" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988134" class="blog_comment_body">首先文章应该注明用什么数据库，不同的数据库优化方案差异很大的。<br>其次对于in，not in，or ，like等楼主的说法据我所知sqlserver2005以后好像都会走索引的，希望楼主能验证下</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988134,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988134,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988135" class="layer">#9楼</a><a name="2988135" id="comment_anchor_2988135"></a>  <span class="comment_date">2014-07-17 11:20</span> <a id="a_comment_author_2988135" href="https://www.cnblogs.com/LiveCoding/" target="_blank">LiveCoding</a> <a href="http://msg.cnblogs.com/send/LiveCoding" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988135" class="blog_comment_body"><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988129" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2988129);">@</a>
+toEverybody<br>百万级数据还不多！！！？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988135,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988135,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988135_avatar" style="display:none;">http://pic.cnblogs.com/face/333723/20150704014014.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988136" class="layer">#10楼</a><a name="2988136" id="comment_anchor_2988136"></a>  <span class="comment_date">2014-07-17 11:20</span> <a id="a_comment_author_2988136" href="https://www.cnblogs.com/yydcdut/" target="_blank">我爱物联网</a> <a href="http://msg.cnblogs.com/send/%E6%88%91%E7%88%B1%E7%89%A9%E8%81%94%E7%BD%91" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988136" class="blog_comment_body">大赞</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988136,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988136,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988136_avatar" style="display:none;">http://pic.cnblogs.com/face/587773/20160416123841.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988141" class="layer">#11楼</a><a name="2988141" id="comment_anchor_2988141"></a>  <span class="comment_date">2014-07-17 11:26</span> <a id="a_comment_author_2988141" href="http://home.cnblogs.com/u/141063/" target="_blank">Mort_1990</a> <a href="http://msg.cnblogs.com/send/Mort_1990" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988141" class="blog_comment_body">in我知道在ms后面版本里面微软优化了的，mysql貌似还没有优化。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988141,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988141,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988171" class="layer">#12楼</a><a name="2988171" id="comment_anchor_2988171"></a>  <span class="comment_date">2014-07-17 11:50</span> <a id="a_comment_author_2988171" href="https://www.cnblogs.com/mulaba/" target="_blank">usday</a> <a href="http://msg.cnblogs.com/send/usday" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988171" class="blog_comment_body"><fieldset class="comment_quote"><legend>引用</legend>20.任何地方都不要使用 select * from t ，用具体的字段列表代替“*”，不要返回用不到的任何字段。</fieldset><br><br>这个区别很大吗？如果表里的字段长度都不大影响大吗？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988171,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988171,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988171_avatar" style="display:none;">http://pic.cnblogs.com/face/401718/20180716102849.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988176" class="layer">#13楼</a><a name="2988176" id="comment_anchor_2988176"></a>[<span class="louzhu">楼主</span>]  <span class="comment_date">2014-07-17 11:53</span> <a id="a_comment_author_2988176" href="https://www.cnblogs.com/yunfeifei/" target="_blank">雲霏霏</a> <a href="http://msg.cnblogs.com/send/%E9%9B%B2%E9%9C%8F%E9%9C%8F" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988176" class="blog_comment_body"><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988171" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2988171);">@</a>
+usday<br>比如你需要查询所有用户的用户名和密码，你返回了用户的所有信息，包括Email和Address以及其他的一些相关信息，虽然都不大，但是当有几百万条记录时，你感觉效率怎么样？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988176,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988176,&#39;Bury&#39;,this)">反对(1)</a></div><span id="comment_2988176_avatar" style="display:none;">http://pic.cnblogs.com/face/622439/20140709181338.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988199" class="layer">#14楼</a><a name="2988199" id="comment_anchor_2988199"></a>  <span class="comment_date">2014-07-17 12:31</span> <a id="a_comment_author_2988199" href="https://www.cnblogs.com/wrx362114/" target="_blank">吴瑞祥</a> <a href="http://msg.cnblogs.com/send/%E5%90%B4%E7%91%9E%E7%A5%A5" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988199" class="blog_comment_body">数据库超过10W就不能随便搞了,用的时候就要注意性能问题</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988199,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988199,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988201" class="layer">#15楼</a><a name="2988201" id="comment_anchor_2988201"></a>  <span class="comment_date">2014-07-17 12:33</span> <a id="a_comment_author_2988201" href="https://www.cnblogs.com/yyl8781697/" target="_blank">清风333</a> <a href="http://msg.cnblogs.com/send/%E6%B8%85%E9%A3%8E333" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988201" class="blog_comment_body">楼主，第四项的变换中union all的那个版本应该会有重复项出现的吧？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988201,&#39;Digg&#39;,this)">支持(2)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988201,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988201_avatar" style="display:none;">http://pic.cnblogs.com/face/u240080.jpg?id=04131840</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988202" class="layer">#16楼</a><a name="2988202" id="comment_anchor_2988202"></a>[<span class="louzhu">楼主</span>]  <span class="comment_date">2014-07-17 12:34</span> <a id="a_comment_author_2988202" href="https://www.cnblogs.com/yunfeifei/" target="_blank">雲霏霏</a> <a href="http://msg.cnblogs.com/send/%E9%9B%B2%E9%9C%8F%E9%9C%8F" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988202" class="blog_comment_body"><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988201" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2988201);">@</a>
+清风333<br>这里只是举个例子，根据具体需求写。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988202,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988202,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988202_avatar" style="display:none;">http://pic.cnblogs.com/face/622439/20140709181338.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988203" class="layer">#17楼</a><a name="2988203" id="comment_anchor_2988203"></a>  <span class="comment_date">2014-07-17 12:34</span> <a id="a_comment_author_2988203" href="https://www.cnblogs.com/vbfool/" target="_blank">vbfool</a> <a href="http://msg.cnblogs.com/send/vbfool" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988203" class="blog_comment_body">百万级还要优化，上亿了再说吧。<br>至于说索引什么的，哪怕你表里只有1条记录，索引也是要做的啊。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988203,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988203,&#39;Bury&#39;,this)">反对(1)</a></div><span id="comment_2988203_avatar" style="display:none;">http://pic.cnblogs.com/face/181045/20130802110703.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988218" class="layer">#18楼</a><a name="2988218" id="comment_anchor_2988218"></a>  <span class="comment_date">2014-07-17 12:56</span> <a id="a_comment_author_2988218" href="https://www.cnblogs.com/dacude/" target="_blank">北落师门α</a> <a href="http://msg.cnblogs.com/send/%E5%8C%97%E8%90%BD%E5%B8%88%E9%97%A8%CE%B1" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988218" class="blog_comment_body">333个赞。谢谢分享！</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988218,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988218,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988218_avatar" style="display:none;">http://pic.cnblogs.com/face/521636/20170827100956.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988239" class="layer">#19楼</a><a name="2988239" id="comment_anchor_2988239"></a>  <span class="comment_date">2014-07-17 13:19</span> <a id="a_comment_author_2988239" href="https://www.cnblogs.com/diego0404/" target="_blank">迭_戈</a> <a href="http://msg.cnblogs.com/send/%E8%BF%AD_%E6%88%88" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988239" class="blog_comment_body">MARK</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988239,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988239,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988265" class="layer">#20楼</a><a name="2988265" id="comment_anchor_2988265"></a>  <span class="comment_date">2014-07-17 13:41</span> <a id="a_comment_author_2988265" href="https://www.cnblogs.com/phpfans/" target="_blank">科学家会武术</a> <a href="http://msg.cnblogs.com/send/%E7%A7%91%E5%AD%A6%E5%AE%B6%E4%BC%9A%E6%AD%A6%E6%9C%AF" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988265" class="blog_comment_body">不错收藏了</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988265,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988265,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988265_avatar" style="display:none;">http://pic.cnblogs.com/face/95825/20140718083813.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988288" class="layer">#21楼</a><a name="2988288" id="comment_anchor_2988288"></a>  <span class="comment_date">2014-07-17 13:49</span> <a id="a_comment_author_2988288" href="https://www.cnblogs.com/gossip/" target="_blank">扯</a> <a href="http://msg.cnblogs.com/send/%E6%89%AF" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988288" class="blog_comment_body">select id from t where num in(1,2,3) 是会走索引的</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988288,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988288,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988288_avatar" style="display:none;">http://pic.cnblogs.com/face/35158/20160427194820.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988292" class="layer">#22楼</a><a name="2988292" id="comment_anchor_2988292"></a>  <span class="comment_date">2014-07-17 13:50</span> <a id="a_comment_author_2988292" href="https://www.cnblogs.com/hwjy/" target="_blank">梦是一种奢侈</a> <a href="http://msg.cnblogs.com/send/%E6%A2%A6%E6%98%AF%E4%B8%80%E7%A7%8D%E5%A5%A2%E4%BE%88" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988292" class="blog_comment_body">看了半天 一头雾水 也没特别指明什么数据库 作者既然花了时间 逻辑清楚点 我们也更好看得懂</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988292,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988292,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988292_avatar" style="display:none;">http://pic.cnblogs.com/face/580767/20140724142916.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988301" class="layer">#23楼</a><a name="2988301" id="comment_anchor_2988301"></a>[<span class="louzhu">楼主</span>]  <span class="comment_date">2014-07-17 13:52</span> <a id="a_comment_author_2988301" href="https://www.cnblogs.com/yunfeifei/" target="_blank">雲霏霏</a> <a href="http://msg.cnblogs.com/send/%E9%9B%B2%E9%9C%8F%E9%9C%8F" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988301" class="blog_comment_body"><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988288" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2988288);">@</a>
+扯<br>数据库版本不同，处理方式不同，这里仅作参考。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988301,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988301,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988301_avatar" style="display:none;">http://pic.cnblogs.com/face/622439/20140709181338.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988305" class="layer">#24楼</a><a name="2988305" id="comment_anchor_2988305"></a>[<span class="louzhu">楼主</span>]  <span class="comment_date">2014-07-17 13:53</span> <a id="a_comment_author_2988305" href="https://www.cnblogs.com/yunfeifei/" target="_blank">雲霏霏</a> <a href="http://msg.cnblogs.com/send/%E9%9B%B2%E9%9C%8F%E9%9C%8F" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988305" class="blog_comment_body"><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988292" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2988292);">@</a>
+安逸&amp;<br>这里不针对某个数据库，而是通用的建议！</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988305,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988305,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988305_avatar" style="display:none;">http://pic.cnblogs.com/face/622439/20140709181338.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988338" class="layer">#25楼</a><a name="2988338" id="comment_anchor_2988338"></a>  <span class="comment_date">2014-07-17 13:58</span> <a id="a_comment_author_2988338" href="https://www.cnblogs.com/maoniu602/" target="_blank">牦牛</a> <a href="http://msg.cnblogs.com/send/%E7%89%A6%E7%89%9B" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988338" class="blog_comment_body">百万的数据量其实还真没多少。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988338,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988338,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988338_avatar" style="display:none;">http://pic.cnblogs.com/face/u19318.jpg</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988544" class="layer">#26楼</a><a name="2988544" id="comment_anchor_2988544"></a>  <span class="comment_date">2014-07-17 14:01</span> <a id="a_comment_author_2988544" href="http://home.cnblogs.com/u/289740/" target="_blank">TimerRun</a> <a href="http://msg.cnblogs.com/send/TimerRun" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988544" class="blog_comment_body">mark 平时多养成这样的习惯</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988544,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988544,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988554" class="layer">#27楼</a><a name="2988554" id="comment_anchor_2988554"></a>  <span class="comment_date">2014-07-17 14:08</span> <a id="a_comment_author_2988554" href="https://www.cnblogs.com/12taotie21/" target="_blank">12饕餮21</a> <a href="http://msg.cnblogs.com/send/12%E9%A5%95%E9%A4%AE21" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988554" class="blog_comment_body">百万数量级需要什么优化？你太瞧不起ms sql了</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988554,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988554,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988554_avatar" style="display:none;">http://pic.cnblogs.com/face/172799/20150607225858.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988558" class="layer">#28楼</a><a name="2988558" id="comment_anchor_2988558"></a>  <span class="comment_date">2014-07-17 14:09</span> <a id="a_comment_author_2988558" href="https://www.cnblogs.com/12taotie21/" target="_blank">12饕餮21</a> <a href="http://msg.cnblogs.com/send/12%E9%A5%95%E9%A4%AE21" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988558" class="blog_comment_body"><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988203" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2988203);">@</a>
+vbfool<br><fieldset class="comment_quote"><legend><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988203" title="查看引用原文">引用</a></legend>百万级还要优化，上亿了再说吧。<br>至于说索引什么的，哪怕你表里只有1条记录，索引也是要做的啊。</fieldset><br>100条数据一下，全表扫描比走索引快<br>这个好像最近有人发文章专门说过</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988558,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988558,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988558_avatar" style="display:none;">http://pic.cnblogs.com/face/172799/20150607225858.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988574" class="layer">#29楼</a><a name="2988574" id="comment_anchor_2988574"></a>  <span class="comment_date">2014-07-17 14:30</span> <a id="a_comment_author_2988574" href="https://www.cnblogs.com/heyuquan/" target="_blank">滴答的雨</a> <a href="http://msg.cnblogs.com/send/%E6%BB%B4%E7%AD%94%E7%9A%84%E9%9B%A8" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988574" class="blog_comment_body">对于多张大数据量（这里几百条就算大了）的表JOIN，要先分页再JOIN，否则逻辑读会很高，性能很差。<br><br>这样的话，对于两张表是不是都要多查出部分数据。比如每页查15条，A表和B表都查15.那么join后可能出现&lt;15条的情况。。如果是采取多取数据，那么有什么好的经验？或则有什么更好的办法做这个事</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988574,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988574,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988574_avatar" style="display:none;">http://pic.cnblogs.com/face/u106337.jpg?id=13140010</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988585" class="layer">#30楼</a><a name="2988585" id="comment_anchor_2988585"></a>  <span class="comment_date">2014-07-17 14:38</span> <a id="a_comment_author_2988585" href="https://www.cnblogs.com/heyuquan/" target="_blank">滴答的雨</a> <a href="http://msg.cnblogs.com/send/%E6%BB%B4%E7%AD%94%E7%9A%84%E9%9B%A8" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988585" class="blog_comment_body">另外：17.应尽可能的避免更新 clustered 索引数据列，因为 clustered 索引数据列的顺序就是表记录的物理存储顺序，一旦该列值改变将导致整个表记录的顺序的调整，会耗费相当大的资源。若应用系统需要频繁更新 clustered 索引数据列，那么需要考虑是否应将该索引建为 clustered 索引。<br><br>这个最后好像弄错了， 是 no clustered 索引</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988585,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988585,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988585_avatar" style="display:none;">http://pic.cnblogs.com/face/u106337.jpg?id=13140010</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988600" class="layer">#31楼</a><a name="2988600" id="comment_anchor_2988600"></a>  <span class="comment_date">2014-07-17 14:49</span> <a id="a_comment_author_2988600" href="http://home.cnblogs.com/u/549495/" target="_blank">mading</a> <a href="http://msg.cnblogs.com/send/mading" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988600" class="blog_comment_body"><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988203" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2988203);">@</a>
+vbfool<br><fieldset class="comment_quote"><legend><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988203" title="查看引用原文">引用</a></legend>百万级还要优化，上亿了再说吧。<br>至于说索引什么的，哪怕你表里只有1条记录，索引也是要做的啊。</fieldset><br>纯属操蛋的说法</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988600,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988600,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988617" class="layer">#32楼</a><a name="2988617" id="comment_anchor_2988617"></a>  <span class="comment_date">2014-07-17 14:58</span> <a id="a_comment_author_2988617" href="https://www.cnblogs.com/icyker/" target="_blank">思客.Net</a> <a href="http://msg.cnblogs.com/send/%E6%80%9D%E5%AE%A2.Net" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988617" class="blog_comment_body">请问，第9条的推荐写法是否和第3、6条矛盾？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988617,&#39;Digg&#39;,this)">支持(1)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988617,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988648" class="layer">#33楼</a><a name="2988648" id="comment_anchor_2988648"></a>  <span class="comment_date">2014-07-17 15:10</span> <a id="a_comment_author_2988648" href="https://www.cnblogs.com/CareySon/" target="_blank">CareySon</a> <a href="http://msg.cnblogs.com/send/CareySon" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988648" class="blog_comment_body">楼主可以尝试只写1条,展开把为什么/原理/适用场景铺开将,这些教条式的建议意义并不大<br><br>PS:这个年代百万数据太小了</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988648,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988648,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988648_avatar" style="display:none;">http://pic.cnblogs.com/face/35368/20140115190829.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988660" class="layer">#34楼</a><a name="2988660" id="comment_anchor_2988660"></a>  <span class="comment_date">2014-07-17 15:18</span> <a id="a_comment_author_2988660" href="https://www.cnblogs.com/gossip/" target="_blank">扯</a> <a href="http://msg.cnblogs.com/send/%E6%89%AF" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988660" class="blog_comment_body">大哥，这里面又很多你都没有测试吧<br><br><br>应尽量避免在 where 子句中使用 != 或 &lt;&gt; 操作符，否则将引擎放弃使用索引而进行全表扫描。<br>使用Northwind数据库，<br>执行下面语句，都会走索引<br>SELECT * FROM Employees AS e WHERE  e.EmployeeID=1<br>SELECT * FROM Employees AS e WHERE  e.EmployeeID&lt;&gt;1</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988660,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988660,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988660_avatar" style="display:none;">http://pic.cnblogs.com/face/35158/20160427194820.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988662" class="layer">#35楼</a><a name="2988662" id="comment_anchor_2988662"></a>[<span class="louzhu">楼主</span>]  <span class="comment_date">2014-07-17 15:20</span> <a id="a_comment_author_2988662" href="https://www.cnblogs.com/yunfeifei/" target="_blank">雲霏霏</a> <a href="http://msg.cnblogs.com/send/%E9%9B%B2%E9%9C%8F%E9%9C%8F" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988662" class="blog_comment_body"><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988660" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2988660);">@</a>
+扯<br>这个是一些旧版本的数据库会进行全表扫描。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988662,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988662,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988662_avatar" style="display:none;">http://pic.cnblogs.com/face/622439/20140709181338.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988692" class="layer">#36楼</a><a name="2988692" id="comment_anchor_2988692"></a>  <span class="comment_date">2014-07-17 15:45</span> <a id="a_comment_author_2988692" href="https://www.cnblogs.com/yafengxiang/" target="_blank">不是那样想</a> <a href="http://msg.cnblogs.com/send/%E4%B8%8D%E6%98%AF%E9%82%A3%E6%A0%B7%E6%83%B3" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988692" class="blog_comment_body">顶 楼主！！</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988692,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988692,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988704" class="layer">#37楼</a><a name="2988704" id="comment_anchor_2988704"></a>  <span class="comment_date">2014-07-17 15:57</span> <a id="a_comment_author_2988704" href="https://www.cnblogs.com/AlexanderLouis/" target="_blank">Tiny Mang</a> <a href="http://msg.cnblogs.com/send/Tiny%20Mang" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988704" class="blog_comment_body">mark</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988704,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988704,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988704_avatar" style="display:none;">http://pic.cnblogs.com/face/491280/20130807221744.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988730" class="layer">#38楼</a><a name="2988730" id="comment_anchor_2988730"></a>  <span class="comment_date">2014-07-17 16:17</span> <a id="a_comment_author_2988730" href="https://www.cnblogs.com/YrXzJ1026/" target="_blank">逍遥心</a> <a href="http://msg.cnblogs.com/send/%E9%80%8D%E9%81%A5%E5%BF%83" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988730" class="blog_comment_body">不错，mark下，顶起</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988730,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988730,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988730_avatar" style="display:none;">http://pic.cnblogs.com/face/u344864.jpg?id=02231918</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988732" class="layer">#39楼</a><a name="2988732" id="comment_anchor_2988732"></a>  <span class="comment_date">2014-07-17 16:19</span> <a id="a_comment_author_2988732" href="https://www.cnblogs.com/cmnh4/" target="_blank">害怕飞的鸟</a> <a href="http://msg.cnblogs.com/send/%E5%AE%B3%E6%80%95%E9%A3%9E%E7%9A%84%E9%B8%9F" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988732" class="blog_comment_body">有些东西表示不赞同。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988732,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988732,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988732_avatar" style="display:none;">http://pic.cnblogs.com/face/35673/20130606222622.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988733" class="layer">#40楼</a><a name="2988733" id="comment_anchor_2988733"></a>  <span class="comment_date">2014-07-17 16:19</span> <a id="a_comment_author_2988733" href="https://www.cnblogs.com/TeyGao/" target="_blank">笑东风</a> <a href="http://msg.cnblogs.com/send/%E7%AC%91%E4%B8%9C%E9%A3%8E" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988733" class="blog_comment_body">有些标题党啦</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988733,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988733,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988733_avatar" style="display:none;">http://pic.cnblogs.com/face/174228/20140113231352.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988742" class="layer">#41楼</a><a name="2988742" id="comment_anchor_2988742"></a>  <span class="comment_date">2014-07-17 16:29</span> <a id="a_comment_author_2988742" href="https://www.cnblogs.com/xran/" target="_blank">知识青年下乡去</a> <a href="http://msg.cnblogs.com/send/%E7%9F%A5%E8%AF%86%E9%9D%92%E5%B9%B4%E4%B8%8B%E4%B9%A1%E5%8E%BB" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988742" class="blog_comment_body">好帖，转载了。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988742,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988742,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988742_avatar" style="display:none;">http://pic.cnblogs.com/face/541489/20150323142425.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988748" class="layer">#42楼</a><a name="2988748" id="comment_anchor_2988748"></a>  <span class="comment_date">2014-07-17 16:35</span> <a id="a_comment_author_2988748" href="http://home.cnblogs.com/u/255321/" target="_blank">julianking</a> <a href="http://msg.cnblogs.com/send/julianking" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988748" class="blog_comment_body">mark!</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988748,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988748,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988779" class="layer">#43楼</a><a name="2988779" id="comment_anchor_2988779"></a>  <span class="comment_date">2014-07-17 17:01</span> <a id="a_comment_author_2988779" href="http://home.cnblogs.com/u/78484/" target="_blank">lightc</a> <a href="http://msg.cnblogs.com/send/lightc" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988779" class="blog_comment_body">mark</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988779,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988779,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988782" class="layer">#44楼</a><a name="2988782" id="comment_anchor_2988782"></a>  <span class="comment_date">2014-07-17 17:05</span> <a id="a_comment_author_2988782" href="https://www.cnblogs.com/zhang9418hn/" target="_blank">放哨De老鼠</a> <a href="http://msg.cnblogs.com/send/%E6%94%BE%E5%93%A8De%E8%80%81%E9%BC%A0" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988782" class="blog_comment_body">很多是非原创的，也有很多是没有道理的，实际应用中会发现很多是错的</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988782,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988782,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988782_avatar" style="display:none;">http://pic.cnblogs.com/face/u114336.gif</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988796" class="layer">#45楼</a><a name="2988796" id="comment_anchor_2988796"></a>  <span class="comment_date">2014-07-17 17:19</span> <a id="a_comment_author_2988796" href="https://www.cnblogs.com/chongsha/" target="_blank">冲杀</a> <a href="http://msg.cnblogs.com/send/%E5%86%B2%E6%9D%80" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988796" class="blog_comment_body">7.如果在 where 子句中使用参数，也会导致全表扫描。因为SQL只有在运行时才会解析局部变量，但优化程序不能将访问计划的选择推迟到运行时；它必须在编译时进行选择。然 而，如果在编译时建立访问计划，变量的值还是未知的，因而无法作为索引选择的输入项。如下面语句将进行全表扫描：<br><br>select id from t where num = @num<br><br>SQL SERVER也会走执行计划的--！晕的很</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988796,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988796,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988796_avatar" style="display:none;">http://pic.cnblogs.com/face/u320794.jpg?id=18124815</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988797" class="layer">#46楼</a><a name="2988797" id="comment_anchor_2988797"></a>  <span class="comment_date">2014-07-17 17:19</span> <a id="a_comment_author_2988797" href="https://www.cnblogs.com/bolobeach/" target="_blank">bolobeach</a> <a href="http://msg.cnblogs.com/send/bolobeach" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988797" class="blog_comment_body">楼主可以在补充一条，如果是mysql的话，查询的时候加上with nolock,<br>如果只是读取slave节点上的，那么修改引擎也是一种方法。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988797,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988797,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988814" class="layer">#47楼</a><a name="2988814" id="comment_anchor_2988814"></a>  <span class="comment_date">2014-07-17 17:31</span> <a id="a_comment_author_2988814" href="https://www.cnblogs.com/Apolyon/" target="_blank">The Soul Render</a> <a href="http://msg.cnblogs.com/send/The%20Soul%20Render" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988814" class="blog_comment_body"><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988176" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2988176);">@</a>
+雲霏霏<br>@雲霏霏<br><fieldset class="comment_quote"><legend><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988176" title="查看引用原文">引用</a></legend>@usday<br>比如你需要查询所有用户的用户名和密码，你返回了用户的所有信息，包括Email和Address以及其他的一些相关信息，虽然都不大，但是当有几百万条记录时，你感觉效率怎么样？</fieldset><br>查询所有的用户的用户名和密码这个功能?你确定不是在搞笑<br>真要有个功能需要读出来几百万的数据,哪怕只查询2个字段都会有不可想象的问题出现</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988814,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988814,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988819" class="layer">#48楼</a><a name="2988819" id="comment_anchor_2988819"></a>  <span class="comment_date">2014-07-17 17:32</span> <a id="a_comment_author_2988819" href="https://www.cnblogs.com/tonyjude/" target="_blank">不曾流泪的鱼</a> <a href="http://msg.cnblogs.com/send/%E4%B8%8D%E6%9B%BE%E6%B5%81%E6%B3%AA%E7%9A%84%E9%B1%BC" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988819" class="blog_comment_body">其实有时候用存储过程效率更高</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988819,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988819,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988831" class="layer">#49楼</a><a name="2988831" id="comment_anchor_2988831"></a>  <span class="comment_date">2014-07-17 17:40</span> <a id="a_comment_author_2988831" href="https://www.cnblogs.com/dongyu9521/" target="_blank">七步、</a> <a href="http://msg.cnblogs.com/send/%E4%B8%83%E6%AD%A5%E3%80%81" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988831" class="blog_comment_body">面试时被问到过</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988831,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988831,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988831_avatar" style="display:none;">http://pic.cnblogs.com/face/578589/20170308154553.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#2988870" class="layer">#50楼</a><a name="2988870" id="comment_anchor_2988870"></a><span id="comment-maxId" style="display:none;">2988870</span><span id="comment-maxDate" style="display:none;">2014/7/17 18:09:51</span>  <span class="comment_date">2014-07-17 18:09</span> <a id="a_comment_author_2988870" href="https://www.cnblogs.com/zyhblogs/" target="_blank">水月无痕</a> <a href="http://msg.cnblogs.com/send/%E6%B0%B4%E6%9C%88%E6%97%A0%E7%97%95" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2988870" class="blog_comment_body">第六条和第九条有冲突吧，第六条说是like会导致全表扫描，第九条怎么还说把函数改进为Like</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2988870,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2988870,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2988870_avatar" style="display:none;">http://pic.cnblogs.com/face/u88491.jpg</span>
+			</div>
+		</div>
+	<div id="comments_pager_bottom"><div class="pager"><span class="current">1</span><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#!comments" onclick="commentManager.renderComments(2,50);return false;">2</a><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#!comments" onclick="commentManager.renderComments(3,50);return false;">3</a><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#!comments" onclick="commentManager.renderComments(2,50);return false;">Next &gt;</a></div></div></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/yunfeifei/p/3850440.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】超50万VC++源码: 大型组态工控、电力仿真CAD与GIS源码库！</a><br><a href="http://clickc.admaster.com.cn/c/a113612,b3081535,c1705,i0,m101,8a1,8b3,h" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-EH&#39;)">【福利】华为云4核8G云主机免费试用</a><br><a href="http://clickc.admaster.com.cn/c/a116493,b2949399,c1705,i0,m101,8a1,8b3,h" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-华为云&#39;)">【活动】申请成为华为云云享专家 尊享9大权益</a><br><a href="https://cloud.tencent.com/developer/conf/2018-beijing?fromSource=gwzcw.1768694.1768694.1768694" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-腾讯云&#39;)">【活动】腾讯云+社区开发者大会12月15日,首都北京盛大起航！</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="https://cloud.tencent.com/act/special/amd?fromSource=gwzcw.1351353.1351353.1351353" target="_blank"><img width="300" height="250" src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/24442-20181129113406214-695115565.jpg" alt="腾讯云1129" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;C1&#39;);"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>相关博文：</b><br>·  <a href="https://www.cnblogs.com/JK1989/p/7305439.html" target="_blank" onclick="clickRecomItmem(7305439,&#39;OYPq9278/KM6MtdAUAm6nNghPSSOudCCLz0DGlqwou2+91lHwZhWGVywmpg64z3IKyJqyqPbZzbh05J2st8691PLeGPv3nzykBAk4SrK2Icxbz00zrbbBMqxracdqlv4/+kJKSdyA4JAqx5MSqg=&#39;)">Mysql 数据库优化（五）sql语句优化【个人经验】转</a><br>·  <a href="https://www.cnblogs.com/yanglang/p/8192632.html" target="_blank" onclick="clickRecomItmem(8192632,&#39;OzfwnxgclzdKpsp/CVICdqAsMWR3ygHU2ZUU1UT2TpSdVlpPhf5PjtjR4ueKLEvTfvufQTQxLK9FE5mE4txADnKfCm/NdAm4d8ArUgxfK0M0N0SROsMgV4SKD9UUeLkRF+CtibES7Zqa5Lz+OVw=&#39;)">【数据库】百万级数据库SQL优化大总结</a><br>·  <a href="https://www.cnblogs.com/dullsky/p/5059958.html" target="_blank" onclick="clickRecomItmem(5059958,&#39;2bMO5gh6eI1QGfQfm2XUfUyhNQmwLLFUWfZixQXCp6W11/pF0K/1chJ2z7BTOa/C2VYs4njfeTPvC/dxfoTrubq1G6e+U9Ublq/6CXs20OFQPIkawCc9qPTC4rQY84ZVAG6cae1WrVdh3KPc8hPsunY2&#39;)">数据库SQL优化大总结之百万级数据库优化方案</a><br>·  <a href="https://www.cnblogs.com/cnblog-long/p/8620428.html" target="_blank" onclick="clickRecomItmem(8620428,&#39;9LJc+wDKhNWA56feqHM0wWD/flgfR5Bd9Ac3aL68GhfXiUpAOeEOO6zc61JgvOM0avYriHWpUHg7sHB3x7jZVz73eHUkE93PYtz/usHb/BGM9GWfzHtBxvCmsWM7nFifXgFG1pUTYKMSsvW9WcA=&#39;)">数据库SQL优化大总结</a><br>·  <a href="https://www.cnblogs.com/drizzlewithwind/p/6680429.html" target="_blank" onclick="clickRecomItmem(6680429,&#39;8RcA1eA9xhmvEHKHpEbQt5epn1EG59REuLAVptmJArgCST4cv/Ml7fyj6Hbiccm+eFU+sao50JqCji4zPCievCrygCD5DwSqN6GIVasbrOXFKtu8iOqW9v50G5pUrzRMLTugqRicjIfd2nnt66Q=&#39;)">数据库SQL优化</a><br></div></div>
+<script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+<script>
+  var googletag = googletag || {};
+  googletag.cmd = googletag.cmd || [];
+</script>
+
+<script>
+  googletag.cmd.push(function() {
+    googletag.defineSlot('/1090369/C2', [468, 60], 'div-gpt-ad-1539008685004-0').addService(googletag.pubads());
+    googletag.pubads().enableSingleRequest();
+    googletag.enableServices();
+  });
+</script>
+<div id="cnblogs_c2" class="c_ad_block">
+    <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;">
+    <script>
+    if (new Date() >= new Date(2018, 9, 13)) {
+        googletag.cmd.push(function() { googletag.display('div-gpt-ad-1539008685004-0'); });
+    }
+    </script>
+    </div>
+</div>
+<div id="under_post_kb"><div class="itnews c_ad_block"><b>最新新闻</b>：<br> ·  <a href="https://news.cnblogs.com/n/613989/" target="_blank">好未来宣布全资收购CodeMonkey</a><br> ·  <a href="https://news.cnblogs.com/n/613988/" target="_blank">HQ2选址尘埃落定 但亚马逊的搬家噩梦才刚刚开始</a><br> ·  <a href="https://news.cnblogs.com/n/613985/" target="_blank">中消协发布100款App隐私政策测评 微信QQ等评分位居前列</a><br> ·  <a href="https://news.cnblogs.com/n/613984/" target="_blank">为什么有些人会感觉到比他人更强烈的疼痛？</a><br> ·  <a href="https://news.cnblogs.com/n/613983/" target="_blank">量子与现实世界界限在哪？将动物送量子世界寻求答案</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><div style="font-size: 20px; font-weight: bold;">访次:&nbsp;<a href="https://www.amazingcounters.com/"><img border="0" src="./数据库SQL优化大总结之 百万级数据库优化方案 - 雲霏霏 - 博客园_files/counter.php" alt="AmazingCounters.com"></a>&nbsp;次</div>
+<div style="margin: 10px 0">.NET-QQ群：243633526</div>
+<div style="margin: 10px 0">&nbsp;安卓-QQ群：227526925</div><div id="profile_block">昵称：<a href="https://home.cnblogs.com/u/yunfeifei/">雲霏霏</a><br>园龄：<a href="https://home.cnblogs.com/u/yunfeifei/" title="入园时间：2014-04-10">4年7个月</a><br>粉丝：<a href="https://home.cnblogs.com/u/yunfeifei/followers/">867</a><br>关注：<a href="https://home.cnblogs.com/u/yunfeifei/followees/">1</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;6a2925e0-97c0-e311-8d02-90b11c0b17d6&#39;)">+加关注</a></div><script>getFollowStatus('6a2925e0-97c0-e311-8d02-90b11c0b17d6')</script></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="Calendar">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2018/11/01&#39;);return false;">&lt;</a></td><td align="center">2018年12月</td><td class="CalNextPrev" align="right"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2019/01/01&#39;);return false;">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" align="center" abbr="日" scope="col">日</th><th class="CalDayHeader" align="center" abbr="一" scope="col">一</th><th class="CalDayHeader" align="center" abbr="二" scope="col">二</th><th class="CalDayHeader" align="center" abbr="三" scope="col">三</th><th class="CalDayHeader" align="center" abbr="四" scope="col">四</th><th class="CalDayHeader" align="center" abbr="五" scope="col">五</th><th class="CalDayHeader" align="center" abbr="六" scope="col">六</th></tr><tr><td class="CalOtherMonthDay" align="center">25</td><td class="CalOtherMonthDay" align="center">26</td><td class="CalOtherMonthDay" align="center">27</td><td class="CalOtherMonthDay" align="center">28</td><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td><td class="CalWeekendDay" align="center">1</td></tr><tr><td class="CalWeekendDay" align="center">2</td><td align="center">3</td><td class="CalTodayDay" align="center">4</td><td align="center">5</td><td align="center">6</td><td align="center">7</td><td class="CalWeekendDay" align="center">8</td></tr><tr><td class="CalWeekendDay" align="center">9</td><td align="center">10</td><td align="center">11</td><td align="center">12</td><td align="center">13</td><td align="center">14</td><td class="CalWeekendDay" align="center">15</td></tr><tr><td class="CalWeekendDay" align="center">16</td><td align="center">17</td><td align="center">18</td><td align="center">19</td><td align="center">20</td><td align="center">21</td><td class="CalWeekendDay" align="center">22</td></tr><tr><td class="CalWeekendDay" align="center">23</td><td align="center">24</td><td align="center">25</td><td align="center">26</td><td align="center">27</td><td align="center">28</td><td class="CalWeekendDay" align="center">29</td></tr><tr><td class="CalWeekendDay" align="center">30</td><td align="center">31</td><td class="CalOtherMonthDay" align="center">1</td><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td></tr>
+</tbody></table></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk"></div>
+</div>
+</div>
+
+</div><div id="sidebar_categories">
+<div id="sidebar_postcategory" class="catListPostCategory sidebar-block">
+<h3 class="catListTitle">随笔分类<span style="font-size:11px;font-weight:normal">(96)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="https://www.cnblogs.com/yunfeifei/category/1125020.html">.Net Core(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="https://www.cnblogs.com/yunfeifei/category/616713.html">Android(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="https://www.cnblogs.com/yunfeifei/category/616712.html">BootStrap</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="https://www.cnblogs.com/yunfeifei/category/571585.html">C#(27)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_4" href="https://www.cnblogs.com/yunfeifei/category/715302.html">CSS3(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_5" href="https://www.cnblogs.com/yunfeifei/category/660334.html">HTML(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_6" href="https://www.cnblogs.com/yunfeifei/category/619012.html">Javascript(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_7" href="https://www.cnblogs.com/yunfeifei/category/628949.html">Json(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_8" href="https://www.cnblogs.com/yunfeifei/category/636614.html">Nancy(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_9" href="https://www.cnblogs.com/yunfeifei/category/569007.html">ReactJS(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_10" href="https://www.cnblogs.com/yunfeifei/category/626848.html">RegularExpression(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_11" href="https://www.cnblogs.com/yunfeifei/category/585473.html">Silverlight(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_12" href="https://www.cnblogs.com/yunfeifei/category/592080.html">SQL (7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_13" href="https://www.cnblogs.com/yunfeifei/category/652312.html">WCF(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_14" href="https://www.cnblogs.com/yunfeifei/category/679284.html">WPF(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_15" href="https://www.cnblogs.com/yunfeifei/category/699220.html">开发工具(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_16" href="https://www.cnblogs.com/yunfeifei/category/669869.html">开源项目(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_17" href="https://www.cnblogs.com/yunfeifei/category/956399.html">前端工具(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_18" href="https://www.cnblogs.com/yunfeifei/category/597612.html">趣味杂谈(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_19" href="https://www.cnblogs.com/yunfeifei/category/630549.html">日常问题(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_20" href="https://www.cnblogs.com/yunfeifei/category/657577.html">算法(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_21" href="https://www.cnblogs.com/yunfeifei/category/624584.html">项目管理(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_22" href="https://www.cnblogs.com/yunfeifei/category/636221.html">主机域名(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_23" href="https://www.cnblogs.com/yunfeifei/category/632971.html">转载(7)</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_postarchive" class="catListPostArchive sidebar-block">
+<h3 class="catListTitle">随笔档案<span style="font-size:11px;font-weight:normal">(97)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="https://www.cnblogs.com/yunfeifei/archive/2018/04.html">2018年4月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="https://www.cnblogs.com/yunfeifei/archive/2018/01.html">2018年1月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="https://www.cnblogs.com/yunfeifei/archive/2017/12.html">2017年12月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="https://www.cnblogs.com/yunfeifei/archive/2017/07.html">2017年7月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_4" href="https://www.cnblogs.com/yunfeifei/archive/2017/04.html">2017年4月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_5" href="https://www.cnblogs.com/yunfeifei/archive/2017/03.html">2017年3月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_6" href="https://www.cnblogs.com/yunfeifei/archive/2017/02.html">2017年2月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_7" href="https://www.cnblogs.com/yunfeifei/archive/2017/01.html">2017年1月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_8" href="https://www.cnblogs.com/yunfeifei/archive/2016/11.html">2016年11月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_9" href="https://www.cnblogs.com/yunfeifei/archive/2015/07.html">2015年7月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_10" href="https://www.cnblogs.com/yunfeifei/archive/2015/06.html">2015年6月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_11" href="https://www.cnblogs.com/yunfeifei/archive/2015/05.html">2015年5月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_12" href="https://www.cnblogs.com/yunfeifei/archive/2015/04.html">2015年4月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_13" href="https://www.cnblogs.com/yunfeifei/archive/2015/03.html">2015年3月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_14" href="https://www.cnblogs.com/yunfeifei/archive/2015/02.html">2015年2月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_15" href="https://www.cnblogs.com/yunfeifei/archive/2015/01.html">2015年1月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_16" href="https://www.cnblogs.com/yunfeifei/archive/2014/12.html">2014年12月 (12)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_17" href="https://www.cnblogs.com/yunfeifei/archive/2014/11.html">2014年11月 (14)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_18" href="https://www.cnblogs.com/yunfeifei/archive/2014/10.html">2014年10月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_19" href="https://www.cnblogs.com/yunfeifei/archive/2014/09.html">2014年9月 (8)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_20" href="https://www.cnblogs.com/yunfeifei/archive/2014/08.html">2014年8月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_21" href="https://www.cnblogs.com/yunfeifei/archive/2014/07.html">2014年7月 (11)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_22" href="https://www.cnblogs.com/yunfeifei/archive/2014/06.html">2014年6月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_23" href="https://www.cnblogs.com/yunfeifei/archive/2014/05.html">2014年5月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_24" href="https://www.cnblogs.com/yunfeifei/archive/2014/04.html">2014年4月 (2)</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_scorerank" class="sidebar-block">
+<div class="catListBlogRank">
+<h3 class="catListTitle">积分与排名</h3>
+<ul>
+	<li class="liScore">
+		积分 -	225199
+	</li>
+	<li class="liRank">
+		排名 -	1269
+	</li>
+</ul>
+</div>
+
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/yunfeifei/p/3998783.html#4126903">1. Re:5天玩转C#并行和多线程编程 —— 第二天 并行集合和PLinq</a></li>
+        <li class="recent_comment_body">Linq time is 904.<br>Parallel Linq time is 1943.<br><br>并行Linq结果相反</li>
+        <li class="recent_comment_author">--烟寒丷</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/yunfeifei/p/3993401.html#4123106">2. Re:5天玩转C#并行和多线程编程 —— 第一天 认识Parallel</a></li>
+        <li class="recent_comment_body">@雲霏霏好的...</li>
+        <li class="recent_comment_author">--tieniu</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/yunfeifei/p/3993401.html#4123096">3. Re:5天玩转C#并行和多线程编程 —— 第一天 认识Parallel</a></li>
+        <li class="recent_comment_body">@tieniu这个了解一下，建议用Task~...</li>
+        <li class="recent_comment_author">--雲霏霏</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/yunfeifei/p/3993401.html#4123091">4. Re:5天玩转C#并行和多线程编程 —— 第一天 认识Parallel</a></li>
+        <li class="recent_comment_body">Parallel.For(0,100,item=&gt; { Response.Write(item+""); Response.Flush();......</li>
+        <li class="recent_comment_author">--tieniu</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/yunfeifei/p/4111112.html#4123087">5. Re:5天玩转C#并行和多线程编程 —— 第四天 Task进阶</a></li>
+        <li class="recent_comment_body"></li>
+        <li class="recent_comment_author">--tieniu</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="https://www.cnblogs.com/yunfeifei/p/4019504.html">1. 全面理解Javascript闭包和闭包的几种写法及用途(77258)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4453690.html">2. JavaScript进阶之路——认识和使用Promise，重构你的Js代码(69444)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/3850440.html">3. 数据库SQL优化大总结之 百万级数据库优化方案(54837)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/3993401.html">4. 5天玩转C#并行和多线程编程 —— 第一天 认识Parallel(52540)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4486125.html">5. 一看就懂的ReactJs入门教程-精华版(48805)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4106318.html">6. 5天玩转C#并行和多线程编程 —— 第三天 认识和使用Task(37936)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/3844814.html">7. C# Lambda表达式详解，及Lambda表达式树的创建(31944)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4272912.html">8. 递归算法经典实例小结(C#实现)(25762)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4111112.html">9. 5天玩转C#并行和多线程编程 —— 第四天 Task进阶(24587)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4055439.html">10. 淘宝code—— 最给力的国内免费SVN(不限语言)，异地团队开发、打造个人开源项目不再是梦(24018)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="https://www.cnblogs.com/yunfeifei/p/3850440.html">1. 数据库SQL优化大总结之 百万级数据库优化方案(109)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4555728.html">2. Visual Studio Code预览版Ver 0.3.0试用体验(76)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4055439.html">3. 淘宝code—— 最给力的国内免费SVN(不限语言)，异地团队开发、打造个人开源项目不再是梦(72)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4181164.html">4. 何必苦等VS2015？来看看VS2013下实现移动端的跨平台开发(68)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4163347.html">5. Android Studio 1.0.1 + Genymotion安卓模拟器打造高效安卓开发环境(62)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4209625.html">6. 程序员必须知道的几个Git代码托管平台(43)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4251755.html">7. win10最新预览版9926使用评估(40)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4109318.html">8. .NET轻量级MVC框架：Nancy入门教程(一)——初识Nancy(40)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4207093.html">9. 2015继续任性——不会Git命令，照样玩转Git(36)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/3993401.html">10. 5天玩转C#并行和多线程编程 —— 第一天 认识Parallel(36)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="https://www.cnblogs.com/yunfeifei/p/3850440.html">1. 数据库SQL优化大总结之 百万级数据库优化方案(164)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4163347.html">2. Android Studio 1.0.1 + Genymotion安卓模拟器打造高效安卓开发环境(60)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4209625.html">3. 程序员必须知道的几个Git代码托管平台(56)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/3993401.html">4. 5天玩转C#并行和多线程编程 —— 第一天 认识Parallel(51)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4122084.html">5. 5天玩转C#并行和多线程编程 —— 第五天 多线程编程大总结(50)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4305943.html">6. [开源]C#二维码生成解析工具，可添加自定义Logo(48)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4181164.html">7. 何必苦等VS2015？来看看VS2013下实现移动端的跨平台开发(45)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4019504.html">8. 全面理解Javascript闭包和闭包的几种写法及用途(40)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4106318.html">9. 5天玩转C#并行和多线程编程 —— 第三天 认识和使用Task(39)</a></li><li><a href="https://www.cnblogs.com/yunfeifei/p/4555728.html">10. Visual Studio Code预览版Ver 0.3.0试用体验(36)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2018 雲霏霏
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body></html>
